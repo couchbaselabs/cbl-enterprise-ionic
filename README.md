@@ -51,6 +51,7 @@ npx cap sync
 * [`Replicator_GetStatus(...)`](#replicator_getstatus)
 * [`Replicator_Cleanup(...)`](#replicator_cleanup)
 * [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 * [Enums](#enums)
 
 </docgen-index>
@@ -61,14 +62,12 @@ npx cap sync
 ### Plugin_Configure(...)
 
 ```typescript
-Plugin_Configure(args: PluginConfigureArgs) => any
+Plugin_Configure(args: PluginConfigureArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                |
 | ---------- | ------------------------------------------------------------------- |
 | **`args`** | <code><a href="#pluginconfigureargs">PluginConfigureArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -76,14 +75,12 @@ Plugin_Configure(args: PluginConfigureArgs) => any
 ### Database_Open(...)
 
 ```typescript
-Database_Open(args: DatabaseOpenArgs) => any
+Database_Open(args: DatabaseOpenArgs) => Promise<void>
 ```
 
 | Param      | Type                                                          |
 | ---------- | ------------------------------------------------------------- |
 | **`args`** | <code><a href="#databaseopenargs">DatabaseOpenArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -91,14 +88,14 @@ Database_Open(args: DatabaseOpenArgs) => any
 ### Database_Save(...)
 
 ```typescript
-Database_Save(args: DatabaseSaveArgs) => any
+Database_Save(args: DatabaseSaveArgs) => Promise<{ _id: string; }>
 ```
 
 | Param      | Type                                                          |
 | ---------- | ------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasesaveargs">DatabaseSaveArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ _id: string; }&gt;</code>
 
 --------------------
 
@@ -106,14 +103,14 @@ Database_Save(args: DatabaseSaveArgs) => any
 ### Database_GetCount(...)
 
 ```typescript
-Database_GetCount(args: DatabaseArgs) => any
+Database_GetCount(args: DatabaseArgs) => Promise<{ count: number; }>
 ```
 
 | Param      | Type                                                  |
 | ---------- | ----------------------------------------------------- |
 | **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ count: number; }&gt;</code>
 
 --------------------
 
@@ -121,14 +118,14 @@ Database_GetCount(args: DatabaseArgs) => any
 ### Database_GetPath(...)
 
 ```typescript
-Database_GetPath(args: DatabaseArgs) => any
+Database_GetPath(args: DatabaseArgs) => Promise<{ path: string; }>
 ```
 
 | Param      | Type                                                  |
 | ---------- | ----------------------------------------------------- |
 | **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ path: string; }&gt;</code>
 
 --------------------
 
@@ -136,14 +133,12 @@ Database_GetPath(args: DatabaseArgs) => any
 ### Database_Copy(...)
 
 ```typescript
-Database_Copy(args: DatabaseCopyArgs) => any
+Database_Copy(args: DatabaseCopyArgs) => Promise<void>
 ```
 
 | Param      | Type                                                          |
 | ---------- | ------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasecopyargs">DatabaseCopyArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -151,14 +146,12 @@ Database_Copy(args: DatabaseCopyArgs) => any
 ### Database_CreateIndex(...)
 
 ```typescript
-Database_CreateIndex(args: DatabaseCreateIndexArgs) => any
+Database_CreateIndex(args: DatabaseCreateIndexArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                        |
 | ---------- | --------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasecreateindexargs">DatabaseCreateIndexArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -166,14 +159,12 @@ Database_CreateIndex(args: DatabaseCreateIndexArgs) => any
 ### Database_DeleteIndex(...)
 
 ```typescript
-Database_DeleteIndex(args: DatabaseDeleteIndexArgs) => any
+Database_DeleteIndex(args: DatabaseDeleteIndexArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                        |
 | ---------- | --------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasedeleteindexargs">DatabaseDeleteIndexArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -181,14 +172,14 @@ Database_DeleteIndex(args: DatabaseDeleteIndexArgs) => any
 ### Database_GetIndexes(...)
 
 ```typescript
-Database_GetIndexes(args: DatabaseArgs) => any
+Database_GetIndexes(args: DatabaseArgs) => Promise<{ indexes: string[]; }>
 ```
 
 | Param      | Type                                                  |
 | ---------- | ----------------------------------------------------- |
 | **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ indexes: string[]; }&gt;</code>
 
 --------------------
 
@@ -196,14 +187,14 @@ Database_GetIndexes(args: DatabaseArgs) => any
 ### Database_Exists(...)
 
 ```typescript
-Database_Exists(args: DatabaseExistsArgs) => any
+Database_Exists(args: DatabaseExistsArgs) => Promise<{ exists: boolean; }>
 ```
 
 | Param      | Type                                                              |
 | ---------- | ----------------------------------------------------------------- |
 | **`args`** | <code><a href="#databaseexistsargs">DatabaseExistsArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ exists: boolean; }&gt;</code>
 
 --------------------
 
@@ -211,14 +202,12 @@ Database_Exists(args: DatabaseExistsArgs) => any
 ### Database_Close(...)
 
 ```typescript
-Database_Close(args: DatabaseArgs) => any
+Database_Close(args: DatabaseArgs) => Promise<void>
 ```
 
 | Param      | Type                                                  |
 | ---------- | ----------------------------------------------------- |
 | **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -226,14 +215,12 @@ Database_Close(args: DatabaseArgs) => any
 ### Database_Compact(...)
 
 ```typescript
-Database_Compact(args: DatabaseArgs) => any
+Database_Compact(args: DatabaseArgs) => Promise<void>
 ```
 
 | Param      | Type                                                  |
 | ---------- | ----------------------------------------------------- |
 | **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -241,14 +228,12 @@ Database_Compact(args: DatabaseArgs) => any
 ### Database_Delete(...)
 
 ```typescript
-Database_Delete(args: DatabaseArgs) => any
+Database_Delete(args: DatabaseArgs) => Promise<void>
 ```
 
 | Param      | Type                                                  |
 | ---------- | ----------------------------------------------------- |
 | **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -256,14 +241,12 @@ Database_Delete(args: DatabaseArgs) => any
 ### Database_PurgeDocument(...)
 
 ```typescript
-Database_PurgeDocument(args: DatabasePurgeDocumentArgs) => any
+Database_PurgeDocument(args: DatabasePurgeDocumentArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                            |
 | ---------- | ------------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasepurgedocumentargs">DatabasePurgeDocumentArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -271,14 +254,12 @@ Database_PurgeDocument(args: DatabasePurgeDocumentArgs) => any
 ### Database_DeleteDocument(...)
 
 ```typescript
-Database_DeleteDocument(args: DatabaseDeleteDocumentArgs) => any
+Database_DeleteDocument(args: DatabaseDeleteDocumentArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                              |
 | ---------- | --------------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasedeletedocumentargs">DatabaseDeleteDocumentArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -286,14 +267,14 @@ Database_DeleteDocument(args: DatabaseDeleteDocumentArgs) => any
 ### Database_GetDocument(...)
 
 ```typescript
-Database_GetDocument(args: DatabaseGetDocumentArgs) => any
+Database_GetDocument(args: DatabaseGetDocumentArgs) => Promise<{ document: Document; }>
 ```
 
 | Param      | Type                                                                        |
 | ---------- | --------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasegetdocumentargs">DatabaseGetDocumentArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ document: Document; }&gt;</code>
 
 --------------------
 
@@ -301,15 +282,15 @@ Database_GetDocument(args: DatabaseGetDocumentArgs) => any
 ### Database_AddChangeListener(...)
 
 ```typescript
-Database_AddChangeListener(args: DatabaseArgs, cb: PluginCallback) => any
+Database_AddChangeListener(args: DatabaseArgs, cb: PluginCallback) => Promise<PluginListenerHandle>
 ```
 
-| Param      | Type                                                                        |
-| ---------- | --------------------------------------------------------------------------- |
-| **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code>                       |
-| **`cb`**   | <code>(data: PluginResultData, error?: PluginResultError) =&gt; void</code> |
+| Param      | Type                                                      |
+| ---------- | --------------------------------------------------------- |
+| **`args`** | <code><a href="#databaseargs">DatabaseArgs</a></code>     |
+| **`cb`**   | <code><a href="#plugincallback">PluginCallback</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
@@ -317,14 +298,12 @@ Database_AddChangeListener(args: DatabaseArgs, cb: PluginCallback) => any
 ### Database_SetLogLevel(...)
 
 ```typescript
-Database_SetLogLevel(args: DatabaseSetLogLevelArgs) => any
+Database_SetLogLevel(args: DatabaseSetLogLevelArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                        |
 | ---------- | --------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasesetloglevelargs">DatabaseSetLogLevelArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -332,14 +311,12 @@ Database_SetLogLevel(args: DatabaseSetLogLevelArgs) => any
 ### Database_SetFileLoggingConfig(...)
 
 ```typescript
-Database_SetFileLoggingConfig(args: DatabaseSetFileLoggingConfigArgs) => any
+Database_SetFileLoggingConfig(args: DatabaseSetFileLoggingConfigArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                                          |
 | ---------- | --------------------------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#databasesetfileloggingconfigargs">DatabaseSetFileLoggingConfigArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -347,14 +324,14 @@ Database_SetFileLoggingConfig(args: DatabaseSetFileLoggingConfigArgs) => any
 ### Document_GetBlobContent(...)
 
 ```typescript
-Document_GetBlobContent(args: DocumentGetBlobContentArgs) => any
+Document_GetBlobContent(args: DocumentGetBlobContentArgs) => Promise<{ data: any; }>
 ```
 
 | Param      | Type                                                                              |
 | ---------- | --------------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#documentgetblobcontentargs">DocumentGetBlobContentArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ data: any; }&gt;</code>
 
 --------------------
 
@@ -362,14 +339,14 @@ Document_GetBlobContent(args: DocumentGetBlobContentArgs) => any
 ### Query_Execute(...)
 
 ```typescript
-Query_Execute(args: QueryExecuteArgs) => any
+Query_Execute(args: QueryExecuteArgs) => Promise<{ id: string; }>
 ```
 
 | Param      | Type                                                          |
 | ---------- | ------------------------------------------------------------- |
 | **`args`** | <code><a href="#queryexecuteargs">QueryExecuteArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ id: string; }&gt;</code>
 
 --------------------
 
@@ -377,14 +354,14 @@ Query_Execute(args: QueryExecuteArgs) => any
 ### ResultSet_Next(...)
 
 ```typescript
-ResultSet_Next(args: ResultSetNextArgs) => any
+ResultSet_Next(args: ResultSetNextArgs) => Promise<{ result: Result; }>
 ```
 
 | Param      | Type                                                            |
 | ---------- | --------------------------------------------------------------- |
 | **`args`** | <code><a href="#resultsetnextargs">ResultSetNextArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ result: <a href="#result">Result</a>; }&gt;</code>
 
 --------------------
 
@@ -392,14 +369,14 @@ ResultSet_Next(args: ResultSetNextArgs) => any
 ### ResultSet_NextBatch(...)
 
 ```typescript
-ResultSet_NextBatch(args: ResultSetNextBatchArgs) => any
+ResultSet_NextBatch(args: ResultSetNextBatchArgs) => Promise<{ results: Result[]; }>
 ```
 
 | Param      | Type                                                                      |
 | ---------- | ------------------------------------------------------------------------- |
 | **`args`** | <code><a href="#resultsetnextbatchargs">ResultSetNextBatchArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ results: Result[]; }&gt;</code>
 
 --------------------
 
@@ -407,15 +384,15 @@ ResultSet_NextBatch(args: ResultSetNextBatchArgs) => any
 ### ResultSet_AllResults(...)
 
 ```typescript
-ResultSet_AllResults(args: ResultSetAllResultsArgs, callback: PluginCallback) => any
+ResultSet_AllResults(args: ResultSetAllResultsArgs, callback: PluginCallback) => Promise<PluginListenerHandle>
 ```
 
 | Param          | Type                                                                        |
 | -------------- | --------------------------------------------------------------------------- |
 | **`args`**     | <code><a href="#resultsetallresultsargs">ResultSetAllResultsArgs</a></code> |
-| **`callback`** | <code>(data: PluginResultData, error?: PluginResultError) =&gt; void</code> |
+| **`callback`** | <code><a href="#plugincallback">PluginCallback</a></code>                   |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
@@ -423,14 +400,12 @@ ResultSet_AllResults(args: ResultSetAllResultsArgs, callback: PluginCallback) =>
 ### ResultSet_Cleanup(...)
 
 ```typescript
-ResultSet_Cleanup(args: ResultSetCleanupArgs) => any
+ResultSet_Cleanup(args: ResultSetCleanupArgs) => Promise<void>
 ```
 
 | Param      | Type                                                                  |
 | ---------- | --------------------------------------------------------------------- |
 | **`args`** | <code><a href="#resultsetcleanupargs">ResultSetCleanupArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -438,14 +413,14 @@ ResultSet_Cleanup(args: ResultSetCleanupArgs) => any
 ### Replicator_Create(...)
 
 ```typescript
-Replicator_Create(args: ReplicatorCreateArgs) => any
+Replicator_Create(args: ReplicatorCreateArgs) => Promise<{ replicatorId: string; }>
 ```
 
 | Param      | Type                                                                  |
 | ---------- | --------------------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorcreateargs">ReplicatorCreateArgs</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ replicatorId: string; }&gt;</code>
 
 --------------------
 
@@ -453,14 +428,12 @@ Replicator_Create(args: ReplicatorCreateArgs) => any
 ### Replicator_Start(...)
 
 ```typescript
-Replicator_Start(args: ReplicatorArgs) => any
+Replicator_Start(args: ReplicatorArgs) => Promise<void>
 ```
 
 | Param      | Type                                                      |
 | ---------- | --------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -468,14 +441,12 @@ Replicator_Start(args: ReplicatorArgs) => any
 ### Replicator_Restart(...)
 
 ```typescript
-Replicator_Restart(args: ReplicatorArgs) => any
+Replicator_Restart(args: ReplicatorArgs) => Promise<void>
 ```
 
 | Param      | Type                                                      |
 | ---------- | --------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -483,15 +454,15 @@ Replicator_Restart(args: ReplicatorArgs) => any
 ### Replicator_AddChangeListener(...)
 
 ```typescript
-Replicator_AddChangeListener(args: ReplicatorArgs, cb: PluginCallback) => any
+Replicator_AddChangeListener(args: ReplicatorArgs, cb: PluginCallback) => Promise<PluginListenerHandle>
 ```
 
-| Param      | Type                                                                        |
-| ---------- | --------------------------------------------------------------------------- |
-| **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code>                   |
-| **`cb`**   | <code>(data: PluginResultData, error?: PluginResultError) =&gt; void</code> |
+| Param      | Type                                                      |
+| ---------- | --------------------------------------------------------- |
+| **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
+| **`cb`**   | <code><a href="#plugincallback">PluginCallback</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
@@ -499,15 +470,15 @@ Replicator_AddChangeListener(args: ReplicatorArgs, cb: PluginCallback) => any
 ### Replicator_AddDocumentListener(...)
 
 ```typescript
-Replicator_AddDocumentListener(args: ReplicatorArgs, cb: PluginCallback) => any
+Replicator_AddDocumentListener(args: ReplicatorArgs, cb: PluginCallback) => Promise<PluginListenerHandle>
 ```
 
-| Param      | Type                                                                        |
-| ---------- | --------------------------------------------------------------------------- |
-| **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code>                   |
-| **`cb`**   | <code>(data: PluginResultData, error?: PluginResultError) =&gt; void</code> |
+| Param      | Type                                                      |
+| ---------- | --------------------------------------------------------- |
+| **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
+| **`cb`**   | <code><a href="#plugincallback">PluginCallback</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
@@ -515,14 +486,12 @@ Replicator_AddDocumentListener(args: ReplicatorArgs, cb: PluginCallback) => any
 ### Replicator_Stop(...)
 
 ```typescript
-Replicator_Stop(args: ReplicatorArgs) => any
+Replicator_Stop(args: ReplicatorArgs) => Promise<void>
 ```
 
 | Param      | Type                                                      |
 | ---------- | --------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -530,14 +499,12 @@ Replicator_Stop(args: ReplicatorArgs) => any
 ### Replicator_ResetCheckpoint(...)
 
 ```typescript
-Replicator_ResetCheckpoint(args: ReplicatorArgs) => any
+Replicator_ResetCheckpoint(args: ReplicatorArgs) => Promise<void>
 ```
 
 | Param      | Type                                                      |
 | ---------- | --------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -545,14 +512,12 @@ Replicator_ResetCheckpoint(args: ReplicatorArgs) => any
 ### Replicator_GetStatus(...)
 
 ```typescript
-Replicator_GetStatus(args: ReplicatorArgs) => any
+Replicator_GetStatus(args: ReplicatorArgs) => Promise<void>
 ```
 
 | Param      | Type                                                      |
 | ---------- | --------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -560,14 +525,12 @@ Replicator_GetStatus(args: ReplicatorArgs) => any
 ### Replicator_Cleanup(...)
 
 ```typescript
-Replicator_Cleanup(args: ReplicatorArgs) => any
+Replicator_Cleanup(args: ReplicatorArgs) => Promise<void>
 ```
 
 | Param      | Type                                                      |
 | ---------- | --------------------------------------------------------- |
 | **`args`** | <code><a href="#replicatorargs">ReplicatorArgs</a></code> |
-
-**Returns:** <code>any</code>
 
 --------------------
 
@@ -591,10 +554,10 @@ Replicator_Cleanup(args: ReplicatorArgs) => any
 
 #### DatabaseSaveArgs
 
-| Prop           | Type                                 |
-| -------------- | ------------------------------------ |
-| **`id`**       | <code>string</code>                  |
-| **`document`** | <code>{ [key: string]: any; }</code> |
+| Prop           | Type                                              |
+| -------------- | ------------------------------------------------- |
+| **`id`**       | <code>string</code>                               |
+| **`document`** | <code><a href="#dictionary">Dictionary</a></code> |
 
 
 #### DatabaseArgs
@@ -648,7 +611,7 @@ Replicator_Cleanup(args: ReplicatorArgs) => any
 | Prop                     | Type                                                              |
 | ------------------------ | ----------------------------------------------------------------- |
 | **`docId`**              | <code>string</code>                                               |
-| **`document`**           | <code>{ [key: string]: any; }</code>                              |
+| **`document`**           | <code><a href="#dictionary">Dictionary</a></code>                 |
 | **`concurrencyControl`** | <code><a href="#concurrencycontrol">ConcurrencyControl</a></code> |
 
 
@@ -661,9 +624,19 @@ Replicator_Cleanup(args: ReplicatorArgs) => any
 
 #### PluginListenerHandle
 
-| Prop         | Type                      |
-| ------------ | ------------------------- |
-| **`remove`** | <code>() =&gt; any</code> |
+| Prop         | Type                                      |
+| ------------ | ----------------------------------------- |
+| **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
+
+
+#### PluginResultData
+
+
+#### PluginResultError
+
+| Prop          | Type                |
+| ------------- | ------------------- |
+| **`message`** | <code>string</code> |
 
 
 #### DatabaseSetLogLevelArgs
@@ -748,6 +721,24 @@ Replicator_Cleanup(args: ReplicatorArgs) => any
 | Prop               | Type                |
 | ------------------ | ------------------- |
 | **`replicatorId`** | <code>string</code> |
+
+
+### Type Aliases
+
+
+#### Dictionary
+
+<code>{ [key:string]: any }</code>
+
+
+#### PluginCallback
+
+<code>(data: <a href="#pluginresultdata">PluginResultData</a>, error?: <a href="#pluginresulterror">PluginResultError</a>): void</code>
+
+
+#### Result
+
+<code>{ [key:string]: any }</code>
 
 
 ### Enums
