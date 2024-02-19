@@ -1,0 +1,221 @@
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\asset-manifest.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\manifest.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\capacitor.config.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\capacitor.plugins.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\assets\icon\favicon.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\assets\icon\icon.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\SplashScreen.scale-200.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\LockScreenLogo.scale-200.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\Square150x150Logo.scale-200.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\Square44x44Logo.scale-200.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\Square44x44Logo.targetsize-24_altform-unplated.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\StoreLogo.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Images\Wide310x150Logo.scale-200.png
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\assets\shapes.svg
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\index.html
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\service-worker.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\0.a0c4850f.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\10.a7fee029.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\11.30db5515.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\12.3e987123.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\13.0aacf43f.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\14.c11095c1.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\15.373daee5.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\16.f297c83c.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\17.c723963d.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\18.83565c8e.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\19.9d7d7b53.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\20.f21fc617.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\21.fa2b15ae.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\22.f5f2f254.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\23.c8411c56.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\24.92abe5a0.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\25.11ec9a67.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\26.fb80a373.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\27.f85ab521.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\28.3ddbc863.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\29.6a9ddf33.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\30.d4bb7f1e.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\31.2b245c7d.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\32.97a47f3a.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\33.3d5c9e0a.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\34.0fe038e6.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\35.ccdb4e9b.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\36.20dd3dc4.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\37.26035340.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\38.60cc883d.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\39.d35524d2.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\4.3119528b.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\40.0f4bbb12.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\41.8a1c1fae.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\42.27b81bf0.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\43.54573a19.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\44.d0b600ee.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\45.fad39385.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\46.6085a307.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\47.4dde2c86.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\48.f18e4ef3.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\49.fc5f0d89.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\5.7f692713.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\50.d30a4638.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\51.7a75c78c.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\52.4176e9ed.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\53.2b678ccc.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\54.52431b0a.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\55.529f303a.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\56.1f0f4635.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\57.7a7bace4.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\58.e5e8a767.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\6.9c8f6157.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\7.f9e34ccf.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\8.ae07c3fe.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\9.2b653a7f.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\main.a2553a91.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\polyfills-dom.85f89811.chunk.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\runtime-main.0bf0896d.js
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\service-worker.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\css\4.532f36fa.chunk.css.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\css\main.aa5ff861.chunk.css.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\0.a0c4850f.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\10.a7fee029.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\11.30db5515.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\12.3e987123.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\13.0aacf43f.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\14.c11095c1.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\15.373daee5.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\16.f297c83c.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\17.c723963d.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\18.83565c8e.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\19.9d7d7b53.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\20.f21fc617.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\21.fa2b15ae.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\22.f5f2f254.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\23.c8411c56.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\24.92abe5a0.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\25.11ec9a67.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\26.fb80a373.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\27.f85ab521.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\28.3ddbc863.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\29.6a9ddf33.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\30.d4bb7f1e.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\31.2b245c7d.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\32.97a47f3a.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\33.3d5c9e0a.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\34.0fe038e6.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\35.ccdb4e9b.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\36.20dd3dc4.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\37.26035340.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\38.60cc883d.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\39.d35524d2.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\4.3119528b.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\40.0f4bbb12.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\41.8a1c1fae.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\42.27b81bf0.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\43.54573a19.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\44.d0b600ee.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\45.fad39385.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\46.6085a307.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\47.4dde2c86.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\48.f18e4ef3.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\49.fc5f0d89.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\5.7f692713.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\50.d30a4638.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\51.7a75c78c.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\52.4176e9ed.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\53.2b678ccc.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\54.52431b0a.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\55.529f303a.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\56.1f0f4635.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\57.7a7bace4.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\58.e5e8a767.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\6.9c8f6157.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\7.f9e34ccf.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\8.ae07c3fe.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\9.2b653a7f.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\main.a2553a91.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\polyfills-dom.85f89811.chunk.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\runtime-main.0bf0896d.js.map
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\css\4.532f36fa.chunk.css
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\css\main.aa5ff861.chunk.css
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\4.3119528b.chunk.js.LICENSE.txt
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\52.4176e9ed.chunk.js.LICENSE.txt
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\Public\static\js\polyfills-dom.85f89811.chunk.js.LICENSE.txt
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\App.xbf
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\MainWindow.xbf
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\x64\LiteCore.dll
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\x86\LiteCore.dll
+C:\Program Files (x86)\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.UniversalCRT.Debug\10.0.19041.0\Redist\Debug\x86\ucrtbased.dll
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App (Package)\bin\x86\Debug\resources.pri
+C:\Users\max\.nuget\packages\capacitor\1.5.3\lib\net5.0-windows10.0.19041\Capacitor.dll
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise\2.8.6\lib\netcoreapp2.0\Couchbase.Lite.dll
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\lib\netcoreapp2.0\Couchbase.Lite.Support.NetDesktop.dll
+C:\Users\max\.nuget\packages\desktopbridge.helpers\1.2.2\lib\netstandard2.0\DesktopBridge.Helpers.dll
+C:\Users\max\.nuget\packages\lib.harmony\2.2.2\lib\net5.0\0Harmony.dll
+C:\Users\max\.nuget\packages\microsoft.data.sqlite.core\6.0.0\lib\netstandard2.0\Microsoft.Data.Sqlite.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.InteractiveExperiences.Projection.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.WinUI.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.Windows.AppLifecycle.Projection.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.Windows.ApplicationModel.DynamicDependency.Projection.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.Windows.ApplicationModel.Resources.Projection.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.Windows.System.Power.Projection.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\lib\net5.0-windows10.0.18362.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.Mdb.dll
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.Pdb.dll
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.Rocks.dll
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.dll
+C:\Users\max\.nuget\packages\monomod.common\22.6.3.1\lib\net5.0\MonoMod.Common.dll
+C:\Users\max\.nuget\packages\newtonsoft.json\13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll
+C:\Users\max\.nuget\packages\simpleinjector\4.0.12\lib\netstandard1.3\SimpleInjector.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.bundle_e_sqlite3\2.0.6\lib\netstandard2.0\SQLitePCLRaw.batteries_v2.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.core\2.0.6\lib\netstandard2.0\SQLitePCLRaw.core.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.provider.e_sqlite3\2.0.6\lib\net5.0\SQLitePCLRaw.provider.e_sqlite3.dll
+C:\Users\max\.nuget\packages\system.text.json\5.0.2\lib\netcoreapp3.0\System.Text.Json.dll
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\linux-x64\native\libLiteCore.so
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\linux-x64\native\libicudata.so.54
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\linux-x64\native\libicui18n.so.54
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\linux-x64\native\libicuuc.so.54
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\linux-x64\native\libstdc++.so
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\linux-x64\native\libstdc++.so.6
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\osx-x64\native\libLiteCore.dylib
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\win7-x64\native\LiteCore.dll
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\win7-x64\native\LiteCore.pdb
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\win7-x86\native\LiteCore.dll
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\win7-x86\native\LiteCore.pdb
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\runtimes\win10-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\runtimes\win10-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll
+C:\Users\max\.nuget\packages\microsoft.windowsappsdk\1.0.2\runtimes\win10-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\alpine-x64\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-arm\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-arm64\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-armel\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-mips64\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-musl-x64\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-s390x\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-x64\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\linux-x86\native\libe_sqlite3.so
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\osx-arm64\native\libe_sqlite3.dylib
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\osx-x64\native\libe_sqlite3.dylib
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\win-arm\native\e_sqlite3.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\win-arm64\native\e_sqlite3.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\win-x64\native\e_sqlite3.dll
+C:\Users\max\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.6\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\max\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.19041.24\lib\Microsoft.Windows.SDK.NET.dll
+C:\Users\max\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.19041.24\lib\WinRT.Runtime.dll
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\IonicCouchbaseLite\bin\Debug\net5.0-windows10.0.19041\IonicCouchbaseLite.dll
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\IonicCouchbaseLite\bin\Debug\net5.0-windows10.0.19041\IonicCouchbaseLite.pdb
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\IonicCouchbaseLite\bin\Debug\net5.0-windows10.0.19041\IonicCouchbaseLite.pri
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\App.deps.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\App.runtimeconfig.dev.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\obj\x86\Debug\net5.0-windows10.0.19041.0\App.xbf
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\obj\x86\Debug\net5.0-windows10.0.19041.0\MainWindow.xbf
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\obj\x86\Debug\net5.0-windows10.0.19041.0\apphost.exe
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise\2.8.6\lib\netcoreapp2.0\Couchbase.Lite.pdb
+C:\Users\max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\lib\netcoreapp2.0\Couchbase.Lite.Support.NetDesktop.pdb
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.Mdb.pdb
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.Pdb.pdb
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.Rocks.pdb
+C:\Users\max\.nuget\packages\mono.cecil\0.11.4\lib\netstandard2.0\Mono.Cecil.pdb
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\App.runtimeconfig.json
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\App.dll
+E:\GitHub\enterprise-couchbase-lite\example\windows\App\App\App\bin\x86\Debug\net5.0-windows10.0.19041.0\App.pdb

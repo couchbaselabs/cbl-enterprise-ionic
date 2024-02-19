@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <AssemblyName>IonicCouchbaseLite.WPF</AssemblyName>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <RootNamespace>IonicCouchbaseLite</RootNamespace>
+	  <Version>2.5.7</Version>
+	  <Platforms>AnyCPU;x64</Platforms>
+	  <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CapacitorWpf" Version="1.5.5">
+			<IncludeAssets>compile</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Couchbase.Lite.Enterprise" Version="2.8.6">
+			<IncludeAssets>compile</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+		<PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+		<PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+		<PackageReference Include="Microsoft.Win32.Primitives" Version="4.3.0" />
+		<PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0" />
+		<PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+		<PackageReference Include="System.Net.Primitives" Version="4.3.0" />
+		<PackageReference Include="Lib.Harmony" Version="2.2.2" />
+	</ItemGroup>
+</Project>

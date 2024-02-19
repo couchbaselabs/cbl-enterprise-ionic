@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>IonicCouchbaseLite</id>
+    <version>1.0.0</version>
+    <authors>IonicCouchbaseLite</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net5.0-windows10.0.19041">
+        <dependency id="Capacitor" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="Couchbase.Lite.Enterprise" version="2.8.6" exclude="Build,Analyzers" />
+        <dependency id="Couchbase.Lite.Support.NetDesktop" version="2.8.6" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Win32.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.Tracing" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.IO.FileSystem" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.IO.FileSystem.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Net.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime.InteropServices" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Encoding.Extensions" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <contentFiles>
+      <files include="any/net5.0-windows10.0.19041/LiteCore.dll" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="F:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\bin\Debug\net5.0-windows10.0.19041\IonicCouchbaseLite.dll" target="lib\net5.0-windows10.0.19041\IonicCouchbaseLite.dll" />
+    <file src="C:\Users\Max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\win7-x86\native\LiteCore.dll" target="content\LiteCore.dll" />
+    <file src="C:\Users\Max\.nuget\packages\couchbase.lite.enterprise.support.netdesktop\2.8.6\runtimes\win7-x86\native\LiteCore.dll" target="contentFiles\any\net5.0-windows10.0.19041\LiteCore.dll" />
+  </files>
+</package>

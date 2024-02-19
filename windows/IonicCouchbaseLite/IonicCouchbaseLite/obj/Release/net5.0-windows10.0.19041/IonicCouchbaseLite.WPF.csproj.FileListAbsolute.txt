@@ -1,0 +1,12 @@
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\bin\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.deps.json
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\bin\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.dll
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\bin\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.pdb
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.csproj.AssemblyReference.cache
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.GeneratedMSBuildEditorConfig.editorconfig
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.AssemblyInfoInputs.cache
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.AssemblyInfo.cs
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.csproj.CoreCompileInputs.cache
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.dll
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\refint\IonicCouchbaseLite.WPF.dll
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\IonicCouchbaseLite.WPF.pdb
+E:\GitHub\enterprise-couchbase-lite\windows\IonicCouchbaseLite\obj\Release\net5.0-windows10.0.19041\ref\IonicCouchbaseLite.WPF.dll
