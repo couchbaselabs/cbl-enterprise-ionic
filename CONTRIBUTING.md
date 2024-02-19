@@ -2,6 +2,23 @@
 
 This guide provides instructions for contributing to this Capacitor plugin.
 
+## Plugin Flow
+
+Plugins flow from the following files:
+
+- `src/definitions.ts` - interface defintions for the plugin.   You would define something in this file first.
+
+- `src/couchbase-lite/engine/capacitor.ts` - the main implementation of methods that are defined in the plugin.  Names MUST match the names from the native inmplementation in Swift/Java/Kotlin.  The Typescript code will usually call implementations that try to match the Couchbase Lite SDK.  Example the Database.ts file tries to separate out things like opening and closing a database to match the Couchbase Lite SDK.  
+- `src/couchbase-lite/*.ts` - implementation files for various features of the plugin.  This is what developers using the plugin would import.
+- `ios/Plugin/` this is the iOS native implementation of the plugin.  The file brakedown is:
+    - `ios/IonicCouchbaseLitePlugin.h` - the interface for the main plugin.  The name must match the name of the plugin.
+    - `ios/IonicCouchbaseLitePlugin.m` - the main implementation of the plugin. This defines the plugin using the CAP_PLUGIN Macro, and
+    each method the plugin supports using the CAP_PLUGIN_METHOD macro. 
+    - `ios/IonicCouchbaseLite.h` - the interface for the  implementation of the plugin bridge to Native code.
+    - `ios/IonicCouchbaseLite.m` - the main implementation of the plugin bridge to Native code.  
+- `android/src/` this is the Android native implementation of the plugin.  The file brakedown is:
+    - `main/java/io/ionic/enterprise/couchbaselite/IonicCouchbaseLitePlugin.java` - the main implementation of the plugin and bridge.  The name must match the name of the plugin.
+    - ``main/java/io/ionic/enterprise/couchbaselite/JsonQueryhBuilder.java`` - Helper class for building the Query Builder implementation.  
 ## Developing
 
 ### Local Setup
