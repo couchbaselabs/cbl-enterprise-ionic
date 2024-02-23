@@ -31,6 +31,7 @@ import com.couchbase.lite.ListenerToken;
 import com.couchbase.lite.LogDomain;
 import com.couchbase.lite.LogFileConfiguration;
 import com.couchbase.lite.LogLevel;
+import com.couchbase.lite.MaintenanceType;
 import com.couchbase.lite.Meta;
 import com.couchbase.lite.MutableArray;
 import com.couchbase.lite.MutableDictionary;
@@ -39,15 +40,19 @@ import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryBuilder;
 import com.couchbase.lite.ReplicatedDocument;
 import com.couchbase.lite.Replicator;
+import com.couchbase.lite.ReplicatorActivityLevel;
 import com.couchbase.lite.ReplicatorChange;
 import com.couchbase.lite.ReplicatorChangeListener;
 import com.couchbase.lite.ReplicatorConfiguration;
+import com.couchbase.lite.ReplicatorProgress;
+import com.couchbase.lite.ReplicatorStatus;
 import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.SelectResult;
 import com.couchbase.lite.SessionAuthenticator;
 import com.couchbase.lite.URLEndpoint;
 import com.couchbase.lite.ValueIndexItem;
+import com.couchbase.lite.internal.core.C4ReplicatorStatus;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -67,11 +72,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-/*
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
- */
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,7 +94,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
     @Override
     public void load() {
-        CouchbaseLite.init(bridge.getContext());
+        //TODO SDK 3.0 no longer requires context to init
+        CouchbaseLite.init();
     }
 
     private Database getDatabase(String name) {
@@ -625,7 +627,10 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         Database db = this.openDatabases.get(name);
 
         try {
-            db.compact();
+            if (db != null) {
+                //Fix for 3.x call
+                db.performMaintenance(MaintenanceType.COMPACT);
+            }
         } catch (Exception ex) {
             call.reject("Unable to compact", ex);
         }
@@ -661,7 +666,9 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         LogLevel logLevel = getLogLevel(logLevelValue);
 
         try {
-            db.setLogLevel(LogDomain.valueOf(domain), logLevel);
+            //TODO fix logging for 3.x
+            Database.log.getConsole().setDomains(LogDomain.valueOf(domain));
+            Database.log.getConsole().setLevel(logLevel);
             call.resolve(null);
         } catch (Exception ex) {
             call.reject("Unable to get document", ex);
@@ -1037,8 +1044,18 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             call.reject("No such replicator");
             return;
         }
-        r.resetCheckpoint();
-        call.resolve();
+        //make sure we don't kill the replicator in order to reset a checkpoint.
+        //TODO fix for 3.0 support
+        ReplicatorStatus status = r.getStatus();
+        ReplicatorActivityLevel activityLevel = status.getActivityLevel();
+        if (activityLevel == ReplicatorActivityLevel.IDLE ||
+                activityLevel == ReplicatorActivityLevel.OFFLINE ||
+        activityLevel == ReplicatorActivityLevel.STOPPED ){
+            r.stop();
+            r.start(true);
+            call.resolve();
+        }
+        call.reject("Invalid replicator state to create checkpoint");
     }
 
     @PluginMethod
@@ -1049,14 +1066,16 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             call.reject("No such replicator");
             return;
         }
-        Replicator.Status status = r.getStatus();
 
+        //
+        //TODO fix for 3.0 support as replicator status API has changed
+        ReplicatorStatus status = r.getStatus();
         JSObject statusJson = generateStatusJson(status);
 
         call.resolve(statusJson);
     }
 
-    private JSObject generateStatusJson(Replicator.Status status) {
+    private JSObject generateStatusJson(ReplicatorStatus status) {
         CouchbaseLiteException error = status.getError();
         JSObject errorJson = new JSObject();
         if (error != null) {
@@ -1066,7 +1085,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 errorJson.put("info", error.getInfo());
             } catch (Exception ex) {}
         }
-        AbstractReplicator.Progress progress = status.getProgress();
+        //
+        ReplicatorProgress progress = status.getProgress();
         JSONObject progressJson = new JSONObject();
         if (progress != null) {
             try {
@@ -1076,10 +1096,9 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         }
 
         int activityLevel = 0;
-        AbstractReplicator.ActivityLevel av = status.getActivityLevel();
-        if (av != null) {
-            activityLevel = av.ordinal();
-        }
+        ReplicatorActivityLevel av = status.getActivityLevel();
+        activityLevel = av.ordinal();
+
         final int activityLevelVal = activityLevel;
 
         return new JSObject() {
@@ -1114,12 +1133,13 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                     document.put("error", errorJson);
                 }
 
+                //TODO fix 3.0 issue with flags
                 JSONArray flags = new JSONArray();
-                if (replicatedDocument.flags().contains(DocumentFlag.DocumentFlagsDeleted)) {
+                if (replicatedDocument.getFlags().contains(DocumentFlag.DELETED)) {
                     flags.put("DELETED");
                 }
 
-                if (replicatedDocument.flags().contains(DocumentFlag.DocumentFlagsAccessRemoved)) {
+                if (replicatedDocument.getFlags().contains(DocumentFlag.ACCESS_REMOVED)) {
                     flags.put("ACCESS_REMOVED");
                 }
 
@@ -1279,7 +1299,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         if (type.equals("basic")) {
             String username = data.getString("username");
             String password = data.getString("password");
-            return new BasicAuthenticator(username, password);
+            //todo fix require password as a char array instead of a string
+            return new BasicAuthenticator(username, password.toCharArray());
         }
 
         return null;

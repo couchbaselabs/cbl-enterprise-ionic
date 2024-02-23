@@ -45,7 +45,7 @@ android {
 
 repositories {
     google()
-        mavenCentral()
+    maven {url 'https://mobile.maven.couchbase.com/maven2/dev/'}
     mavenCentral()
 }
 
@@ -54,7 +54,7 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':capacitor-android')
-    implementation 'com.couchbase.lite:couchbase-lite-android-ee:2.8.6'
+    implementation "com.couchbase.lite:couchbase-lite-java-ee:3.1.1"
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"

@@ -19,6 +19,7 @@ Plugins flow from the following files:
 - `android/src/` this is the Android native implementation of the plugin.  The file brakedown is:
     - `main/java/io/ionic/enterprise/couchbaselite/IonicCouchbaseLitePlugin.java` - the main implementation of the plugin and bridge.  The name must match the name of the plugin.
     - ``main/java/io/ionic/enterprise/couchbaselite/JsonQueryhBuilder.java`` - Helper class for building the Query Builder implementation.  
+
 ## Developing
 
 ### Local Setup
