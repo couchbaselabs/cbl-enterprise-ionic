@@ -94,8 +94,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
     @Override
     public void load() {
-        //TODO SDK 3.0 no longer requires context to init
-        CouchbaseLite.init();
+        CouchbaseLite.init(bridge.getContext());
     }
 
     private Database getDatabase(String name) {
