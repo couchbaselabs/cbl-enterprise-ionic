@@ -51,8 +51,6 @@ jobs:
 
         # Setup Gradle version compatible with Ionic
       - uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.0
 
       # Start npm/platform tasks
       - uses: actions/setup-node@v1
