@@ -52,6 +52,12 @@ jobs:
         # Setup Gradle version compatible with Ionic
       - uses: gradle/actions/setup-gradle@v3
 
+      # Setup specific Java versoin that works with Ionic gradle android build tools version
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu' 
+          java-version: '17'
+
       # Start npm/platform tasks
       - uses: actions/setup-node@v1
         with:
