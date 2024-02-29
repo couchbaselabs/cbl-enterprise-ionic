@@ -1,5 +1,5 @@
 # Couchbase Lite for Ionic
-This is a fork of the original @ionic-enterprise/couchbase-lite plugin.  The original plugin was not working with the latest version of Couchbase Lite.  This fork is a work in progress and is not yet ready for production use.
+This is a fork of the original @ionic-enterprise/couchbase-lite plugin. The goals of this repo is to support the newer versions of Couchbase Lite.  This is a work in progress and is not supported by Ionic or Couchbase. 
 
 # Integration for Couchbase Lite Enterprise in Ionic apps
 

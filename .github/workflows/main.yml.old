@@ -2,9 +2,9 @@ name: Build and Publish
 
 on:
   push:
-    branches: [main, 1.x]
+    branches: [main]
   pull_request:
-    branches: [main, 1.x]
+    branches: [main]
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       # Start npm/platform tasks
       - uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 18 
 
       # Build platform package including template and CLI scripts
       - name: Build platform

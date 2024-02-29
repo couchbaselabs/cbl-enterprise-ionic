@@ -476,7 +476,11 @@
     }
     
     NSError *error;
-    [db compact:&error];
+    /* TODO change out to Database Maintenance instead of compact
+     https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-objc/Classes/CBLDatabase.html#/c:objc(cs)CBLDatabase(im)performMaintenance:error:
+     */
+      
+    [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
     
     if ([self checkError:call error:error message:@"Unable to compact database"]) {
       return;
@@ -516,6 +520,7 @@
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *domainValue = [call getString:@"domain" defaultValue:NULL];
     NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:NULL];
+      
     if (logLevelValue != NULL) {
       [call reject:@"No log level supplied" :NULL :NULL :@{}];
       return;
@@ -527,8 +532,12 @@
     else if ([domainValue isEqualToString:@"NETWORK"]) domain = kCBLLogDomainNetwork;
     else if ([domainValue isEqualToString:@"QUERY"]) domain = kCBLLogDomainQuery;
     else if ([domainValue isEqualToString:@"REPLICATOR"]) domain = kCBLLogDomainReplicator;
-    
-    [CBLDatabase setLogLevel:[logLevelValue intValue] domain:domain];
+   
+    /* fix logging by using this syntax https://docs.couchbase.com/couchbase-lite/current/objc/troubleshooting-logs.html */
+    //TODO
+    CBLLogLevel logValue = (CBLLogLevel)[logLevelValue integerValue];
+    CBLDatabase.log.console.domains = domain;
+    CBLDatabase.log.console.level = logValue;
     
     return [call resolve];
   });
@@ -909,9 +918,16 @@
       return [call reject:@"No such replicator" :NULL :NULL :@{}];
     }
     
-    [replicator resetCheckpoint];
-    
-    [call resolve];
+    //TODO fix checkpoint for 3.1
+    CBLReplicatorStatus *replicatorStatus =  replicator.status;
+    CBLReplicatorActivityLevel activityLevel = replicatorStatus.activity;
+    if (activityLevel == kCBLReplicatorStopped ||
+        activityLevel == kCBLReplicatorIdle ||
+        activityLevel == kCBLReplicatorOffline){
+        [replicator startWithReset:true];
+        [call resolve];
+    }
+      [call reject:@"Invalid replicator state for create checkpoint" :NULL :NULL :@{}];
   });
 }
 

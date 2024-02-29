@@ -1,6 +1,0 @@
-[
-	{
-		"pkg": "@ionic-enterprise/couchbase-lite",
-		"assembly": "IonicCouchbaseLite"
-	}
-]
