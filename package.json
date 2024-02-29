@@ -1,7 +1,7 @@
 {
-  "name": "couchbase-lite-enteprise-ionic",
+  "name": "@couchbase/couchbase-lite-ee-ionic",
   "version": "3.1.0",
-  "description": "Integration for Couchbase Lite Enterprise (3.x+) in Ionic apps",
+  "description": "Plugin for Couchbase Lite Enterprise Edition for Ionic capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",

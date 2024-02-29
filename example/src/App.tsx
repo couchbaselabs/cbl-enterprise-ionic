@@ -1,7 +1,23 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet } from '@ionic/react';
+import React from 'react';
+import {
+  IonApp,
+  IonRouterOutlet,
+  IonSplitPane,
+  setupIonicReact,
+} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { Route } from 'react-router-dom';
+import Menu from './components/Menu/Menu';
+import Page from './pages/Page';
+
+import {
+  DatabaseRoutes,
+  DocumentRoutes,
+  QueryRoutes,
+  LoggingRoutes,
+  ReplicationRoutes,
+  IndexRoutes
+} from './routes/';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -22,19 +38,27 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+setupIonicReact();
+
+const App: React.FC = () => {
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonSplitPane contentId="main">
+          <Menu />
+          <IonRouterOutlet id="main">
+            {...DatabaseRoutes}
+            {...DocumentRoutes}
+            {...QueryRoutes}
+            {...IndexRoutes}
+            {...LoggingRoutes}
+            {...ReplicationRoutes}
+            <Route path="/" component={Page} exact />
+          </IonRouterOutlet>
+        </IonSplitPane>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;
