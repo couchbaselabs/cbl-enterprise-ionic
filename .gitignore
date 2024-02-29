@@ -2,6 +2,14 @@
 dist
 node_modules
 
+example/node_modules
+example/dist
+example/.vscode
+example/android/.gradle
+example/android/app/build/*
+example/ios/DerivedData/*
+
+
 # iOS files
 Pods
 Podfile.lock
@@ -10,8 +18,6 @@ xcuserdata
 
 # macOS files
 .DS_Store
-
-
 
 # Based on Android gitignore template: https://github.com/github/gitignore/blob/HEAD/Android.gitignore
 
