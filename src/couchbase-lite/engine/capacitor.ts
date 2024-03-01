@@ -9,21 +9,25 @@ import { ReplicatorConfiguration } from '../replicator-configuration';
 import { AbstractIndex } from '../abstract-index';
 import { DatabaseFileLoggingConfiguration } from '../database-logging';
 
-import { IonicCouchbaseLite } from '../../index';
+import { IonicCouchbaseLite } from '../../ionic-couchbase-lite';
 import { PluginListenerHandle } from '@capacitor/core';
-import { EngineService, EngineDatabaseSaveResult, EngineReplicatorStartResult } from './engineService';
 
+export interface EngineDatabaseSaveResult {
+	_id: string;
+}
+  
+export interface EngineReplicatorStartResult {
+	replicatorId: string;
+}
 
 export class CapacitorEngine {
-  engineService: EngineService;
 
   constructor(config: any = {}) {
-    this.engineService = new EngineService();
     this.Plugin_Configure(config);
   }
 
   async Plugin_Configure(config: any): Promise<void> {
-    return this.engineService.PluginConfigure({
+    return IonicCouchbaseLite.Plugin_Configure({
       config,
     });
   }
@@ -32,10 +36,9 @@ export class CapacitorEngine {
     name: string,
     config: DatabaseConfiguration,
   ): Promise<void> {
-    return this.engineService.DatabaseOpen(
+    return IonicCouchbaseLite.Database_Open({
       name,
-      config,
-    );
+      config });
   }
 
   async Database_Save(

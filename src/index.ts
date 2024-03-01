@@ -1,12 +1,14 @@
+/*
 import { registerPlugin } from '@capacitor/core';
-
 import type { IonicCouchbaseLitePlugin } from './definitions';
-
+*/
 export * from './couchbase-lite/index';
 
-const IonicCouchbaseLite = registerPlugin<IonicCouchbaseLitePlugin>(
-  'IonicCouchbaseLite',
-);
+
+//const IonicCouchbaseLite = registerPlugin<IonicCouchbaseLitePlugin>(
+//  'IonicCouchbaseLite',
+//);
 
 export * from './definitions';
-export { IonicCouchbaseLite };
+//export { IonicCouchbaseLite };
+export * from './ionic-couchbase-lite';
