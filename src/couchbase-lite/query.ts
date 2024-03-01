@@ -1,6 +1,6 @@
-import { ResultSet } from "./result-set";
-import { ListenerToken, Database } from "./database";
-import { Parameters } from "./parameters";
+import { ResultSet } from './result-set';
+import { ListenerToken, Database } from './database';
+import { Parameters } from './parameters';
 import { DataSource } from './data-source';
 import { Select } from './select';
 import { OrderBy } from './order-by';
@@ -29,6 +29,7 @@ export class QueryChange {
 }
 
 export type QueryChangeListener = (change: QueryChange) => void;
+
 /**
  * A database query used for querying data from the database.
  * The query statement of the Query object can be fluently constructed by calling the static select methods.
@@ -36,13 +37,13 @@ export type QueryChangeListener = (change: QueryChange) => void;
 export abstract class Query {
   private parameters: Parameters;
 
-  private columnNames: { [name:string]: any } = null;
+  private columnNames: { [name: string]: any } = null;
 
   // SELECT
   private _select: Select;
   // FROM
   private _from: DataSource; // FROM table-or-subquery
-  private _joins: Joins;     // FROM join-clause
+  private _joins: Joins; // FROM join-clause
   // WHERE
   private _where: Expression; // WHERE expr
   // GROUP BY
@@ -69,16 +70,34 @@ export abstract class Query {
     this.parameters = query.parameters;
   }
 
-  setSelect(select: Select)    { this._select = select; }
-  setFrom(from: DataSource)    { this._from = from; }
-  setJoins(joins: Joins)       { this._joins = joins; }
-  setWhere(where: Expression)  { this._where = where; }
-  setGroupBy(groupBy: GroupBy) { this._groupBy = groupBy; }
-  setHaving(having: Having)    { this._having = having; }
-  setOrderBy(orderBy: OrderBy) { this._orderBy = orderBy; }
-  setLimit(limit: Limit)       { this._limit = limit; }
+  setSelect(select: Select) {
+    this._select = select;
+  }
+  setFrom(from: DataSource) {
+    this._from = from;
+  }
+  setJoins(joins: Joins) {
+    this._joins = joins;
+  }
+  setWhere(where: Expression) {
+    this._where = where;
+  }
+  setGroupBy(groupBy: GroupBy) {
+    this._groupBy = groupBy;
+  }
+  setHaving(having: Having) {
+    this._having = having;
+  }
+  setOrderBy(orderBy: OrderBy) {
+    this._orderBy = orderBy;
+  }
+  setLimit(limit: Limit) {
+    this._limit = limit;
+  }
 
-  getFrom() { return this._from }
+  getFrom() {
+    return this._from;
+  }
 
   getColumnNames() {
     return this.columnNames;
@@ -91,8 +110,8 @@ export abstract class Query {
   }
 
   execute(): Promise<ResultSet> {
-    const db = this._from && this._from.getSource() as Database;
-    return db.getEngine().Query_Execute(db, this);
+    const db = this._from && (this._from.getSource() as Database);
+    return db.getEngine().Query_Execute(db.getName(), this);
   }
 
   explain(): Promise<string> {
@@ -101,7 +120,7 @@ export abstract class Query {
   }
 
   generateColumnNames() {
-    const map: { [name:string]: number } = {};
+    const map: { [name: string]: number } = {};
     let provisionKeyIndex = 0;
 
     this._select.getSelectResults().forEach((r, i) => {
@@ -116,7 +135,7 @@ export abstract class Query {
       }
 
       if (name in map) {
-        throw new Error("Duplicate select result named " + name);
+        throw new Error('Duplicate select result named ' + name);
       }
 
       map[name] = i;
@@ -141,12 +160,12 @@ export abstract class Query {
   }
   // abstract asJSON(): any;
 
-  private _asJSON(): { [key:string]: any } {
-    const json: { [key:string]: any } = {};
+  private _asJSON(): { [key: string]: any } {
+    const json: { [key: string]: any } = {};
 
     // DISTINCT:
     if (this._select != null && this._select.isDistinct()) {
-      json['DISTINCT'] =  true;
+      json['DISTINCT'] = true;
     }
 
     // result-columns / SELECT-RESULTS
@@ -165,11 +184,11 @@ export abstract class Query {
       f.push(...this._joins.asJSON());
     }
     if (f.length > 0) {
-      json["FROM"] =  f;
+      json['FROM'] = f;
     }
 
     if (this._where != null) {
-      json["WHERE"] = this._where.asJSON();
+      json['WHERE'] = this._where.asJSON();
     }
 
     if (this._groupBy != null) {
@@ -181,14 +200,14 @@ export abstract class Query {
     }
 
     if (this._orderBy != null) {
-      json["ORDER_BY"] = this._orderBy.asJSON();
+      json['ORDER_BY'] = this._orderBy.asJSON();
     }
 
     if (this._limit != null) {
       const list = this._limit.asJSON();
       json['LIMIT'] = list[0];
       if (list.length > 1) {
-        json["OFFSET"] = list[1];
+        json['OFFSET'] = list[1];
       }
     }
     return json;

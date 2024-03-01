@@ -2,7 +2,6 @@ import { Document } from './document';
 import { Dictionary } from './definitions';
 import { Blob } from './blob';
 
-// TODO
 export class MutableDocument extends Document {
   constructor(
     id: string = null,

@@ -63,7 +63,7 @@ export class Replicator {
       return;
     }
 
-    const ret = await db.getEngine().Replicator_Create(db, this.config);
+    const ret = await db.getEngine().Replicator_Create(db.getName(), this.config);
     this.replicatorId = ret.replicatorId;
 
     if (!this.didStartChangeListener) {

@@ -14,7 +14,7 @@ export class ResultSet {
       const db = this.query.getFrom().getSource() as Database;
       const results: any = [];
       db.getEngine().ResultSet_AllResults(
-        db,
+        db.getName(),
         this.resultSetId,
         (ret: any, err: any) => {
           const data = ret.results;
@@ -33,18 +33,19 @@ export class ResultSet {
 
   next(): Promise<Result> {
     const db = this.query.getFrom().getSource() as Database;
-    return db.getEngine().ResultSet_Next(db, this.resultSetId);
+    return db.getEngine().ResultSet_Next(db.getName(), this.resultSetId);
   }
 
   async nextBatch(): Promise<Result[]> {
     const db = this.query.getFrom().getSource() as Database;
-    return (await db.getEngine().ResultSet_NextBatch(db, this.resultSetId))
-      .results;
+    return (
+      await db.getEngine().ResultSet_NextBatch(db.getName(), this.resultSetId)
+    ).results;
   }
 
   cleanup(): Promise<void> {
     const db = this.query.getFrom().getSource() as Database;
-    return db.getEngine().ResultSet_Cleanup(db, this.resultSetId);
+    return db.getEngine().ResultSet_Cleanup(db.getName(), this.resultSetId);
   }
 
   async forEach(itemHandler: (result: Result) => void) {

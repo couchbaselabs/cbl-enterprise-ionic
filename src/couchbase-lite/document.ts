@@ -1,7 +1,6 @@
 import { Dictionary } from './definitions';
 import { Blob } from './blob';
 import { Database } from './database';
-// import { MutableDocument } from './mutable-document';
 
 export class Document {
   protected doc: Dictionary = {};
@@ -44,7 +43,7 @@ export class Document {
   getBlobContent(key: string, database: Database): Promise<ArrayBuffer> {
     return database
       .getEngine()
-      .Document_GetBlobContent(database, this.getId(), key);
+      .Document_GetBlobContent(database.getName(), this.getId(), key);
   }
 
   getBoolean(key: string) {

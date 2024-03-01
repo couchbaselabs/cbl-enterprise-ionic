@@ -1,11 +1,12 @@
 import { Database } from './database';
 
 export class DatabaseLogging {
-  constructor(private db: Database) {
-  }
+  constructor(private db: Database) {}
 
   setFileConfig(config: DatabaseFileLoggingConfiguration) {
-    return this.db.getEngine().Database_SetFileLoggingConfig(this.db, config);
+    return this.db
+      .getEngine()
+      .Database_SetFileLoggingConfig(this.db.getName(), config);
   }
 }
 

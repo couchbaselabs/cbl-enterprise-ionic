@@ -1,6 +1,5 @@
 import { PluginCallback, PluginListenerHandle } from '@capacitor/core';
 import {
-  AbstractIndex,
   ConcurrencyControl,
   DatabaseConfiguration,
   Dictionary,
@@ -70,7 +69,7 @@ export interface DatabaseGetDocumentArgs extends DatabaseArgs {
   docId: string;
 }
 
-export interface DatabaseSetLogLevelArgs extends DatabaseArgs {
+export interface DatabaseSetLogLevelArgs {
   domain: string;
   logLevel: number;
 }

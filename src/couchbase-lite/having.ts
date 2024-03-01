@@ -1,4 +1,3 @@
-import { Ordering } from "./ordering";
 import { Query } from './query';
 import { Expression } from './expression';
 

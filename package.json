@@ -1,5 +1,5 @@
 {
-  "name": "@couchbase/couchbase-lite-ee-ionic",
+  "name": "couchbase-lite-ee-ionic",
   "version": "3.1.0",
   "description": "Plugin for Couchbase Lite Enterprise Edition for Ionic capacitor apps",
   "main": "dist/plugin.cjs.js",

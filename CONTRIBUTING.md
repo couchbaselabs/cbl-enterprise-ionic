@@ -59,6 +59,29 @@ Check formatting and code quality, autoformat/autofix if possible.
 
 This template is integrated with ESLint, Prettier, and SwiftLint. Using these tools is completely optional, but the [Capacitor Community](https://github.com/capacitor-community/) strives to have consistent code style and structure for easier cooperation.
 
+### Running the example app
+From your terminal, change into the example app's directory and run npm build
+
+```shell
+cd example
+npm install
+npm run build
+```
+
+Now you can use ionic capacitor to run iOS or Android with hot reload support
+
+**iOS**
+```shell
+ionic capacitor run ios -l --external
+```
+
+**Android**
+```shell
+ionic capacitor run android -l --external
+```
+
+Any new features should be published with e2e tests that are ran against the example app.
+
 ## Publishing
 
 There is a `prepublishOnly` hook in `package.json` which prepares the plugin before publishing, so all you need to do is run:

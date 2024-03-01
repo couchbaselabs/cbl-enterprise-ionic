@@ -1,7 +1,6 @@
 import { Authenticator } from './authenticator';
 import { Database } from "./database";
 import { Endpoint } from "./endpoint";
-import { Dictionary } from './definitions';
 
 export enum ReplicatorType {
   PUSH_AND_PULL = 'PUSH_AND_PULL',

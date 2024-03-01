@@ -1,4 +1,4 @@
-import { Expression, FunctionExpression } from './expression';
+import { Expression } from './expression';
 import { VariableExpression } from './variable-expression';
 
 export const enum QuantifiesType { ANY, ANY_AND_EVERY, EVERY };

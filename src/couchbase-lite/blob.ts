@@ -1,5 +1,3 @@
-import { Database } from './database';
-
 export class Blob {
   public digest: string;
   public length: number;

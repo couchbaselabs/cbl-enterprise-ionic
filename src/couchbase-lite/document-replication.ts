@@ -1,14 +1,18 @@
-import { ReplicatedDocument, ReplicatedDocumentRepresentation, isReplicatedDocumentRepresentation } from "./replicated-document";
+import {
+  ReplicatedDocument,
+  ReplicatedDocumentRepresentation,
+  isReplicatedDocumentRepresentation,
+} from './replicated-document';
 
 export enum ReplicationDirection {
-  PUSH = "PUSH",
-  PULL = "PULL",
+  PUSH = 'PUSH',
+  PULL = 'PULL',
 }
 
 export class DocumentReplication {
   constructor(
     protected direction: ReplicationDirection,
-    protected documents: ReplicatedDocument[]
+    protected documents: ReplicatedDocument[],
   ) {}
 
   getDirection(): ReplicationDirection {
@@ -21,25 +25,29 @@ export class DocumentReplication {
 }
 
 export interface DocumentReplicationRepresentation {
-  direction: string
-  documents: ReplicatedDocumentRepresentation[]
+  direction: string;
+  documents: ReplicatedDocumentRepresentation[];
 }
 
-export function isDocumentReplicationRepresentation(obj: any): obj is DocumentReplicationRepresentation {
+export function isDocumentReplicationRepresentation(
+  obj: any,
+): obj is DocumentReplicationRepresentation {
   try {
     const object: DocumentReplicationRepresentation = obj;
     object.documents.forEach(document => {
       if (!isReplicatedDocumentRepresentation(document)) {
-        throw "invalid replicated document";
+        throw 'invalid replicated document';
       }
     });
-    const direction: ReplicationDirection | undefined = (<any>ReplicationDirection)[object.direction];
+    const direction: ReplicationDirection | undefined = (<any>(
+      ReplicationDirection
+    ))[object.direction];
     if (direction == undefined) {
-      throw "unrecognized replication direction " + object.direction;
+      throw 'unrecognized replication direction ' + object.direction;
     }
     return true;
   } catch (e) {
-    console.warn("Invalid DocumentReplicationRepresentation:", e)
-    return false
+    console.warn('Invalid DocumentReplicationRepresentation:', e);
+    return false;
   }
 }

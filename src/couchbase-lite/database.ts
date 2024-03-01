@@ -3,16 +3,12 @@ import { MutableDocument } from './mutable-document';
 import { DatabaseConfiguration } from './database-configuration';
 import { DatabaseLogging } from './database-logging';
 
-import { Index, AbstractIndex } from './abstract-index';
+import { AbstractIndex } from './abstract-index';
 
 import { CapacitorEngine } from './engine/capacitor';
+import { ConcurrencyControl } from './concurrency-control';
 
 export interface File {}
-
-export enum ConcurrencyControl {
-  LAST_WRITE_WINS = 0,
-  FAIL_ON_CONFLICT = 1,
-}
 
 export interface DatabaseChange {
   documentIDs: string[];
@@ -63,12 +59,15 @@ export class Database {
     private config: DatabaseConfiguration = null,
   ) {}
 
-  open() {
-    return this._engine.Database_Open(this.name, this.config);
-  }
-
   getEngine() {
     return this._engine;
+  }
+
+  /**
+   * Open the database
+   */
+  open() {
+    return this._engine.Database_Open(this.name, this.config);
   }
 
   /**
@@ -78,13 +77,16 @@ export class Database {
     this.changeListenerTokens.push(listener);
 
     if (!this.didStartListener) {
-      this._engine.Database_AddChangeListener(this, (data: any, err: any) => {
-        if (err) {
-          console.log('Database change listener error', err);
-          return;
-        }
-        this.notifyDatabaseChangeListeners(data);
-      });
+      this._engine.Database_AddChangeListener(
+        this.getName(),
+        (data: any, err: any) => {
+          if (err) {
+            console.log('Database change listener error', err);
+            return;
+          }
+          this.notifyDatabaseChangeListeners(data);
+        },
+      );
       this.didStartListener = true;
     }
   }
@@ -118,18 +120,18 @@ export class Database {
    * Closes a database.
    */
   close() {
-    return this._engine.Database_Close(this);
+    return this._engine.Database_Close(this.name);
   }
 
   /**
    * Compacts the database file by deleting unused attachment files and vacuuming the SQLite database
    */
   compact(): Promise<void> {
-    return this._engine.Database_Compact(this);
+    return this._engine.Database_Compact(this.name);
   }
 
   /**
-   *
+   * Copy database 
    */
   copy(
     path: string,
@@ -139,97 +141,29 @@ export class Database {
     path;
     name;
     config;
-    return this._engine.Database_Copy(this, path, name, config);
-  }
-
-  /**
-   *
-   */
-  createIndex(name: string, index: AbstractIndex): Promise<void> {
-    name;
-    index;
-    return this._engine.Database_CreateIndex(this, name, index);
-  }
-
-  /**
-   * Deletes a document from the database.
-   */
-  deleteDocument(
-    document: Document,
-    concurrencyControl: ConcurrencyControl = null,
-  ): Promise<void> {
-    return this._engine.Database_DeleteDocument(
-      this,
-      document,
-      concurrencyControl,
-    );
-  }
-
-  /**
-   * Purges the given document from the database.
-   */
-  purgeDocument(document: Document | string) {
-    return this._engine.Database_PurgeDocument(this, document);
+    return this._engine.Database_Copy(this.name, path, name, config);
   }
 
   /**
    * Deletes a database.
    */
   deleteDatabase() {
-    //name: string = null, directory: File = null): Promise<void> {
-    return this._engine.Database_Delete(this);
+    return this._engine.Database_Delete(this.name);
   }
 
   /**
-   * Deletes an index
+   * Return the database's path.
    */
-  deleteIndex(name: string): Promise<void> {
-    return this._engine.Database_DeleteIndex(this, name);
+  async getPath(): Promise<string> {
+    return (await this._engine.Database_GetPath(this.name)).path;
   }
 
   /**
    * Checks whether a database of the given name exists in the given directory or not.
    */
   async exists(name: string, directory: string): Promise<boolean> {
-    const ret = await this._engine.Database_Exists(this, name, directory);
+    const ret = await this._engine.Database_Exists(this.name, name, directory);
     return ret.exists;
-  }
-
-  /**
-   * Returns a READONLY config object which will throw a runtime exception when any setter methods are called.
-   */
-  getConfig(): DatabaseConfiguration {
-    return this.config;
-  }
-
-  /**
-   * The number of documents in the database.
-   */
-  async getCount(): Promise<number> {
-    const count = await this._engine.Database_GetCount(this);
-    return Promise.resolve(count.count);
-  }
-
-  /**
-   * Gets an existing Document object with the given ID.
-   */
-  async getDocument(id: string): Promise<Document> {
-    const docJson = await this._engine.Database_GetDocument(this, id);
-    if (docJson) {
-      const data = docJson['_data'];
-      const sequence = docJson['_sequence'];
-      const retId = docJson['_id'];
-      return Promise.resolve(new Document(retId, sequence, data));
-    } else {
-      return Promise.resolve(null);
-    }
-  }
-
-  /**
-   * Return the indexes in the database
-   */
-  async getIndexes(): Promise<string[]> {
-    return (await this._engine.Database_GetIndexes(this)).indexes;
   }
 
   /**
@@ -240,10 +174,54 @@ export class Database {
   }
 
   /**
-   * Return the database's path.
+   * Returns a READONLY config object which will throw a runtime exception when any setter methods are called.
    */
-  async getPath(): Promise<string> {
-    return (await this._engine.Database_GetPath(this)).path;
+  getConfig(): DatabaseConfiguration {
+    return this.config;
+  }
+
+  /**
+   * Deletes a document from the database.
+   */
+  deleteDocument(
+    document: Document,
+    concurrencyControl: ConcurrencyControl = null,
+  ): Promise<void> {
+    return this._engine.Database_DeleteDocument(
+      this.name,
+      document,
+      concurrencyControl,
+    );
+  }
+
+  /**
+   * Purges the given document from the database.
+   */
+  purgeDocument(document: Document | string) {
+    return this._engine.Database_PurgeDocument(this.name, document);
+  }
+
+  /**
+   * The number of documents in the database.
+   */
+  async getCount(): Promise<number> {
+    const count = await this._engine.Database_GetCount(this.name);
+    return Promise.resolve(count.count);
+  }
+
+  /**
+   * Gets an existing Document object with the given ID.
+   */
+  async getDocument(id: string): Promise<Document> {
+    const docJson = await this._engine.Database_GetDocument(this.name, id);
+    if (docJson) {
+      const data = docJson['_data'];
+      const sequence = docJson['_sequence'];
+      const retId = docJson['_id'];
+      return Promise.resolve(new Document(retId, sequence, data));
+    } else {
+      return Promise.resolve(null);
+    }
   }
 
   /**
@@ -262,7 +240,7 @@ export class Database {
     concurrencyControl: ConcurrencyControl = null,
   ): Promise<void> {
     const ret = await this._engine.Database_Save(
-      this,
+      this.name,
       document,
       concurrencyControl,
     );
@@ -273,9 +251,32 @@ export class Database {
   }
 
   /**
+   * createIndex - Create an index with the given name and index object
+   */
+  createIndex(indexName: string, index: AbstractIndex): Promise<void> {
+    indexName;
+    index;
+    return this._engine.Database_CreateIndex(this.name, indexName, index);
+  }
+
+  /**
+   * Return the indexes in the database
+   */
+  async getIndexes(): Promise<string[]> {
+    return (await this._engine.Database_GetIndexes(this.name)).indexes;
+  }
+
+  /**
+   * Deletes an index
+   */
+  deleteIndex(indexName: string): Promise<void> {
+    return this._engine.Database_DeleteIndex(this.name, indexName);
+  }
+
+  /**
    * Set log level for the given log domain.
    */
   setLogLevel(domain: LogDomain, level: LogLevel): Promise<void> {
-    return this._engine.Database_SetLogLevel(this, domain, level);
+    return this._engine.Database_SetLogLevel(domain, level);
   }
 }
