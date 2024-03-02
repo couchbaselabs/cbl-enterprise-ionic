@@ -21,21 +21,21 @@ const LoggingMenuItems: React.FC = () => {
       </IonItem>
       <IonItem
         style={{ marginLeft: 20 }}
-        routerLink="/logging/console"
+        routerLink="/log/console"
         routerDirection="none"
       >
         <IonLabel>Console</IonLabel>
       </IonItem>
       <IonItem
         style={{ marginLeft: 20 }}
-        routerLink="/logging/file"
+        routerLink="/log/file"
         routerDirection="none"
       >
         <IonLabel>File</IonLabel>
       </IonItem>
       <IonItem
         style={{ marginLeft: 20 }}
-        routerLink="/logging/custom"
+        routerLink="/log/custom"
         routerDirection="none"
       >
         <IonLabel>Custom</IonLabel>

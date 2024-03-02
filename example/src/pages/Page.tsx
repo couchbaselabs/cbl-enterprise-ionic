@@ -2,7 +2,7 @@ import DetailPageContainer from '../components/DetailPageContainer/DetailPageCon
 
 const Page: React.FC = () => {
   return (
-    <DetailPageContainer 
+    <DetailPageContainer
     navigationTitle="Ionic CBLite API" collapseTitle="Ionic CouchbaseLite API ">
        <p>Select an item from the menu</p>
     </DetailPageContainer>

@@ -518,13 +518,19 @@
 
 -(void)Database_SetLogLevel:(CAPPluginCall*)call {
   dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *domainValue = [call getString:@"domain" defaultValue:NULL];
-    NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:NULL];
+    NSString *domainValue = [call getString:@"domain" defaultValue:nil];
+    NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:nil];
       
-    if (logLevelValue != NULL) {
+    if (logLevelValue == nil) {
       [call reject:@"No log level supplied" :NULL :NULL :@{}];
       return;
     }
+      
+    if (domainValue == nil) {
+      [call reject:@"No domain supplied" :NULL :NULL :@{}];
+      return;
+    }
+      
     CBLLogDomain domain = kCBLLogDomainAll;
     
     if ([domainValue isEqualToString:@"ALL"]) domain = kCBLLogDomainAll;
@@ -534,7 +540,6 @@
     else if ([domainValue isEqualToString:@"REPLICATOR"]) domain = kCBLLogDomainReplicator;
    
     /* fix logging by using this syntax https://docs.couchbase.com/couchbase-lite/current/objc/troubleshooting-logs.html */
-    //TODO
     CBLLogLevel logValue = (CBLLogLevel)[logLevelValue integerValue];
     CBLDatabase.log.console.domains = domain;
     CBLDatabase.log.console.level = logValue;

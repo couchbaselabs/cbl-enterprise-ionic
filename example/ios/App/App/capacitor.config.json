@@ -3,6 +3,7 @@
 	"appName": "example",
 	"webDir": "dist",
 	"server": {
-		"androidScheme": "https"
+		"androidScheme": "https",
+		"url": "http://192.168.0.246:8100"
 	}
 }
