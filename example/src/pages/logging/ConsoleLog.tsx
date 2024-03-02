@@ -32,13 +32,13 @@ const ConsoleLogPage: React.FC = () => {
 
   function update() {
     //get the log level and domain from selected values back into enum form
-    let logKey = null;
+    let logKey = -1;
     if (selectedLogLevel !== '')
     {
       logKey = parseInt(selectedLogLevel);
     }
     let logDomain = LogDomain[selectedLogDomain as keyof typeof LogDomain];
-    let logLevel: LogLevel | null = logKey;
+    let logLevel: LogLevel = logKey;
 
     //the plugin currently requires a database to get the engine set in order to set the log level.  This should be static, but that would cause an issue because then the engine isn't defined.  For now, we'll just create a new database and set the log level on it, but note that the log level is for all databases, not just this one.
     let db = new Database('test');

@@ -125,6 +125,11 @@
   NSString *name = [call getString:@"name" defaultValue:NULL];
   NSDictionary *configValue = [call getObject:@"config" defaultValue:NULL];
   
+  if([openDatabases objectForKey:name] != nil){
+      [call reject:@"Database already open" :NULL :NULL :@{}];
+    return;
+  }
+      
   CBLDatabaseConfiguration *config = [self buildDBConfig:configValue];
   NSError *error;
   CBLDatabase *database = [[CBLDatabase alloc] initWithName:name config:config error:&error];
@@ -143,7 +148,11 @@
   NSString *encKey = [config objectForKey:@"encryptionKey"];
   NSString *directory = [config objectForKey:@"directory"];
   if (directory != NULL) {
-    [c setDirectory:directory];
+      //used to auto set the database to be in the documents folder,  otherwise the directory won't work because we need a full path
+      NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+      NSString *defaultDirectory = [paths firstObject];
+      NSString *directoryPath = [defaultDirectory stringByAppendingPathComponent:directory];
+    [c setDirectory:directoryPath];
   }
   if (encKey != NULL) {
     CBLEncryptionKey *key = [[CBLEncryptionKey alloc] initWithPassword:encKey];
