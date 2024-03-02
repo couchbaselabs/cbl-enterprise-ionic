@@ -1,19 +1,8 @@
 // DatabaseDelete.tsx
 import React, { useState, useContext } from 'react';
 import DatabaseContext from '../../providers/DatabaseContext';
-import {
-  IonButton,
-  IonItemGroup,
-  IonItemDivider,
-  IonList,
-  IonItem,
-  IonInput,
-  IonLabel,
-} from '@ionic/react';
-
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
 import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
-import { Database } from '../../../../dist/esm';
 
 const DatabaseDeletePage: React.FC = () => {
   const { databases, setDatabases } = useContext(DatabaseContext)!;
