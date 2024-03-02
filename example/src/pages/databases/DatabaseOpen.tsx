@@ -43,7 +43,7 @@ const DatabaseOpenPage: React.FC = () => {
           });
       }
     } else {
-      var db: Database | null = null;
+      let db: Database;
       if (fileLocation !== '' || encryptionKey !== '') {
         let config = new DatabaseConfiguration();
         if (fileLocation !== '') {
