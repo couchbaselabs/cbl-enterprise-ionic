@@ -43,41 +43,14 @@ const DatabaseOpenPage: React.FC = () => {
           });
       }
     } else {
-      let db: Database;
-      if (fileLocation !== '' || encryptionKey !== '') {
-        let config = new DatabaseConfiguration();
-        if (fileLocation !== '') {
-          config.setDirectory(fileLocation);
-        }
-        if (encryptionKey !== '') {
-          config.setEncryptionKey(encryptionKey);
-        }
-        db = new Database(databaseName, config);
-      } else {
-        db = new Database(databaseName);
-      }
-      if (db !== null) {
-        db.open()
-          .then(() => {
-            setDatabases(prevState => ({
-              ...prevState,
-              [databaseName]: db
-            }));
-            setResultsMessage('success');
-          })
-          .catch((error: unknown) => {
-            setResultsMessage('' + error);
-          });
-      } else {
-        setResultsMessage('Error: Database is null');
-      }
+        setResultsMessage('Error: Database is not setup (defined)');
     }
   }
 
   return (
     <DetailPageContainer
-      navigationTitle="Database Create/Open"
-      collapseTitle="Create/Open"
+      navigationTitle="Database Open"
+      collapseTitle="Open"
     >
       <IonList>
         <IonItem key={0}>

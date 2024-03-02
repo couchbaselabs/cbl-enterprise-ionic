@@ -16,95 +16,73 @@ import DetailPageContainer from '../../components/DetailPageContainer/DetailPage
 //import the database in order to create/open a database
 import { Database, DatabaseConfiguration } from 'couchbase-lite-ee-ionic';
 
-const DatabaseCopyPage: React.FC = () => {
+const DatabaseSetupPage: React.FC = () => {
   const { databases, setDatabases } = useContext(DatabaseContext)!;
-  const [currentDatabaseName, setCurrentDatabaseName] = useState<string>('');
   const [databaseName, setDatabaseName] = useState<string>('');
-  const [path, setPath] = useState<string>('');
+  const [fileLocation, setFileLocation] = useState<string>('');
   const [encryptionKey, setEncryptionKey] = useState<string>('');
   const [resultsMessage, setResultsMessage] = useState<string>('');
 
   function reset() {
-    setCurrentDatabaseName('');
     setDatabaseName('');
-    setPath('');
+    setFileLocation('');
     setEncryptionKey('');
     setResultsMessage('');
   }
 
   function update() {
-    if (currentDatabaseName in databases) {
-      let db = databases[currentDatabaseName];
-      if (db != null) {
-        db.getPath()
-        .then((currentPath: string) => {
-          let config = new DatabaseConfiguration();
-          if (path !== '') {
-            config.directory = path;
-          }
-          if (encryptionKey !== '') {
-            config.encryptionKey = encryptionKey;
-          }
-          db.close()
-            .finally(() => {
-              db.copy(currentPath, databaseName, config)
-                .then(() => {
-                  db.open();
-                  setResultsMessage('success');
-                })
-                .catch((error: unknown) => {
-                  setResultsMessage('' + error);
-                })
-            })
-            .catch((error: unknown) => {
-              setResultsMessage('' + error);
-            });
-        }).catch((error: unknown) => {
-          setResultsMessage('' + error);
-        });
-      }
+    if (databaseName in databases) {
+		setResultsMessage('Error: Database is already setup');
     } else {
-      setResultsMessage('Error: can not find current database');
+      let db: Database;
+      if (fileLocation !== '' || encryptionKey !== '') {
+        let config = new DatabaseConfiguration();
+        if (fileLocation !== '') {
+          config.setDirectory(fileLocation);
+        }
+        if (encryptionKey !== '') {
+          config.setEncryptionKey(encryptionKey);
+        }
+        db = new Database(databaseName, config);
+      } else {
+        db = new Database(databaseName);
+      }
+      if (db !== null) {
+		setDatabases(prevState => ({
+			...prevState,
+			[databaseName]: db
+		}));
+        setResultsMessage('success');
+      } else {
+        setResultsMessage('Error: Database is null');
+      }
     }
   }
 
   return (
     <DetailPageContainer
-      navigationTitle="Database Create/Open"
-      collapseTitle="Create/Open"
+      navigationTitle="Database Setup"
+      collapseTitle="Define Database"
     >
       <IonList>
-        <IonItemDivider>
-          <IonLabel>Current Database</IonLabel>
-        </IonItemDivider>
         <IonItem key={0}>
           <IonInput
-            onInput={(e: any) => setCurrentDatabaseName(e.target.value)}
+            onInput={(e: any) => setDatabaseName(e.target.value)}
             placeholder="Database Name"
-            value={currentDatabaseName}
+            value={databaseName}
           ></IonInput>
         </IonItem>
-        <IonItemDivider>
-          <IonLabel>New Database</IonLabel>
-        </IonItemDivider>
         <IonItem key={1}>
           <IonInput
-            onInput={(e: any) => setDatabaseName(e.target.value)}
-            placeholder="New Database Name"
-            value={databaseName}
+            placeholder="File Location"
+            onInput={(e: any) => setFileLocation(e.target.value)}
+            value={fileLocation}
           ></IonInput>
         </IonItem>
         <IonItem key={2}>
           <IonInput
-            placeholder="New Path"
-            onInput={(e: any) => setPath(e.target.value)}
-            value={path}
-          ></IonInput>
-        </IonItem>
-        <IonItem key={3}>
-          <IonInput
             onInput={(e: any) => setEncryptionKey(e.target.value)}
-            placeholder="New Encryption Key"
+            placeholder="Encryption Key"
             value={encryptionKey}
           ></IonInput>
         </IonItem>
@@ -117,8 +95,8 @@ const DatabaseCopyPage: React.FC = () => {
             padding: '20px 80px',
           }}
         >
-          Copy 
-        </IonButton>
+			Setup
+		</IonButton>
         <IonButton
           onClick={reset}
           style={{
@@ -144,4 +122,4 @@ const DatabaseCopyPage: React.FC = () => {
   );
 };
 
-export default DatabaseCopyPage;
+export default DatabaseSetupPage;

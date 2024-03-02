@@ -125,11 +125,6 @@
   NSString *name = [call getString:@"name" defaultValue:NULL];
   NSDictionary *configValue = [call getObject:@"config" defaultValue:NULL];
   
-  if([openDatabases objectForKey:name] != nil){
-      [call reject:@"Database already open" :NULL :NULL :@{}];
-    return;
-  }
-      
   CBLDatabaseConfiguration *config = [self buildDBConfig:configValue];
   NSError *error;
   CBLDatabase *database = [[CBLDatabase alloc] initWithName:name config:config error:&error];
@@ -137,8 +132,10 @@
   if ([self checkError:call error:error message:@"Unable to open database"]) {
     return;
   }
-  
-  [openDatabases setObject:database forKey:name];
+    
+  if([openDatabases objectForKey:name] == nil){
+      [openDatabases setObject:database forKey:name];
+  }
     
   [call resolve];
 }
@@ -399,8 +396,6 @@
     NSError *error;
     [db close:&error];
     
-    [self->openDatabases removeObjectForKey:name];
-    
     if ([self checkError:call error:error message:@"Unable to close database"]) {
       return;
     }
@@ -412,15 +407,24 @@
 -(void)Database_Delete:(CAPPluginCall*)call {
   NSString *name = [call getString:@"name" defaultValue:NULL];
   CBLDatabase *db = [self getDatabase:name];
-  if (db == NULL) {
+  if (db == NULL || db == nil) {
     [call reject:@"No such open database" :NULL :NULL :@{}];
     return;
   }
-  NSError *error;
-  [db delete:&error];
+  NSError *error; 
+  //FIX TO TRY AND STOP BOMBING
+  //this happens when databases that are closed and then tried to delete will cause the app to bomb out
+  @try {
+      [db delete:&error];
+  } @catch(NSException *exception) {
+      [call reject:@"Uncatch Exception: probably tried to delete a database that wasn't open" :NULL :NULL :@{}];
+  }
   
   if ([self checkError:call error:error message:@"Unable to delete database"]) {
     return;
+  } else {
+      //UPDATED to remove the database from the managed database stack because it was removed from disk
+      [openDatabases removeObjectForKey:name];
   }
   
   [call resolve];

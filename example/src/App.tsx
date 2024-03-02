@@ -23,6 +23,7 @@ import Menu from './components/Menu/Menu';
 import Page from './pages/Page';
 
 import {
+    DatabaseSetupPage,
     DatabaseOpenPage,
     DatabaseChangePage,
     DatabaseClosePage,
@@ -98,7 +99,7 @@ const App: React.FC = () => {
                         <Route path="/log/console" component={ConsoleLogPage} exact/>
                         <Route path="/log/file" component={FileLogPage} exact/>
                         <Route path="/log/custom" component={CustomLogPage} exact/>
-
+                        <Route path="/databases/setup" component={DatabaseSetupPage} exact/>
                         <Route path="/databases/open" component={DatabaseOpenPage} exact/>
                         <Route path="/databases/close" component={DatabaseClosePage} exact/>
                         <Route path="/databases/copy" component={DatabaseCopyPage} exact/>

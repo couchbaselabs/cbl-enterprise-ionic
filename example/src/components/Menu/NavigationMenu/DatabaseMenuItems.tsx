@@ -21,6 +21,13 @@ const DatabaseMenuItems: React.FC = () => {
       </IonItem>
       <IonItem
         style={{ marginLeft: 20 }}
+        routerLink="/databases/setup"
+        routerDirection="none"
+      >
+        <IonLabel>Setup</IonLabel>
+      </IonItem>
+      <IonItem
+        style={{ marginLeft: 20 }}
         routerLink="/databases/open"
         routerDirection="none"
       >

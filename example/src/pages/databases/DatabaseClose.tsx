@@ -20,12 +20,6 @@ const DatabaseClosePage: React.FC = () => {
       if (db != null) {
         db.close()
           .then(() => {
-            setDatabases(prevState => {
-              //after closing the database remove it from the provider
-              const newState = { ...prevState };
-              delete newState[databaseName];
-              return newState;
-            });
             setResultsMessage('success');
           })
           .catch((error: unknown) => {
