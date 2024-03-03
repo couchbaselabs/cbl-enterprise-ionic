@@ -14,7 +14,7 @@ import {
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
 
 //import the database in order to create/open a database
-import { Database, DatabaseConfiguration } from 'couchbase-lite-ee-ionic';
+import { DatabaseConfiguration, PlatformDirectory } from 'couchbase-lite-ee-ionic';
 
 const DatabaseCopyPage: React.FC = () => {
   const { databases, setDatabases } = useContext(DatabaseContext)!;
@@ -30,6 +30,13 @@ const DatabaseCopyPage: React.FC = () => {
     setPath('');
     setEncryptionKey('');
     setResultsMessage('');
+  }
+
+  function platformPath() {
+    const pd = new PlatformDirectory();
+    pd.getDefaultPath().then((result: string) => {
+      setPath(result);
+    }); 
   }
 
   function update() {
@@ -70,8 +77,8 @@ const DatabaseCopyPage: React.FC = () => {
 
   return (
     <DetailPageContainer
-      navigationTitle="Database Create/Open"
-      collapseTitle="Create/Open"
+      navigationTitle="Database Copy"
+      collapseTitle="Database Copy"
     >
       <IonList>
         <IonItemDivider>
@@ -118,6 +125,16 @@ const DatabaseCopyPage: React.FC = () => {
           }}
         >
           Copy 
+        </IonButton>
+        <IonButton
+          onClick={platformPath}
+          style={{
+            display: 'block',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            padding: '20px 80px',
+          }}> 
+          Default Platform Directory 
         </IonButton>
         <IonButton
           onClick={reset}

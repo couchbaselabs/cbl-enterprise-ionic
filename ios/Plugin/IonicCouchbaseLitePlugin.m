@@ -6,6 +6,7 @@
 CAP_PLUGIN(IonicCouchbaseLite, "IonicCouchbaseLite",
            CAP_PLUGIN_METHOD(echo, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Plugin_Configure, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(File_GetDefaultPath, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Open, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Exists, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Save, CAPPluginReturnPromise);

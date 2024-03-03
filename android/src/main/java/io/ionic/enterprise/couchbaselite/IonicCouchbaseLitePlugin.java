@@ -3,7 +3,10 @@ package io.ionic.enterprise.couchbaselite;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+
 import com.couchbase.lite.AbstractReplicator;
 import com.couchbase.lite.Authenticator;
 import com.couchbase.lite.BasicAuthenticator;
@@ -59,7 +62,9 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+
 import io.ionic.enterprise.couchbaselite.JsonQueryBuilder;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -238,6 +243,27 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     }
 
     @PluginMethod
+    public void File_GetDefaultPath(PluginCall call) throws JSONException {
+        new Handler(Looper.getMainLooper())
+                .post(() -> {
+                            try {
+                                Context context = bridge.getContext();
+                                File defaultDirectory = context.getFilesDir();
+                                call.resolve(
+                                        new JSObject() {
+                                            {
+                                                put("path", defaultDirectory.getPath());
+                                            }
+                                        }
+                                );
+                            } catch (Exception ex) {
+                                call.reject("Unable to get default path from context", ex);
+                            }
+                        }
+                );
+    }
+
+    @PluginMethod
     public void Database_Open(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
         JSONObject config = call.getObject("config");
@@ -245,30 +271,32 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
         DatabaseConfiguration c = new DatabaseConfiguration();
 
-        String directory = config.optString("directory", null);
-
-        String encKey = config.optString("encryptionKey", null);
-        if (directory != null) {
-            c.setDirectory(directory);
-        }
-        if (encKey != null) {
-            c.setEncryptionKey(new EncryptionKey(encKey));
-        }
-
-        new Handler(Looper.getMainLooper())
-          .post(
-            () -> {
-                try {
-                    Database d = new Database(name, c);
-
-                    this.openDatabases.put(name, d);
-
-                    call.resolve();
-                } catch (Exception ex) {
-                    call.reject("Unable to open database", ex);
-                }
+        if (config != null) {
+            String directory = config.optString("directory", null);
+            String encKey = config.optString("encryptionKey", null);
+            if (directory == null) {
+                Context context = bridge.getContext();
+                File defaultDirectory = context.getFilesDir();
+                c.setDirectory(defaultDirectory.getPath());
+            } else {
+                c.setDirectory(directory);
             }
-          );
+            if (encKey != null) {
+                c.setEncryptionKey(new EncryptionKey(encKey));
+            }
+        }
+        new Handler(Looper.getMainLooper())
+                .post(
+                        () -> {
+                            try {
+                                Database d = new Database(name, c);
+                                this.openDatabases.put(name, d);
+                                call.resolve();
+                            } catch (Exception ex) {
+                                call.reject("Unable to open database", ex);
+                            }
+                        }
+                );
     }
 
     @PluginMethod
@@ -284,11 +312,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             String directory = call.getString("directory");
             boolean exists = d.exists(existsName, new File(directory));
             call.resolve(
-              new JSObject() {
-                  {
-                      put("exists", exists);
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("exists", exists);
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Unable to check if database exists", ex);
@@ -321,11 +349,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             d.save(m, concurrencyControl);
 
             call.resolve(
-              new JSObject() {
-                  {
-                      put("_id", m.getId());
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("_id", m.getId());
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Unable to save document", ex);
@@ -353,11 +381,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         }
         try {
             call.resolve(
-              new JSObject() {
-                  {
-                      put("count", d.getCount());
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("count", d.getCount());
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Error getting count", ex);
@@ -374,11 +402,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         }
         try {
             call.resolve(
-              new JSObject() {
-                  {
-                      put("path", d.getPath());
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("path", d.getPath());
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Error getting path", ex);
@@ -500,11 +528,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         }
         try {
             call.resolve(
-              new JSObject() {
-                  {
-                      put("indexes", new JSArray(d.getIndexes()));
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("indexes", new JSArray(d.getIndexes()));
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Error getting indexes", ex);
@@ -525,14 +553,14 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
         try {
             d.addChangeListener(
-              new DatabaseChangeListener() {
-                  @Override
-                  public void changed(DatabaseChange change) {
-                      JSObject ret = new JSObject();
-                      ret.put("documentIDs", new JSONArray(change.getDocumentIDs()));
-                      call.resolve(ret);
-                  }
-              }
+                    new DatabaseChangeListener() {
+                        @Override
+                        public void changed(DatabaseChange change) {
+                            JSObject ret = new JSObject();
+                            ret.put("documentIDs", new JSONArray(change.getDocumentIDs()));
+                            call.resolve(ret);
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Unable to add listener", ex);
@@ -568,16 +596,16 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         }
 
         new Handler(Looper.getMainLooper())
-          .post(
-            () -> {
-                try {
-                    d.delete();
-                    call.resolve();
-                } catch (Exception ex) {
-                    call.reject("Unable to delete database", ex);
-                }
-            }
-          );
+                .post(
+                        () -> {
+                            try {
+                                d.delete();
+                                call.resolve();
+                            } catch (Exception ex) {
+                                call.reject("Unable to delete database", ex);
+                            }
+                        }
+                );
     }
 
     @PluginMethod
@@ -774,11 +802,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             this.queryResultSets.put(id, rs);
 
             call.resolve(
-              new JSObject() {
-                  {
-                      put("id", id);
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("id", id);
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Unable to execute query", ex);
@@ -885,11 +913,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             }
 
             call.resolve(
-              new JSObject() {
-                  {
-                      put("results", new JSArray(resultsChunk));
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("results", new JSArray(resultsChunk));
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Unable to move result set next", ex);
@@ -919,11 +947,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 if (resultsChunk != null) {
                     JSArray results = new JSArray(resultsChunk);
                     call.resolve(
-                      new JSObject() {
-                          {
-                              put("results", results);
-                          }
-                      }
+                            new JSObject() {
+                                {
+                                    put("results", results);
+                                }
+                            }
                     );
                     resultsChunk.clear();
                 } else {
@@ -956,20 +984,20 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         if (resultsChunk != null && resultsChunk.size() > 0) {
             JSArray results = new JSArray(resultsChunk);
             call.resolve(
-              new JSObject() {
-                  {
-                      put("results", results);
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("results", results);
+                        }
+                    }
             );
         }
 
         call.resolve(
-          new JSObject() {
-              {
-                  put("results", new JSArray());
-              }
-          }
+                new JSObject() {
+                    {
+                        put("results", new JSArray());
+                    }
+                }
         );
     }
 
@@ -1000,11 +1028,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             int id = replicatorCount++;
             this.replicators.put(id, r);
             call.resolve(
-              new JSObject() {
-                  {
-                      put("replicatorId", id);
-                  }
-              }
+                    new JSObject() {
+                        {
+                            put("replicatorId", id);
+                        }
+                    }
             );
         } catch (Exception ex) {
             call.reject("Error creating replicator: " + ex.getMessage());
@@ -1049,7 +1077,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         ReplicatorActivityLevel activityLevel = status.getActivityLevel();
         if (activityLevel == ReplicatorActivityLevel.IDLE ||
                 activityLevel == ReplicatorActivityLevel.OFFLINE ||
-        activityLevel == ReplicatorActivityLevel.STOPPED ){
+                activityLevel == ReplicatorActivityLevel.STOPPED) {
             r.stop();
             r.start(true);
             call.resolve();
@@ -1082,7 +1110,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 errorJson.put("code", error.getCode());
                 errorJson.put("domain", error.getDomain());
                 errorJson.put("info", error.getInfo());
-            } catch (Exception ex) {}
+            } catch (Exception ex) {
+            }
         }
         //
         ReplicatorProgress progress = status.getProgress();
@@ -1091,7 +1120,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             try {
                 progressJson.put("completed", progress.getCompleted());
                 progressJson.put("total", progress.getTotal());
-            } catch (Exception ex) {}
+            } catch (Exception ex) {
+            }
         }
 
         int activityLevel = 0;
@@ -1127,7 +1157,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                         errorJson.put("code", error.getCode());
                         errorJson.put("domain", error.getDomain());
                         errorJson.put("message", error.getMessage());
-                    } catch (Exception ex) {}
+                    } catch (Exception ex) {
+                    }
 
                     document.put("error", errorJson);
                 }
@@ -1149,7 +1180,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             }
 
             replicationJson.put("documents", documentsJson);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         return replicationJson;
     }
@@ -1166,13 +1198,13 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         call.setKeepAlive(true);
 
         ListenerToken token = r.addChangeListener(
-          new ReplicatorChangeListener() {
-              @Override
-              public void changed(ReplicatorChange change) {
-                  JSObject statusJson = generateStatusJson(change.getStatus());
-                  call.resolve(statusJson);
-              }
-          }
+                new ReplicatorChangeListener() {
+                    @Override
+                    public void changed(ReplicatorChange change) {
+                        JSObject statusJson = generateStatusJson(change.getStatus());
+                        call.resolve(statusJson);
+                    }
+                }
         );
 
         replicatorListeners.put(replicatorId, token);
@@ -1190,13 +1222,13 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         call.setKeepAlive(true);
 
         ListenerToken token = r.addDocumentReplicationListener(
-          new DocumentReplicationListener() {
-              @Override
-              public void replication(@NonNull DocumentReplication replication) {
-                  JSObject replicationJson = generateDocumentReplicationJson(replication);
-                  call.resolve(replicationJson);
-              }
-          }
+                new DocumentReplicationListener() {
+                    @Override
+                    public void replication(@NonNull DocumentReplication replication) {
+                        JSObject replicationJson = generateDocumentReplicationJson(replication);
+                        call.resolve(replicationJson);
+                    }
+                }
         );
 
         documentListeners.put(replicatorId, token);
@@ -1309,54 +1341,54 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     public void TestJoinQuery(PluginCall call) throws JSONException, CouchbaseLiteException {
         Database db = this.getDatabase("thedb3");
         MutableDocument locationDoc = new MutableDocument()
-          .setString("name", "Madison")
-          .setString("type", "location");
+                .setString("name", "Madison")
+                .setString("type", "location");
         db.save(locationDoc);
 
         MutableDocument categoryDoc = new MutableDocument()
-          .setString("name", "Expensive")
-          .setString("type", "expensive");
+                .setString("name", "Expensive")
+                .setString("type", "expensive");
         db.save(categoryDoc);
 
         MutableDocument hotelDoc = new MutableDocument()
-          .setString("name", "Escape")
-          .setString("type", "hotel")
-          .setString("hotel_locations_thing", "what")
-          .setString("location_id", locationDoc.getId())
-          .setString("category_id", categoryDoc.getId());
+                .setString("name", "Escape")
+                .setString("type", "hotel")
+                .setString("hotel_locations_thing", "what")
+                .setString("location_id", locationDoc.getId())
+                .setString("category_id", categoryDoc.getId());
         db.save(hotelDoc);
 
         Query query = QueryBuilder.select(
-          // SelectResult.all().from('hotel_locations'),
-          SelectResult.expression(Meta.id.from("categories")),
-          SelectResult.expression(Expression.property("name").from("locations")),
-          SelectResult.expression(Meta.id.from("locations")),
-          SelectResult.expression(Meta.id.from("hotels"))
-        )
-          .from(DataSource.database(db).as("hotels"))
-          .join(
-            Join.join(DataSource.database(db).as("locations")).on(
-              Meta.id
-                .from("locations")
-                .equalTo(Expression.property("location_id").from("hotels"))
-            ),
-            Join.join(DataSource.database(db).as("categories")).on(
-              Meta.id
-                .from("categories")
-                .equalTo(Expression.property("category_id").from("hotels"))
-            )
-          )
-          .where(
-            Expression.property("type")
-              .from("hotels")
-              .equalTo(Expression.string("hotel"))
-              .and(
-                Expression.property("type")
-                  .from("locations")
-                  .equalTo(Expression.string("location"))
-              )
+                        // SelectResult.all().from('hotel_locations'),
+                        SelectResult.expression(Meta.id.from("categories")),
+                        SelectResult.expression(Expression.property("name").from("locations")),
+                        SelectResult.expression(Meta.id.from("locations")),
+                        SelectResult.expression(Meta.id.from("hotels"))
+                )
+                .from(DataSource.database(db).as("hotels"))
+                .join(
+                        Join.join(DataSource.database(db).as("locations")).on(
+                                Meta.id
+                                        .from("locations")
+                                        .equalTo(Expression.property("location_id").from("hotels"))
+                        ),
+                        Join.join(DataSource.database(db).as("categories")).on(
+                                Meta.id
+                                        .from("categories")
+                                        .equalTo(Expression.property("category_id").from("hotels"))
+                        )
+                )
+                .where(
+                        Expression.property("type")
+                                .from("hotels")
+                                .equalTo(Expression.string("hotel"))
+                                .and(
+                                        Expression.property("type")
+                                                .from("locations")
+                                                .equalTo(Expression.string("location"))
+                                )
 
-          );
+                );
 
         ResultSet rs = query.execute();
         List<Result> results = rs.allResults();

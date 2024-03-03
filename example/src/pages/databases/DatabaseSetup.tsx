@@ -14,20 +14,27 @@ import {
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
 
 //import the database in order to create/open a database
-import { Database, DatabaseConfiguration } from 'couchbase-lite-ee-ionic';
+import { Database, DatabaseConfiguration, PlatformDirectory } from 'couchbase-lite-ee-ionic';
 
 const DatabaseSetupPage: React.FC = () => {
   const { databases, setDatabases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
-  const [fileLocation, setFileLocation] = useState<string>('');
+  const [path, setPath] = useState<string>('');
   const [encryptionKey, setEncryptionKey] = useState<string>('');
   const [resultsMessage, setResultsMessage] = useState<string>('');
 
   function reset() {
     setDatabaseName('');
-    setFileLocation('');
+    setPath('');
     setEncryptionKey('');
     setResultsMessage('');
+  }
+
+  function platformPath() {
+    const pd = new PlatformDirectory();
+    pd.getDefaultPath().then((result: string) => {
+      setPath(result);
+    }); 
   }
 
   function update() {
@@ -35,10 +42,10 @@ const DatabaseSetupPage: React.FC = () => {
 		setResultsMessage('Error: Database is already setup');
     } else {
       let db: Database;
-      if (fileLocation !== '' || encryptionKey !== '') {
+      if (path !== '' || encryptionKey !== '') {
         let config = new DatabaseConfiguration();
-        if (fileLocation !== '') {
-          config.setDirectory(fileLocation);
+        if (path !== '') {
+          config.setDirectory(path);
         }
         if (encryptionKey !== '') {
           config.setEncryptionKey(encryptionKey);
@@ -75,8 +82,8 @@ const DatabaseSetupPage: React.FC = () => {
         <IonItem key={1}>
           <IonInput
             placeholder="File Location"
-            onInput={(e: any) => setFileLocation(e.target.value)}
-            value={fileLocation}
+            onInput={(e: any) => setPath(e.target.value)}
+            value={path}
           ></IonInput>
         </IonItem>
         <IonItem key={2}>
@@ -93,10 +100,19 @@ const DatabaseSetupPage: React.FC = () => {
             marginLeft: 'auto',
             marginRight: 'auto',
             padding: '20px 80px',
-          }}
-        >
-			Setup
-		</IonButton>
+          }}> 
+          Setup 
+        </IonButton>
+        <IonButton
+          onClick={platformPath}
+          style={{
+            display: 'block',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            padding: '20px 80px',
+          }}> 
+          Default Platform Directory 
+        </IonButton>
         <IonButton
           onClick={reset}
           style={{

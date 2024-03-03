@@ -11,7 +11,7 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "IonicEnterpriseCouchbaseLite.podspec"
+    "CouchbaseLiteEeIonic.podspec"
   ],
   "author": "Developer Advocates @ Couchbase",
   "license": "Apache-2.0",

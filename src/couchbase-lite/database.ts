@@ -8,8 +8,6 @@ import { AbstractIndex } from './abstract-index';
 import { CapacitorEngine } from './engine/capacitor';
 import { ConcurrencyControl } from './concurrency-control';
 
-export interface File {}
-
 export interface DatabaseChange {
   documentIDs: string[];
 }

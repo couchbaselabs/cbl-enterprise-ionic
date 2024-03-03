@@ -32,6 +32,7 @@ export * from './mutable-document';
 export * from './order-by';
 export * from './ordering';
 export * from './parameters';
+export * from './platform-directory';
 export * from './query-builder';
 export * from './query';
 export * from './replicator';

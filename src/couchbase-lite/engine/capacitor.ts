@@ -32,6 +32,10 @@ export class CapacitorEngine {
     });
   }
 
+  File_GetDefaultPath(): Promise<{ path: string }> { 
+    return IonicCouchbaseLite.File_GetDefaultPath();
+  }
+
   async Database_Open(
     name: string,
     config: DatabaseConfiguration,

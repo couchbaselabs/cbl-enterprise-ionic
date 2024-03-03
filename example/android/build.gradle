@@ -20,6 +20,7 @@ apply from: "variables.gradle"
 allprojects {
     repositories {
         google()
+        maven {url 'https://mobile.maven.couchbase.com/maven2/dev/'}
         mavenCentral()
     }
 }

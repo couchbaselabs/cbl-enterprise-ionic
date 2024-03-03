@@ -10,7 +10,8 @@
     "tailwind": "tailwindcss build -i src/main.css -o src/tailwind.css",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@capacitor/android": "5.7.0",

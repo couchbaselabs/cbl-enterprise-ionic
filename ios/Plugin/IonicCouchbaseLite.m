@@ -121,6 +121,12 @@
   }
 }
 
+-(void)File_GetDefaultPath:(CAPPluginCall*)call {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *defaultDirectory = [paths firstObject];
+    [call resolve:@{ @"path": defaultDirectory }];
+}
+
 -(void)Database_Open:(CAPPluginCall*)call {
   NSString *name = [call getString:@"name" defaultValue:NULL];
   NSDictionary *configValue = [call getObject:@"config" defaultValue:NULL];
@@ -146,10 +152,7 @@
   NSString *directory = [config objectForKey:@"directory"];
   if (directory != NULL) {
       //used to auto set the database to be in the documents folder,  otherwise the directory won't work because we need a full path
-      NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-      NSString *defaultDirectory = [paths firstObject];
-      NSString *directoryPath = [defaultDirectory stringByAppendingPathComponent:directory];
-    [c setDirectory:directoryPath];
+    [c setDirectory:directory];
   }
   if (encKey != NULL) {
     CBLEncryptionKey *key = [[CBLEncryptionKey alloc] initWithPassword:encKey];
