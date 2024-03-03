@@ -20,7 +20,7 @@ export type DatabaseNameFormType = {
 
 const DatabaseNameForm: React.FC<DatabaseNameFormType> = ({setDatabaseName, databaseName, buttonName, update, reset, resultsMessage }) => {
 	return (
-<IonList>
+      <IonList>
         <IonItem key={0}>
           <IonInput
             onInput={(e: any) => setDatabaseName(e.target.value)}

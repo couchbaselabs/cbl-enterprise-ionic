@@ -25,7 +25,7 @@ const DatabaseMenuItems: React.FC = () => {
         routerLink="/documents/create"
         routerDirection="none"
       >
-        <IonLabel>Create</IonLabel>
+        <IonLabel>Save</IonLabel>
       </IonItem>
       <IonItem
         lines="none"
@@ -34,14 +34,6 @@ const DatabaseMenuItems: React.FC = () => {
         routerDirection="none"
       >
         <IonLabel>Get</IonLabel>
-      </IonItem>
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
-        routerLink="/documents/update"
-        routerDirection="none"
-      >
-        <IonLabel>Update</IonLabel>
       </IonItem>
       <IonItem
         lines="none"

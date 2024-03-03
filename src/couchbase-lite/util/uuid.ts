@@ -55,7 +55,7 @@ function bytesToUuid(buf: any, offset: any) {
           bth[buf[i++]] + bth[buf[i++]];
 }
 
-export function v4(options: any = {}, buf: any = null, offset: any = null) {
+export default function v4(options: any = {}, buf: any = null, offset: any = null) {
   var i = buf && offset || 0;
 
   if (typeof(options) == 'string') {
