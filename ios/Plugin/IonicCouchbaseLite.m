@@ -443,20 +443,22 @@
       [call reject:@"No such open database" :NULL :NULL :@{}];
       return;
     }
-    
-    CBLDocument *doc = [db documentWithID:docId];
-    
+      
     NSError *error;
-    
-    if (concurrencyControlValue != NULL) {
-        [db deleteDocument:doc concurrencyControl:[concurrencyControlValue intValue] error:&error];
-    } else {
-        [db deleteDocument:doc error:&error];
+    @try {
+        CBLDocument *doc = [db documentWithID:docId];
+        if (concurrencyControlValue != NULL) {
+            [db deleteDocument:doc concurrencyControl:[concurrencyControlValue intValue] error:&error];
+        } else {
+            [db deleteDocument:doc error:&error];
+        }
+        if ([self checkError:call error:error message:@"Unable to delete document"]) {
+            return;
+        }
+    } @catch(NSException *exception) {
+        [call reject:@"Uncatch Exception: documentId is probably invalid" :NULL :NULL :@{}];
+        return;
     }
-    if ([self checkError:call error:error message:@"Unable to delete document"]) {
-      return;
-    }
-    
     [call resolve];
   });
 }

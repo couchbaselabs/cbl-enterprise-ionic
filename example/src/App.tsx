@@ -40,7 +40,6 @@ import {
     DeleteBlobPage,
     DeleteDocumentPage,
     GetBlobPage,
-    UpdateDocumnetPage,
     GetDocumnetPage,
     ChangeDocumnetPage,
     CreateBatchPage,
@@ -111,7 +110,6 @@ const App: React.FC = () => {
 
                         <Route path="/documents/create" component={CreateDocumentPage} exact/>
                         <Route path="/documents/get" component={GetDocumnetPage} exact/>
-                        <Route path="/documents/update" component={UpdateDocumnetPage} exact/>
                         <Route path="/documents/change" component={ChangeDocumnetPage} exact/>
                         <Route path="/documents/delete" component={DeleteDocumentPage} exact/>
                         <Route path="/documents/blob/create" component={CreateBlobPage} exact/>
