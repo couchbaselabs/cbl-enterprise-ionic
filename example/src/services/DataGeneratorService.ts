@@ -8,6 +8,7 @@ export interface DocType {
 export interface RandomDocumentType {
 	id: string;
 	doc: DocType; 
+	blob: ArrayBuffer | null;
 }
 
 export class DataGeneratorService {
@@ -30,7 +31,8 @@ export class DataGeneratorService {
 				name: "name0", 
 				active: true, 
 				documentType: "document"
-				}
+				},
+				blob: null,
 			},
 			1: { 
 				id: this.ids[1], 
@@ -39,7 +41,8 @@ export class DataGeneratorService {
 					name: "name1", 
 					active: true, 
 					documentType: "document"
-					}
+					},
+				blob: 
 			},
 			2: { 
 				id: this.ids[2], 
@@ -82,5 +85,17 @@ export class DataGeneratorService {
 	getRandomDocument(): RandomDocumentType {
 		let randomIndex = Math.floor(Math.random() * 6);
 		return this.dictionary[randomIndex];
+	}
+
+	getBlobFromBase64(image: string): ArrayBuffer {
+		// Convert the base64 image to an ArrayBuffer
+		let binaryString = atob(image);
+		let len = binaryString.length;
+		let bytes = new Uint8Array(len);
+		for (let i = 0; i < len; i++) {
+    		bytes[i] = binaryString.charCodeAt(i);
+		}
+		return bytes.buffer;
+
 	}
 }
