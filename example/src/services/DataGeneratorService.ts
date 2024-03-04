@@ -8,7 +8,7 @@ export interface DocType {
 export interface RandomDocumentType {
 	id: string;
 	doc: DocType; 
-	blob: ArrayBuffer | null;
+	blob: string | null;
 }
 
 export class DataGeneratorService {
@@ -32,7 +32,7 @@ export class DataGeneratorService {
 				active: true, 
 				documentType: "document"
 				},
-				blob: null,
+				blob: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAf/CABEIAAEAAQMBIgACEQEDEQH/xAAUAAEAAAAAAAAAAAAAAAAAAAAH/9oACAEBAAAAABf/xAAUAQEAAAAAAAAAAAAAAAAAAAAI/9oACAECEAAAACf/AP/EABQBAQAAAAAAAAAAAAAAAAAAAAr/2gAIAQMQAAAAZB//xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAE/AH//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAECAQE/AH//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDAQE/AH//2Q==",
 			},
 			1: { 
 				id: this.ids[1], 
@@ -42,7 +42,7 @@ export class DataGeneratorService {
 					active: true, 
 					documentType: "document"
 					},
-				blob: 
+				blob: "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKAP/2Q==" 
 			},
 			2: { 
 				id: this.ids[2], 
@@ -51,7 +51,9 @@ export class DataGeneratorService {
 					name: "name2", 
 					active: true, 
 					documentType: "document"
-					}
+					},
+				blob: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAf/CABEIAAEAAQMBIgACEQEDEQH/xAAUAAEAAAAAAAAAAAAAAAAAAAAK/9oACAEBAAAAAC7/AP/EABQBAQAAAAAAAAAAAAAAAAAAAAr/2gAIAQIQAAAASx//xAAUAQEAAAAAAAAAAAAAAAAAAAAH/9oACAEDEAAAAA//xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAE/AH//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAECAQE/AH//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDAQE/AH//2Q==",
+					
 			},
 			3: { 
 				id: this.ids[3], 
@@ -60,7 +62,8 @@ export class DataGeneratorService {
 					name: "name3", 
 					active: true, 
 					documentType: "document"
-					}
+					},
+				blob: null
 			},
 			4: { 
 				id: this.ids[4], 
@@ -69,7 +72,8 @@ export class DataGeneratorService {
 					name: "name4", 
 					active: true, 
 					documentType: "document"
-					}
+					},
+				blob: null
 			},
 			5: { 
 				id: this.ids[5], 
@@ -78,7 +82,8 @@ export class DataGeneratorService {
 					name: "name5", 
 					active: true, 
 					documentType: "document"
-					}
+					},
+				blob: null
 			},
 	}
 
@@ -96,6 +101,5 @@ export class DataGeneratorService {
     		bytes[i] = binaryString.charCodeAt(i);
 		}
 		return bytes.buffer;
-
 	}
 }
