@@ -685,16 +685,17 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
     @PluginMethod
     public void Database_SetLogLevel(PluginCall call) throws JSONException, CouchbaseLiteException {
-        String name = call.getString("name");
-        Database db = this.openDatabases.get(name);
         String domain = call.getString("domain");
         int logLevelValue = call.getInt("logLevel");
-
         LogLevel logLevel = getLogLevel(logLevelValue);
 
         try {
             //TODO fix logging for 3.x
-            Database.log.getConsole().setDomains(LogDomain.valueOf(domain));
+            if (domain.equals("ALL")){
+                Database.log.getConsole().setDomains(LogDomain.ALL_DOMAINS);
+            } else {
+                Database.log.getConsole().setDomains(LogDomain.valueOf(domain));
+            }
             Database.log.getConsole().setLevel(logLevel);
             call.resolve(null);
         } catch (Exception ex) {
