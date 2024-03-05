@@ -114,6 +114,7 @@ const EditDocumentPage: React.FC = () => {
         <IonItem key={2} lines="full">
           <IonLabel position="stacked">Document</IonLabel>
           <textarea 
+            style={{ width: '100%', padding: '16px 0px' }} 
             rows={4}
             value={document}
             onChange={(e: any) => setDocument(e.detail.value)} 
