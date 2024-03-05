@@ -1,11 +1,9 @@
-// DatabaseOpen.tsx
+// DatabaseCopy.tsx
 import React, { useState, useContext } from 'react';
 import DatabaseContext from '../../providers/DatabaseContext';
 import {
   IonButton,
-  IonItemGroup,
   IonItemDivider,
-  IonList,
   IonItem,
   IonInput,
   IonLabel,
@@ -17,7 +15,7 @@ import DetailPageContainer from '../../components/DetailPageContainer/DetailPage
 import { DatabaseConfiguration, PlatformDirectory } from 'couchbase-lite-ee-ionic';
 
 const DatabaseCopyPage: React.FC = () => {
-  const { databases, setDatabases } = useContext(DatabaseContext)!;
+  const { databases } = useContext(DatabaseContext)!;
   const [currentDatabaseName, setCurrentDatabaseName] = useState<string>('');
   const [databaseName, setDatabaseName] = useState<string>('');
   const [path, setPath] = useState<string>('');
@@ -79,8 +77,10 @@ const DatabaseCopyPage: React.FC = () => {
     <DetailPageContainer
       navigationTitle="Database Copy"
       collapseTitle="Database Copy"
-    >
-      <IonList>
+      onReset={reset}
+      onAction={update}
+      resultsMessage={resultsMessage}
+      actionLabel="Copy">
         <IonItemDivider>
           <IonLabel>Current Database</IonLabel>
         </IonItemDivider>
@@ -116,47 +116,15 @@ const DatabaseCopyPage: React.FC = () => {
           ></IonInput>
         </IonItem>
         <IonButton
-          onClick={update}
-          style={{
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: '20px 80px',
-          }}
-        >
-          Copy 
-        </IonButton>
-        <IonButton
           onClick={platformPath}
           style={{
             display: 'block',
             marginLeft: 'auto',
             marginRight: 'auto',
-            padding: '20px 80px',
+            padding: '20px 80px 5px 80px',
           }}> 
           Default Platform Directory 
         </IonButton>
-        <IonButton
-          onClick={reset}
-          style={{
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: '5px 80px',
-          }}
-        >
-          Reset
-        </IonButton>
-
-        <IonItemGroup>
-          <IonItemDivider>
-            <IonLabel>Results</IonLabel>
-          </IonItemDivider>
-          <IonItem>
-            <IonLabel>{resultsMessage}</IonLabel>
-          </IonItem>
-        </IonItemGroup>
-      </IonList>
     </DetailPageContainer>
   );
 };

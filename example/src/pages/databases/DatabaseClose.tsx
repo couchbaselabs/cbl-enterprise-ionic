@@ -5,7 +5,8 @@ import DetailPageContainer from '../../components/DetailPageContainer/DetailPage
 import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
 
 const DatabaseClosePage: React.FC = () => {
-  const { databases, setDatabases } = useContext(DatabaseContext)!;
+
+  const { databases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
   const [resultsMessage, setResultsMessage] = useState<string>('');
 
@@ -33,15 +34,14 @@ const DatabaseClosePage: React.FC = () => {
 
   return (
     <DetailPageContainer 
-    navigationTitle="Database Close" collapseTitle="Database Close">
+    navigationTitle="Database Close" collapseTitle="Database Close"
+    onReset={reset}
+    onAction={update}
+    resultsMessage={resultsMessage}
+    actionLabel="Close">
      <DatabaseNameForm
         setDatabaseName={setDatabaseName}
-        databaseName={databaseName}
-        buttonName="Close"
-        update={update}
-        reset={reset}
-        resultsMessage={resultsMessage} 
-      ></DatabaseNameForm>
+        databaseName={databaseName}  />
     </DetailPageContainer>
   );
 };

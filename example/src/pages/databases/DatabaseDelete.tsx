@@ -38,14 +38,14 @@ const DatabaseDeletePage: React.FC = () => {
 
   return (
     <DetailPageContainer 
-    navigationTitle="Database Delete" collapseTitle="Database Delete">
+    navigationTitle="Database Delete" collapseTitle="Database Delete"
+    onReset={reset}
+    onAction={update}
+    resultsMessage={resultsMessage}
+    actionLabel="Delete">
       <DatabaseNameForm
         setDatabaseName={setDatabaseName}
         databaseName={databaseName}
-        buttonName="Delete"
-        update={update}
-        reset={reset}
-        resultsMessage={resultsMessage} 
       ></DatabaseNameForm>
     </DetailPageContainer>
   );

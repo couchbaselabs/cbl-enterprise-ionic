@@ -1,16 +1,8 @@
 import React from 'react';
 import {
     IonApp,
-    IonContent,
-    IonHeader,
-    IonMenu,
-    IonButtons,
-    IonMenuButton,
     IonRouterOutlet,
-    IonPage,
     IonSplitPane,
-    IonTitle,
-    IonToolbar,
     setupIonicReact,
 } from '@ionic/react';
 
@@ -35,11 +27,8 @@ import {
 } from './pages/databases';
 
 import {
-    CreateBlobPage,
-    CreateDocumentPage,
-    DeleteBlobPage,
+    EditDocumentPage,
     DeleteDocumentPage,
-    GetBlobPage,
     GetDocumnetPage,
     ChangeDocumnetPage,
     CreateBatchPage,
@@ -108,13 +97,10 @@ const App: React.FC = () => {
                         <Route path="/databases/listCollections" component={ListCollectionsPage} exact/>
                         <Route path="/databases/maintenance" component={PerformMaintenancePage} exact/>
 
-                        <Route path="/documents/create" component={CreateDocumentPage} exact/>
+                        <Route path="/documents/create" component={EditDocumentPage} exact/>
                         <Route path="/documents/get" component={GetDocumnetPage} exact/>
                         <Route path="/documents/change" component={ChangeDocumnetPage} exact/>
                         <Route path="/documents/delete" component={DeleteDocumentPage} exact/>
-                        <Route path="/documents/blob/create" component={CreateBlobPage} exact/>
-                        <Route path="/documents/blob/get" component={GetBlobPage} exact/>
-                        <Route path="/documents/blob/delete" component={DeleteBlobPage} exact/>
                         <Route path="/documents/batch/create" component={CreateBatchPage} exact/>
 
                         <Route path="/index/create" component={CreateIndexPage} exact />

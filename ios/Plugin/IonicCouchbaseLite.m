@@ -128,8 +128,10 @@
 }
 
 -(void)Database_Open:(CAPPluginCall*)call {
+  dispatch_async(dispatch_get_main_queue(), ^{
   NSString *name = [call getString:@"name" defaultValue:NULL];
   NSDictionary *configValue = [call getObject:@"config" defaultValue:NULL];
+      
   
   CBLDatabaseConfiguration *config = [self buildDBConfig:configValue];
   NSError *error;
@@ -139,11 +141,31 @@
     return;
   }
     
-  if([openDatabases objectForKey:name] == nil){
-      [openDatabases setObject:database forKey:name];
-  }
+   if([openDatabases objectForKey:name] != nil){
+      [openDatabases removeObjectForKey:name];
+   }
+   [openDatabases setObject:database forKey:name];
+   [call resolve];
+  });
+}
+
+-(void)Database_Close:(CAPPluginCall*)call {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *name = [call getString:@"name" defaultValue:NULL];
+    CBLDatabase *db = [self getDatabase:name];
+    if (db == NULL) {
+      [call reject:@"No such open database" :NULL :NULL :@{}];
+      return;
+    }
     
-  [call resolve];
+    NSError *error;
+    [db close:&error];
+    
+    if ([self checkError:call error:error message:@"Unable to close database"]) {
+      return;
+    }
+    [call resolve];
+  });
 }
 
 -(CBLDatabaseConfiguration *)buildDBConfig:(NSDictionary *)config {
@@ -387,25 +409,7 @@
   });
 }
 
--(void)Database_Close:(CAPPluginCall*)call {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *name = [call getString:@"name" defaultValue:NULL];
-    CBLDatabase *db = [self getDatabase:name];
-    if (db == NULL) {
-      [call reject:@"No such open database" :NULL :NULL :@{}];
-      return;
-    }
-    
-    NSError *error;
-    [db close:&error];
-    
-    if ([self checkError:call error:error message:@"Unable to close database"]) {
-      return;
-    }
-    
-    [call resolve];
-  });
-}
+
 
 -(void)Database_Delete:(CAPPluginCall*)call {
   NSString *name = [call getString:@"name" defaultValue:NULL];
@@ -497,8 +501,16 @@
     /* TODO change out to Database Maintenance instead of compact
      https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-objc/Classes/CBLDatabase.html#/c:objc(cs)CBLDatabase(im)performMaintenance:error:
      */
-      
-    [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
+    @try {
+        [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
+    } @catch(NSException *exception) {
+        if ([self checkError:call error:error message:@"Unable to compact database"]) {
+          return;
+        } else {
+            NSString *errorMessage = [NSString stringWithFormat:@"Unknown error trying to compact database: %@", exception.reason];
+            [call reject:errorMessage :NULL :NULL :@{}];
+        }
+    }
     
     if ([self checkError:call error:error message:@"Unable to compact database"]) {
       return;

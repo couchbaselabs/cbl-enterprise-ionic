@@ -1,9 +1,6 @@
 // ConsoleLog.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  IonButton,
-  IonItemGroup,
-  IonItemDivider,
   IonList,
   IonItem,
   IonLabel,
@@ -55,7 +52,10 @@ const ConsoleLogPage: React.FC = () => {
     <DetailPageContainer
       navigationTitle="Console Log"
       collapseTitle="Console Log"
-    >
+      onReset={reset}
+      onAction={update}
+      resultsMessage={resultsMessage}
+      actionLabel="Update">
       <IonList>
         <IonItem key={0}>
           <IonLabel>Select a Log Domain</IonLabel>
@@ -79,37 +79,6 @@ const ConsoleLogPage: React.FC = () => {
             ))}
           </IonSelect>
         </IonItem>
-        <IonButton
-          onClick={update}
-          style={{
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: '20px 80px',
-          }}
-        >
-          Update
-        </IonButton>
-        <IonButton
-          onClick={reset}
-          style={{
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: '5px 80px',
-          }}
-        >
-          Reset 
-        </IonButton>
-
-        <IonItemGroup>
-          <IonItemDivider>
-            <IonLabel>Results</IonLabel>
-          </IonItemDivider>
-          <IonItem>
-            <IonLabel>{resultsMessage}</IonLabel>
-          </IonItem>
-        </IonItemGroup>
       </IonList>
     </DetailPageContainer>
   );

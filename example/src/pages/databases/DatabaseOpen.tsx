@@ -9,7 +9,7 @@ import DetailPageContainer from '../../components/DetailPageContainer/DetailPage
 //import the database in order to create/open a database
 
 const DatabaseOpenPage: React.FC = () => {
-  const { databases, setDatabases } = useContext(DatabaseContext)!;
+  const { databases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
   const [resultsMessage, setResultsMessage] = useState<string>('');
 
@@ -34,16 +34,16 @@ const DatabaseOpenPage: React.FC = () => {
       setResultsMessage('Error: Database is not setup (defined)');
     }
   }
-
   return (
-    <DetailPageContainer navigationTitle="Database Open" collapseTitle="Open">
+    <DetailPageContainer 
+    navigationTitle="Database Open" collapseTitle="Open" 
+    onReset={reset}
+    onAction={update}
+    resultsMessage={resultsMessage}
+    actionLabel="Open">
       <DatabaseNameForm
         setDatabaseName={setDatabaseName}
         databaseName={databaseName}
-        buttonName="Open"
-        update={update}
-        reset={reset}
-        resultsMessage={resultsMessage}
       ></DatabaseNameForm>
     </DetailPageContainer>
   );

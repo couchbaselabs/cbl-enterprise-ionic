@@ -3,12 +3,10 @@ import React, { useState, useContext } from 'react';
 import DatabaseContext from '../../providers/DatabaseContext';
 import {
   IonButton,
-  IonItemGroup,
-  IonItemDivider,
-  IonList,
   IonItem,
   IonInput,
-  IonLabel,
+  IonItemDivider, 
+  IonLabel
 } from '@ionic/react';
 
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
@@ -70,8 +68,13 @@ const DatabaseSetupPage: React.FC = () => {
     <DetailPageContainer
       navigationTitle="Database Setup"
       collapseTitle="Define Database"
-    >
-      <IonList>
+      onReset={reset}
+      onAction={update}
+      resultsMessage={resultsMessage}
+      actionLabel="Setup">
+        <IonItemDivider>
+          <IonLabel>Database</IonLabel>
+        </IonItemDivider>
         <IonItem key={0}>
           <IonInput
             onInput={(e: any) => setDatabaseName(e.target.value)}
@@ -94,46 +97,15 @@ const DatabaseSetupPage: React.FC = () => {
           ></IonInput>
         </IonItem>
         <IonButton
-          onClick={update}
-          style={{
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: '20px 80px',
-          }}> 
-          Setup 
-        </IonButton>
-        <IonButton
           onClick={platformPath}
           style={{
             display: 'block',
             marginLeft: 'auto',
             marginRight: 'auto',
-            padding: '20px 80px',
+            padding: '10px 80px 5px 80px',
           }}> 
           Default Platform Directory 
         </IonButton>
-        <IonButton
-          onClick={reset}
-          style={{
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: '5px 80px',
-          }}
-        >
-          Reset
-        </IonButton>
-
-        <IonItemGroup>
-          <IonItemDivider>
-            <IonLabel>Results</IonLabel>
-          </IonItemDivider>
-          <IonItem>
-            <IonLabel>{resultsMessage}</IonLabel>
-          </IonItem>
-        </IonItemGroup>
-      </IonList>
     </DetailPageContainer>
   );
 };

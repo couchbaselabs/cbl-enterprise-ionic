@@ -16,10 +16,6 @@ export type DocumentIdFormType = {
   databaseName: string;
   setDocumentId: (arg: string) => void;
   documentId: string;
-  buttonName: string;
-  reset: () => void;
-  update: () => void;
-  resultsMessage: string;
 };
 
 const DocumentIdForm: React.FC<DocumentIdFormType> = ({
@@ -27,10 +23,6 @@ const DocumentIdForm: React.FC<DocumentIdFormType> = ({
   databaseName,
   setDocumentId,
   documentId,
-  buttonName,
-  update,
-  reset,
-  resultsMessage,
 }) => {
   return (
     <IonList>
@@ -54,37 +46,6 @@ const DocumentIdForm: React.FC<DocumentIdFormType> = ({
           value={documentId}
         ></IonInput>
       </IonItem>
-      <IonButton
-        onClick={update}
-        style={{
-          display: 'block',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          padding: '20px 80px',
-        }}
-      >
-        {buttonName}
-      </IonButton>
-      <IonButton
-        onClick={reset}
-        style={{
-          display: 'block',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          padding: '5px 80px',
-        }}
-      >
-        Reset
-      </IonButton>
-
-      <IonItemGroup>
-        <IonItemDivider>
-          <IonLabel>Results</IonLabel>
-        </IonItemDivider>
-        <IonItem>
-          <IonLabel>{resultsMessage}</IonLabel>
-        </IonItem>
-      </IonItemGroup>
     </IonList>
   );
 };

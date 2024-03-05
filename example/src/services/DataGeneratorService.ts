@@ -92,7 +92,7 @@ export class DataGeneratorService {
 		return this.dictionary[randomIndex];
 	}
 
-	getBlobFromBase64(image: string): ArrayBuffer {
+	static getBlobFromBase64(image: string): ArrayBuffer {
 		// Convert the base64 image to an ArrayBuffer
 		let binaryString = atob(image);
 		let len = binaryString.length;

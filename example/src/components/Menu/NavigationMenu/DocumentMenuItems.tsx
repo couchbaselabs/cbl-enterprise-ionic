@@ -25,7 +25,7 @@ const DatabaseMenuItems: React.FC = () => {
         routerLink="/documents/create"
         routerDirection="none"
       >
-        <IonLabel>Save</IonLabel>
+        <IonLabel>Editor</IonLabel>
       </IonItem>
       <IonItem
         lines="none"
@@ -46,35 +46,18 @@ const DatabaseMenuItems: React.FC = () => {
       <IonItem
         lines="none"
         style={{ marginLeft: 20 }}
+        routerLink="/documents/batch/create"
+        routerDirection="none"
+      >
+        <IonLabel>Batch</IonLabel>
+      </IonItem>
+      <IonItem
+        lines="none"
+        style={{ marginLeft: 20 }}
         routerLink="/documents/change"
         routerDirection="none"
       >
         <IonLabel>Listen to Changes</IonLabel>
-      </IonItem>
-
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
-        routerLink="/documents/blob/create"
-        routerDirection="none"
-      >
-        <IonLabel>Create Blob</IonLabel>
-      </IonItem>
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
-        routerLink="/documents/blob/get"
-        routerDirection="none"
-      >
-        <IonLabel>Get Blob</IonLabel>
-      </IonItem>
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
-        routerLink="/documents/blob/delete"
-        routerDirection="none"
-      >
-        <IonLabel>Delete Blob</IonLabel>
       </IonItem>
     </>
   );

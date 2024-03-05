@@ -1,12 +1,38 @@
-// Database.tsx
-import React from 'react';
+// FileLog.tsx
+import React, { useState, useContext } from 'react';
+import DatabaseContext from '../../providers/DatabaseContext';
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
+import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
+
+import { IonItemDivider, IonLabel } from '@ionic/react';
 
 const FileLogPage: React.FC = () => {
+
+  const { databases } = useContext(DatabaseContext)!;
+  const [databaseName, setDatabaseName] = useState<string>('');
+  const [resultsMessage, setResultsMessage] = useState<string>('');
+
+  function update () {
+
+  }
+
+  function reset () {
+
+  }
+
   return (
     <DetailPageContainer 
-    navigationTitle="File Logging" collapseTitle="File Logging">
-       <p>Replace with File Logging</p>
+    navigationTitle="File Logging" collapseTitle="File Logging"
+    onReset={reset}
+    onAction={update}
+    resultsMessage={resultsMessage}
+    actionLabel="Update">
+      <DatabaseNameForm
+        setDatabaseName={setDatabaseName}
+        databaseName={databaseName}  />
+      <IonItemDivider>
+        <IonLabel>File Information</IonLabel>
+      </IonItemDivider>
     </DetailPageContainer>
   );
 };

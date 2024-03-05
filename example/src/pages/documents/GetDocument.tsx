@@ -5,7 +5,7 @@ import DetailPageContainer from '../../components/DetailPageContainer/DetailPage
 import DocumentIdForm from '../../components/DocumentIdForm/DocumentIdForm';
 
 const GetDocumentPage: React.FC = () => {
-  const { databases, setDatabases } = useContext(DatabaseContext)!;
+  const { databases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
   const [documentId, setDocumentId] = useState<string>('');
   const [resultsMessage, setResultsMessage] = useState<string>('');
@@ -40,16 +40,17 @@ const GetDocumentPage: React.FC = () => {
 
   return (
     <DetailPageContainer 
-    navigationTitle="Get Document" collapseTitle="Get Document">
+    navigationTitle="Get Document" 
+    collapseTitle="Get Document"
+    onReset={reset}
+    onAction={update}
+    resultsMessage={resultsMessage}
+    actionLabel="Get">
      <DocumentIdForm
         setDatabaseName={setDatabaseName}
         databaseName={databaseName}
         setDocumentId={setDocumentId}
         documentId={documentId}
-        buttonName="Get"
-        update={update}
-        reset={reset}
-        resultsMessage={resultsMessage}
       />
     </DetailPageContainer>
   );
