@@ -85,7 +85,7 @@ const CreateIndexPage: React.FC = () => {
       <IonItem key={4}>
         <IonInput
           onInput={(e: any) => setIndexFields(e.target.value)}
-          placeholder="Index Fields (comma separated)"
+          placeholder="Index Properties (comma separated)"
           value={indexFields}
         ></IonInput>
       </IonItem>
