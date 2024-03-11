@@ -44,6 +44,7 @@ import {
 import {
     LiveQueryPage,
     QueryBuilderPage,
+    QueryBuilderFTSPage,
     SqlPlusPlusPage,
 } from './pages/query';
 
@@ -110,6 +111,7 @@ const App: React.FC = () => {
 
                         <Route path="/query/liveQuery" component={LiveQueryPage} exact />
                         <Route path="/query/queryBuilder" component={QueryBuilderPage} exact />
+                        <Route path="/query/queryBuilderFTS" component={QueryBuilderFTSPage} exact />
                         <Route path="/query/sqlPlusPlus" component={SqlPlusPlusPage} exact />
 
                         <Route path="/replication/replicator" component={ReplicatorPage} exact />

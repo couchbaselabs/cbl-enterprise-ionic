@@ -31,11 +31,11 @@ const Menu: React.FC = () => {
       </IonHeader>
       <IonContent>
         <IonMenuToggle autoHide={false}>
+          <LoggingMenuItems />
           <DatabaseMenuItems />
           <DocumentMenuItems />
-          <QueryMenuItems />
           <IndexMenuItems />
-          <LoggingMenuItems />
+          <QueryMenuItems />
           <ReplicationMenuItems />
         </IonMenuToggle>
       </IonContent>

@@ -35,6 +35,13 @@ const QueryMenuItems: React.FC = () => {
       </IonItem>
       <IonItem
         style={{ marginLeft: 20 }}
+        routerLink="/query/queryBuilderFTS"
+        routerDirection="none"
+      >
+        <IonLabel>Query Builder - FTS</IonLabel>
+      </IonItem>
+      <IonItem
+        style={{ marginLeft: 20 }}
         routerLink="/query/liveQuery"
         routerDirection="none"
       >

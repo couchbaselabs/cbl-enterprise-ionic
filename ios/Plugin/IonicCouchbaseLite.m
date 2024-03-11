@@ -17,7 +17,6 @@
 @implementation CustomQuery
 
 -(instancetype) initWithJson:(NSData *)jsonData database:(CBLDatabase*)database {
-  // NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
   SEL sel = NSSelectorFromString(@"initWithDatabase:JSONRepresentation:");
   id queryInstance = [CBLQuery alloc];
 
@@ -648,32 +647,42 @@
 
 -(void)Query_Execute:(CAPPluginCall*)call {
 
-  //dispatch_async(dispatch_get_main_queue(), ^{
+    //dispatch_async(dispatch_get_main_queue(), ^{
     NSString *name = [call getString:@"name" defaultValue:NULL];
     CBLDatabase *db = [self getDatabase:name];
     if (db == NULL) {
       [call reject:@"No such open database" :NULL :NULL :@{}];
       return;
     }
+    
     NSDictionary *queryJson = [call getObject:@"query" defaultValue:NULL];
     NSError *jsonError;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:queryJson options:0 error:&jsonError];
     
-    CustomQuery *query = [[CustomQuery alloc] initWithJson:jsonData database:db];
-    NSError *error;
-    CBLQueryResultSet *result = [query execute:&error];
-    
-    if (error != NULL) {
-      [call reject:@"Unable to execute query" :NULL :error :@{}];
-      return;
+    @try {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:queryJson options:0 error:&jsonError];
+        CustomQuery *query = [[CustomQuery alloc] initWithJson:jsonData database:db];
+        NSError *error;
+        CBLQueryResultSet *result = [query execute:&error];
+        
+        if (error != NULL) {
+            [call reject:@"Unable to execute query" :NULL :error :@{}];
+            return;
+        }
+        
+        [queryResultSets setObject:result forKey: [@(_queryCount) stringValue]];
+        NSInteger queryId = _queryCount;
+        _queryCount++;
+        [call resolve:@{ @"id": @(queryId) }];
     }
-
-    [queryResultSets setObject:result forKey: [@(_queryCount) stringValue]];
-    NSInteger queryId = _queryCount;
-    _queryCount++;
-    
-    [call resolve:@{ @"id": @(queryId) }];
-  //}];
+    @catch (NSException *exception){
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: [exception reason],
+            NSLocalizedFailureReasonErrorKey: [exception name]
+        };
+        NSError *error = [NSError errorWithDomain:@"com.couchbaseLite" code:100 userInfo:userInfo];
+        NSString *errorMessage = [NSString stringWithFormat:@"Unable to execute query - jsonValue was: %@", queryJson];
+        [call reject:errorMessage :NULL :error :@{}];
+    }
 }
 
 -(void)ResultSet_Next:(CAPPluginCall*)call {
