@@ -1,10 +1,11 @@
-// QueryBuilder.tsx
+// QueryBuilderFTS.tsx
+import './QueryBuilder.css';
 import React, { useState, useContext } from 'react';
 import DatabaseContext from '../../providers/DatabaseContext';
-import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
+import DetailPageContainerItemResults from '../../components/DetailPageContainerItemResults/DetailPageContainerItemResults';
 import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
 
-import { IonItemDivider, IonLabel, IonInput, IonItem } from '@ionic/react';
+import { IonItemDivider, IonLabel, IonInput, IonItem, IonItemGroup } from '@ionic/react';
 
 import {
   FullTextExpression,
@@ -20,7 +21,8 @@ const QueryBuilderPage: React.FC = () => {
   const [databaseName, setDatabaseName] = useState<string>('');
   const [indexName, setIndexName] = useState<string>('');
   const [propertyValue, setPropertyValue] = useState<string>('');
-  const [resultsMessage, setResultsMessage] = useState<string>('');
+  const [resultsMessage, setResultsMessage] = useState<string[]>([]);
+  const [resultsCount, setResultsCount] = useState<string>('');
 
   async function update() {
     if (databaseName in databases) {
@@ -36,30 +38,33 @@ const QueryBuilderPage: React.FC = () => {
             .where(whereClause);
 
           //execute the query - unwrap this below
-          //let results = await (await ftsQuery.execute()).allResults();
-
           ftsQuery.execute()
             .then((resultSet: ResultSet) => {
               return resultSet.allResults()
             })
             .then((queryResults: Result[]) => {
               //loop through results
-              for (let r of queryResults) {
-                console.log(r);
+              if (queryResults.length === 0) {
+                setResultsMessage(['success - no records found']); 
+              } else {
+                setResultsCount(': ' + queryResults.length.toString());
+                setResultsMessage([]);
+                for (let r of queryResults) {
+                  let str = JSON.stringify(r);
+                  setResultsMessage(prev => [...prev, str]);
+                }
               }
             }).catch((error: unknown) => {
-            setResultsMessage('' + error);
+            setResultsMessage(['' + error]);
           });
         } else {
-          setResultsMessage(
-            'Error: Property Name or Property Value not defined',
-          );
+          setResultsMessage(['Error: Property Name or Property Value not defined']);
         }
       } else {
-        setResultsMessage('Error: Index name or field is not defined');
+        setResultsMessage(['Error: Index name or field is not defined']);
       }
     } else {
-      setResultsMessage('Error: Database is not setup (defined)');
+      setResultsMessage(prev => ['Error: Database is not setup (defined)']);
     }
   }
 
@@ -67,18 +72,18 @@ const QueryBuilderPage: React.FC = () => {
     setDatabaseName('');
     setIndexName('');
     setPropertyValue('');
-    setResultsMessage('');
+    setResultsMessage([]);
   }
 
   return (
-    <DetailPageContainer
+    <DetailPageContainerItemResults
       navigationTitle="Query Builder FTS"
       collapseTitle="Query Builder FTS"
       onReset={reset}
       onAction={update}
-      resultsMessage={resultsMessage}
       actionLabel="Search"
-    >
+      resultsCount={resultsCount}
+      children={<>
       <DatabaseNameForm
         setDatabaseName={setDatabaseName}
         databaseName={databaseName}
@@ -100,8 +105,17 @@ const QueryBuilderPage: React.FC = () => {
           value={propertyValue}
         ></IonInput>
       </IonItem>
-    </DetailPageContainer>
+      </>} 
+      resultsChildren={
+        <>
+        {resultsMessage.map((message, index) => (
+          <IonItem key={index} className="wrap-text">
+            <IonLabel className="wrap-text">{message}</IonLabel>
+          </IonItem>
+          ))}
+        </>
+      }>
+    </DetailPageContainerItemResults>
   );
 };
-
 export default QueryBuilderPage;

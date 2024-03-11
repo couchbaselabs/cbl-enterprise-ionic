@@ -34,6 +34,6 @@ export class FullTextMatchExpression extends Expression {
   }
 
   asJSON(): any {
-    return ["MATCH", this.indexName, this.text];
+    return ["MATCH()", this.indexName, this.text];
   }
 }
