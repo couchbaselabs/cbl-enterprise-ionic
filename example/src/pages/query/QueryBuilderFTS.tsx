@@ -5,7 +5,17 @@ import DatabaseContext from '../../providers/DatabaseContext';
 import DetailPageContainerItemResults from '../../components/DetailPageContainerItemResults/DetailPageContainerItemResults';
 import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
 
-import { IonItemDivider, IonLabel, IonInput, IonItem, IonItemGroup } from '@ionic/react';
+import {
+  IonItemDivider,
+  IonLabel,
+  IonButton,
+  IonButtons,
+  IonInput,
+  IonIcon,
+  IonItem,
+} from '@ionic/react';
+
+import { playOutline } from 'ionicons/icons';
 
 import {
   FullTextExpression,
@@ -13,7 +23,7 @@ import {
   SelectResult,
   DataSource,
   ResultSet,
-  Result
+  Result,
 } from 'couchbase-lite-ee-ionic';
 
 const QueryBuilderPage: React.FC = () => {
@@ -29,7 +39,6 @@ const QueryBuilderPage: React.FC = () => {
       let db = databases[databaseName];
       if (db != null) {
         if (indexName.length > 0 && propertyValue.length > 0) {
-
           //create query
           let whereClause =
             FullTextExpression.index(indexName).match(propertyValue);
@@ -38,14 +47,15 @@ const QueryBuilderPage: React.FC = () => {
             .where(whereClause);
 
           //execute the query - unwrap this below
-          ftsQuery.execute()
+          ftsQuery
+            .execute()
             .then((resultSet: ResultSet) => {
-              return resultSet.allResults()
+              return resultSet.allResults();
             })
             .then((queryResults: Result[]) => {
               //loop through results
               if (queryResults.length === 0) {
-                setResultsMessage(['success - no records found']); 
+                setResultsMessage(['success - no records found']);
               } else {
                 setResultsCount(': ' + queryResults.length.toString());
                 setResultsMessage([]);
@@ -54,11 +64,14 @@ const QueryBuilderPage: React.FC = () => {
                   setResultsMessage(prev => [...prev, str]);
                 }
               }
-            }).catch((error: unknown) => {
-            setResultsMessage(['' + error]);
-          });
+            })
+            .catch((error: unknown) => {
+              setResultsMessage(['' + error]);
+            });
         } else {
-          setResultsMessage(['Error: Property Name or Property Value not defined']);
+          setResultsMessage([
+            'Error: Property Name or Property Value not defined',
+          ]);
         }
       } else {
         setResultsMessage(['Error: Index name or field is not defined']);
@@ -80,42 +93,56 @@ const QueryBuilderPage: React.FC = () => {
       navigationTitle="Query Builder FTS"
       collapseTitle="Query Builder FTS"
       onReset={reset}
-      onAction={update}
-      actionLabel="Search"
       resultsCount={resultsCount}
-      children={<>
-      <DatabaseNameForm
-        setDatabaseName={setDatabaseName}
-        databaseName={databaseName}
-      />
-      <IonItemDivider>
-        <IonLabel>Query Builder</IonLabel>
-      </IonItemDivider>
-      <IonItem key={2}>
-        <IonInput
-          onInput={(e: any) => setIndexName(e.target.value)}
-          placeholder="FTS Index Name"
-          value={indexName}
-        ></IonInput>
-      </IonItem>
-      <IonItem key={3}>
-        <IonInput
-          onInput={(e: any) => setPropertyValue(e.target.value)}
-          placeholder="Value to Search"
-          value={propertyValue}
-        ></IonInput>
-      </IonItem>
-      </>} 
+      children={
+        <>
+          <DatabaseNameForm
+            setDatabaseName={setDatabaseName}
+            databaseName={databaseName}
+          />
+          <IonItemDivider>
+            <IonLabel>Query Builder</IonLabel>
+            <IonButtons slot="end">
+            <IonButton
+                onClick={update}
+                style={{
+                  display: 'block',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  padding: '0px 5px',
+                }}
+              >
+                <IonIcon icon={playOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonItemDivider>
+
+          <IonItem key={2}>
+            <IonInput
+              onInput={(e: any) => setIndexName(e.target.value)}
+              placeholder="FTS Index Name"
+              value={indexName}
+            ></IonInput>
+          </IonItem>
+          <IonItem key={3}>
+            <IonInput
+              onInput={(e: any) => setPropertyValue(e.target.value)}
+              placeholder="Value to Search"
+              value={propertyValue}
+            ></IonInput>
+          </IonItem>
+        </>
+      }
       resultsChildren={
         <>
-        {resultsMessage.map((message, index) => (
-          <IonItem key={index} className="wrap-text">
-            <IonLabel className="wrap-text">{message}</IonLabel>
-          </IonItem>
+          {resultsMessage.map((message, index) => (
+            <IonItem key={index} className="wrap-text">
+              <IonLabel className="wrap-text">{message}</IonLabel>
+            </IonItem>
           ))}
         </>
-      }>
-    </DetailPageContainerItemResults>
+      }
+    ></DetailPageContainerItemResults>
   );
 };
 export default QueryBuilderPage;

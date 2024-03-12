@@ -17,7 +17,7 @@ import {
   IonItem,
 } from '@ionic/react';
 
-import { trashOutline } from 'ionicons/icons';
+import { trashOutline, checkmarkCircleOutline, playOutline } from 'ionicons/icons';
 
 import {
   Database,
@@ -26,6 +26,7 @@ import {
   SelectResult,
   DataSource,
   Expression,
+  Meta
 } from 'couchbase-lite-ee-ionic';
 
 const CreateBatchPage: React.FC = () => {
@@ -33,37 +34,60 @@ const CreateBatchPage: React.FC = () => {
   const [databaseName, setDatabaseName] = useState<string>('');
   const [resultsMessage, setResultsMessage] = useState<string[]>([]);
   const [resultsCount, setResultsCount] = useState<string>('');
-  const [isError, setIsError] = useState<boolean>(false);
 
   async function update() {
     if (databaseName in databases) {
       let db = databases[databaseName];
       if (db != null) {
-        setIsError(false);
-
         let generator = new DataGeneratorService();
         let products = generator.productDocs;
 
-        await db.inBatch(() => {
-          for (let key in products) {
-            let docKey = Number(key);
-            let product = products[docKey];
+        //
+        // removed inBatch for now until new queue system verison is implemented
+        //
+        //await db.inBatch(() => {
+        for (let key in products) {
+          let docKey = Number(key);
+          let product = products[docKey];
 
-            let document = getDocumentFromProduct(product);
-            if (document != null) {
-              try {
-              db.save(document);
-              } catch (e){
-                setResultsMessage(prev => [...prev, 'Error: saving document ' + e]);
-
-              }
-            } else {
-              setResultsMessage(['Error: Document is null from helper method for productId ' + product.id]);
+          let document = getDocumentFromProduct(product);
+          if (document != null) {
+            try {
+              db.save(document)
+                .then(() => {
+                  if (product.id in db._documents) {
+                    setResultsMessage(prev => [
+                      ...prev,
+                      'Document Saved: ' + product.id,
+                    ]);
+                  } else {
+                    setResultsMessage(prev => [
+                      ...prev,
+                      'Error: document not saved ' + product.id,
+                    ]);
+                  }
+                })
+                .catch((e: string) => {
+                  setResultsMessage(prev => [
+                    ...prev,
+                    'Error: saving document ' + e,
+                  ]);
+                });
+            } catch (e) {
+              setResultsMessage(prev => [
+                ...prev,
+                'Error: saving document ' + e,
+              ]);
             }
+          } else {
+            setResultsMessage([
+              'Error: Document is null from helper method for productId ' +
+                product.id,
+            ]);
           }
-        });
-
-        await validateDocuments(db);
+        }
+        //}); --removed inBatch for now until new queue system verison is implemented
+        setResultsMessage(prev => [...prev, 'Batch Create Complete']);
       } else {
         setResultsMessage(['Error: Database is null)']);
       }
@@ -87,38 +111,12 @@ const CreateBatchPage: React.FC = () => {
   }
 
   //validate documents saved only if there wasn't errors
-  async function validateDocuments(db: Database) {
-    if (!isError) {
-      let query = QueryBuilder.select(SelectResult.all())
-        .from(DataSource.database(db))
-        .where(
-          Expression.property('documentType').equalTo(
-            Expression.string('product'),
-          ),
-        );
-
-      try {
-        const resultSet = await (await query.execute()).allResults();
-        setResultsCount(resultSet.length.toString());
-        for (let result of resultSet) {
-          let doc = result.getDictionary('_doc');
-          let id = doc.getString('id');
-          let name = doc.getString('name');
-          setResultsMessage(prev => [
-            ...prev,
-            'Document Saved: ' + id + ' : ' + name,
-          ]);
-        }
-      } catch (e) {
-        setResultsMessage(prev => [...prev, 'Error Data Validation: ' + e]);
-      }
-    }
-  }
-
-  async function deleteProductDocuments() {
+  async function validateDocuments() {
     if (databaseName in databases) {
       let db = databases[databaseName];
       if (db != null) {
+        setResultsMessage([]);
+        setResultsCount('');
         let query = QueryBuilder.select(SelectResult.all())
           .from(DataSource.database(db))
           .where(
@@ -131,17 +129,63 @@ const CreateBatchPage: React.FC = () => {
           const resultSet = await (await query.execute()).allResults();
           setResultsCount(resultSet.length.toString());
           for (let result of resultSet) {
-            let doc = result.getDictionary('_doc');
-            let id = doc.getString('id');
-            db.deleteDocument(id).then(() => {
-              setResultsMessage(prev => [...prev, 'success deleted document: ' + id]);
-            })
-            .catch((error: string) => {
-              setResultsMessage(prev => [...prev, 'Error deleting document ' + error]);
-            });
+            let doc = result._doc;
+            let id = doc.id;
+            let name = doc.name;
+            setResultsMessage(prev => [
+              ...prev,
+              'Document Validated: ' + id + ' : ' + name,
+            ]);
           }
         } catch (e) {
-          setIsError(true);
+          setResultsMessage(prev => [...prev, 'Error Data Validation: ' + e]);
+        }
+      }
+    }
+  }
+
+  async function deleteProductDocuments() {
+    if (databaseName in databases) {
+      let db = databases[databaseName];
+      if (db != null) {
+        setResultsMessage([]);
+        setResultsCount('');
+        let query = QueryBuilder.select(SelectResult.expression(Meta.id))
+          .from(DataSource.database(db))
+          .where(
+            Expression.property('documentType').equalTo(
+              Expression.string('product'),
+            ),
+          );
+
+        try {
+          const resultSet = await (await query.execute()).allResults();
+          setResultsCount(resultSet.length.toString());
+          for (let result of resultSet) {
+            let id = result.id;
+            db.getDocument(id)
+              .then((doc: any) =>{
+                db.deleteDocument(doc)
+                .then(() => {
+                  setResultsMessage(prev => [
+                    ...prev,
+                    'success deleted document: ' + id,
+                  ]);
+                })
+                .catch((error: string) => {
+                  setResultsMessage(prev => [
+                    ...prev,
+                    'Error deleting document ' + error,
+                  ]);
+                });
+              }).catch((error: string) => {
+                setResultsMessage(prev => [
+                  ...prev,
+                  'Error deleting document ' + error,
+                ]);
+              });
+            }
+        } catch (e) {
           setResultsMessage(prev => [...prev, 'Error Data Validation: ' + e]);
         }
       } else {
@@ -163,8 +207,6 @@ const CreateBatchPage: React.FC = () => {
       navigationTitle="Create Batch"
       collapseTitle="Create Batch"
       onReset={reset}
-      onAction={update}
-      actionLabel="Run Batch Create"
       resultsCount={resultsCount}
       children={
         <>
@@ -175,6 +217,28 @@ const CreateBatchPage: React.FC = () => {
           <IonItemDivider>
             <IonLabel>Document Batch</IonLabel>
             <IonButtons slot="end">
+            <IonButton
+                onClick={update}
+                style={{
+                  display: 'block',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  padding: '0px 5px',
+                }}
+              >
+                <IonIcon icon={playOutline} />
+              </IonButton>
+              <IonButton
+                onClick={validateDocuments}
+                style={{
+                  display: 'block',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  padding: '0px 5px',
+                }}
+              >
+                <IonIcon icon={checkmarkCircleOutline} />
+              </IonButton>
               <IonButton
                 onClick={deleteProductDocuments}
                 style={{

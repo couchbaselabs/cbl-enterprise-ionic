@@ -24,8 +24,6 @@ interface ContainerProps {
 	navigationTitle: string;
 	collapseTitle: string;
 	onReset: () => void;
-	onAction: () => void;
-	actionLabel: string;
 	resultsCount: string;
 	children: React.ReactNode;
 	resultsChildren: React.ReactNode;
@@ -34,8 +32,6 @@ interface ContainerProps {
 const DetailPageContainerItemResults: React.FC<ContainerProps> = ({  navigationTitle, 
 	collapseTitle, 
 	onReset, 
-	onAction,
-	actionLabel,
 	resultsCount,
 	children, 
 	resultsChildren}) => {
@@ -65,22 +61,7 @@ const DetailPageContainerItemResults: React.FC<ContainerProps> = ({  navigationT
 
      		{children} 
 
-			{ actionLabel !== "" ? ( 
-			<>
-			 <IonButton
-          		onClick={onAction}
-          		style={{
-            		display: 'block',
-            		marginLeft: 'auto',
-            		marginRight: 'auto',
-            		padding: '20px 80px',
-          		}}
-        		>
-				{actionLabel}
-        	</IonButton>
-			</>
-			) : null }
-			<IonItemGroup>
+			<IonItemGroup style={{ paddingTop: '20px'}}>
         		<IonItemDivider>
           			<IonLabel>Results {resultsCount}</IonLabel>
         		</IonItemDivider>
