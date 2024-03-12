@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import DatabaseContext from '../../providers/DatabaseContext';
 import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
-import { DataGeneratorService, RandomDocumentType } from '../../services/DataGeneratorService';
+import { DataGeneratorService, WidgetType } from '../../services/DataGeneratorService';
 
 import {
 	IonItemDivider,
@@ -28,15 +28,15 @@ const EditDocumentPage: React.FC = () => {
   const [selectKey, setSelectKey] = useState(0);
   const [selectedDocument, setSelectedDocument] = useState<string>();
   const [dictionary, setDictionary] = useState<{ [key: string]: string }>({});
-  const [data, setData] = useState<{[key: number]: RandomDocumentType}>();
+  const [data, setData] = useState<{[key: number]: WidgetType}>();
   
   useEffect(() => {
     let ds = new DataGeneratorService(); 
-    let data = ds.dictionary;
+    let data = ds.dictionaryDocs;
     let newDictionary: { [key: string]: string } = {};
     for (let key in data) {
       //check if the data has a blob or not, if so le them know so they can select
-      newDictionary[key] = (data[key].blob != null) ? data[key].id + ' - blob' : data[key].id;
+      newDictionary[key] = (data[key].blob != null) ? data[key].id + ' - blob : ' + data[key].doc.name : data[key].id + ' : ' + data[key].doc.name;
     }
     //set both the raw data and the dictionary to pick a document from
     setData(data);
