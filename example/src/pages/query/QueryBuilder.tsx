@@ -9,7 +9,10 @@ import {
   WidgetType,
 } from '../../services/DataGeneratorService';
 
-import { QueryBuilderGeneratorService } from '../../services/QueryBuilderGeneratorService';
+import {
+  QueryGeneratorService,
+  QueryDictionary,
+} from '../../services/QueryBuilderGeneratorService';
 
 import {
   IonItemDivider,
@@ -23,13 +26,7 @@ import {
 } from '@ionic/react';
 
 import {
-  Database,
-  MutableDocument,
-  QueryBuilder,
-  SelectResult,
-  DataSource,
-  Expression,
-  Meta,
+  Query
 } from 'couchbase-lite-ee-ionic';
 
 import { playOutline } from 'ionicons/icons';
@@ -42,10 +39,39 @@ const QueryBuilderPage: React.FC = () => {
   const [selectedQuery, setSelectedQuery] = useState<string>('');
 
   //set the select list of queries we can test
-  const queries: string[] = QueryBuilderGeneratorService.queries;
+  const queries: string[] = QueryGeneratorService.queries;
 
-  function update() {
+  async function update() {
+    if (databaseName in databases) {
+      let db = databases[databaseName];
+      if (db != null && selectedQuery !== '') {
+        setResultsMessage([]);
+        let queries = QueryGeneratorService.getQueries(db);
+        let query: Query | undefined;
 
+        for (let dictionary of queries) {
+          if (dictionary[selectedQuery]) {
+            query = dictionary[selectedQuery];
+            break;
+          }
+        }
+        if (query !== undefined) {
+          try {
+          let resultSet = await(await query.execute()).allResults(); 
+          setResultsCount(resultSet.length.toString());
+          for (let result of resultSet){
+            setResultsMessage(prev => [...prev, JSON.stringify(result)]);
+          }
+          } catch (e) {
+            setResultsMessage(prev => [...prev, 'Error Data Validation: ' + e]);
+          }
+        }
+      } else {
+        setResultsMessage(['Error: Database is null or query is not selected']);
+      }
+    } else {
+      setResultsMessage(['Error: Database is not setup (defined)']);
+    }
   }
 
   function reset() {
@@ -83,21 +109,30 @@ const QueryBuilderPage: React.FC = () => {
             </IonButtons>
           </IonItemDivider>
           <IonItem key={2}>
-          <IonLabel>Select Query</IonLabel>
-          <IonSelect
-            value={selectedQuery}
-            onIonChange={e => setSelectedQuery(e.detail.value)}
-          >
-            {queries.map((query) => (
-              <IonSelectOption value={query}>{query}</IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
+            <IonLabel>Select Query</IonLabel>
+            <IonSelect
+              value={selectedQuery}
+              onIonChange={e => setSelectedQuery(e.detail.value)}
+            >
+              {queries.map(query => (
+                <IonSelectOption key={query} value={query}>
+                  {query}
+                </IonSelectOption>
+              ))}
+            </IonSelect>
+          </IonItem>
         </>
       }
-      resultsChildren={<></>}
+      resultsChildren={
+        <>
+          {resultsMessage.map((message, index) => (
+            <IonItem key={index} className="wrap-text">
+              <IonLabel className="wrap-text">{message}</IonLabel>
+            </IonItem>
+          ))}
+        </>
+      }
     ></DetailPageContainerItemResults>
   );
 };
-
 export default QueryBuilderPage;
