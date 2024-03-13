@@ -36,6 +36,7 @@ const CreateBatchPage: React.FC = () => {
   const [resultsCount, setResultsCount] = useState<string>('');
 
   async function update() {
+    setResultsMessage([]);
     if (databaseName in databases) {
       let db = databases[databaseName];
       if (db != null) {
@@ -46,7 +47,9 @@ const CreateBatchPage: React.FC = () => {
         // removed inBatch for now until new queue system verison is implemented
         //
         //await db.inBatch(() => {
+        let counter = 0;
         for (let key in products) {
+          counter++;
           let docKey = Number(key);
           let product = products[docKey];
 
@@ -88,10 +91,14 @@ const CreateBatchPage: React.FC = () => {
         }
         //}); --removed inBatch for now until new queue system verison is implemented
         setResultsMessage(prev => [...prev, 'Batch Create Complete']);
+        setResultsCount(counter.toString());
+
       } else {
+        setResultsCount('');
         setResultsMessage(['Error: Database is null)']);
       }
     } else {
+      setResultsCount('');
       setResultsMessage(['Error: Database is not setup (defined)']);
     }
   }
