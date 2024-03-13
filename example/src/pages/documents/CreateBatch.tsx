@@ -98,7 +98,7 @@ const CreateBatchPage: React.FC = () => {
         setResultsMessage(['Error: Database is null)']);
       }
     } else {
-      setResultsCount('');
+       setResultsCount('');
       setResultsMessage(['Error: Database is not setup (defined)']);
     }
   }
