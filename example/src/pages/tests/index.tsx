@@ -1,0 +1,17 @@
+export {default as CollectionTestsPage } from './Collection';
+export {default as ConsoleLoggingTestsPage } from './ConsoleLogging';
+export {default as CustomLoggingTestsPage } from './CustomLogging';
+export {default as DatabaseTestsPage } from './Database';
+export {default as DocumentTestsPage } from './Document';
+export {default as DocumentExpirationTestsPage } from './DocumentExpiration';
+export {default as FileLoggingTestsPage } from './FileLogging';
+export {default as FTSTestsPage } from './FTS';
+export {default as IndexingTestsPage } from './Indexing';
+export {default as NotificationsTestsPage } from './Notifications';
+export {default as PredicateQueryTestsPage } from './PredicateQuery';
+export {default as QueryTestsPage } from './Query';
+export {default as QueryBuilderTestsPage } from './QueryBuilder';
+export {default as ReplicatorTestsPage } from './Replicator';
+export {default as ReplicatorCustomConflictTestsPage } from './ReplicatorCustomConflict';
+export {default as ReplicatorPendingDocTestsPage } from './ReplicatorPendingDoc';
+export {default as VectorSearchTestsPage } from './VectorSearch';

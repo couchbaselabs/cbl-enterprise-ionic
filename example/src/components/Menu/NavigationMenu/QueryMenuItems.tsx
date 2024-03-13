@@ -3,20 +3,13 @@ import { IonIcon, IonItem, IonLabel, IonItemDivider } from '@ionic/react';
 
 import React from 'react';
 
-import { pencil, pencilOutline } from 'ionicons/icons';
-
 import '../Menu.css';
 
 const QueryMenuItems: React.FC = () => {
   return (
     <>
     <IonItemDivider>
-      <IonIcon
-          aria-hidden="true"
-          slot="start"
-          ios={pencilOutline}
-          md={pencil}
-        />
+      <i className="fa-duotone fa-pen-to-square"></i>
         <IonLabel style={{ marginLeft: 20}}>Query API</IonLabel>
      </IonItemDivider>
       <IonItem

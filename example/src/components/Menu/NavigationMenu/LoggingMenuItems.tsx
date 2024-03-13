@@ -11,12 +11,7 @@ const LoggingMenuItems: React.FC = () => {
   return (
     <>
     <IonItemDivider>
-      <IonIcon
-          aria-hidden="true"
-          slot="start"
-          ios={informationCircleOutline}
-          md={informationCircle}
-        />
+      <i className="fa-duotone fa-square-info"></i>
         <IonLabel style={{ marginLeft: 20}}>Logging API</IonLabel>
      </IonItemDivider>
       <IonItem

@@ -3,20 +3,13 @@ import { IonIcon, IonItem, IonLabel, IonItemDivider } from '@ionic/react';
 
 import React from 'react';
 
-import { documentText, documentTextOutline } from 'ionicons/icons';
-
 import '../Menu.css';
 
 const DatabaseMenuItems: React.FC = () => {
   return (
     <>
      <IonItemDivider>
-      <IonIcon
-          aria-hidden="true"
-          slot="start"
-          ios={documentTextOutline}
-          md={documentText}
-        />
+        <i className="fa-duotone fa-file-lines"></i>
         <IonLabel style={{ marginLeft: 20}}>Document API</IonLabel>
      </IonItemDivider>
       <IonItem

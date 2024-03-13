@@ -12,12 +12,7 @@ const ReplicationMenuItems: React.FC = () => {
   return (
     <>
    <IonItemDivider>
-      <IonIcon
-          aria-hidden="true"
-          slot="start"
-          ios={infiniteOutline}
-          md={infinite}
-        />
+        <i className="fa-duotone fa-rotate"></i>
         <IonLabel style={{ marginLeft: 20}}>Replication API</IonLabel>
      </IonItemDivider>
       <IonItem

@@ -16,7 +16,8 @@ import {
   QueryMenuItems,
   IndexMenuItems,
   LoggingMenuItems,
-  ReplicationMenuItems
+  ReplicationMenuItems,
+  TestMenuItems,
 } from './NavigationMenu/';
 
 import './Menu.css';
@@ -31,6 +32,7 @@ const Menu: React.FC = () => {
       </IonHeader>
       <IonContent>
         <IonMenuToggle autoHide={false}>
+          <TestMenuItems />
           <LoggingMenuItems />
           <DatabaseMenuItems />
           <DocumentMenuItems />
