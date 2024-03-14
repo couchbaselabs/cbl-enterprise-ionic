@@ -48,3 +48,26 @@ export * from './url-endpoint';
 export * from './value-index';
 export * from './variable-expression';
 export * from './where';
+
+//tests for testing framework
+export * from './tests/e2e/collection-test';
+export * from './tests/e2e/console-logging-test';
+export * from './tests/e2e/custom-logging-test';
+export * from './tests/e2e/database-test';
+export * from './tests/e2e/document-expiration-test';
+export * from './tests/e2e/document-test';
+export * from './tests/e2e/file-logging-test';
+export * from './tests/e2e/fragment-test';
+export * from './tests/e2e/fts-test';
+export * from './tests/e2e/indexing-test';
+export * from './tests/e2e/notification-test';
+export * from './tests/e2e/predicate-query-test';
+export * from './tests/e2e/query-builder-test';
+export * from './tests/e2e/query-test';
+export * from './tests/e2e/replicator-custom-conflicts-test';
+export * from './tests/e2e/replicator-pending-doc-ids-test';
+export * from './tests/e2e/replicator-test';
+export * from './tests/e2e/test-case';
+export * from './tests/e2e/test-result.types';
+export * from './tests/e2e/test-runner';
+export * from './tests/e2e/vector-search-test';

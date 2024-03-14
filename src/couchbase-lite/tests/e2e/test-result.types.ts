@@ -1,7 +1,8 @@
-export interface ITestResult<T> {
+export interface ITestResult {
+	testName: string;
 	success: boolean;
   	message: string | undefined;
-  	data: T | undefined;
+  	data: string | undefined;
 }
 
 export interface ITestCaseResult {
@@ -9,3 +10,4 @@ export interface ITestCaseResult {
 	success: boolean;
   	errorMessage: string | undefined;
 }
+

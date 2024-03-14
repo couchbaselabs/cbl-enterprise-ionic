@@ -1,8 +1,8 @@
-import { PlatformDirectory } from '../../couchbase-lite/platform-directory';
-import { Database } from '../../couchbase-lite/database';
-import { DatabaseConfiguration } from '../../couchbase-lite/database-configuration';
+import { PlatformDirectory } from '../../platform-directory';
+import { Database } from '../../database';
+import { DatabaseConfiguration } from '../../database-configuration';
 
-import { ITestResult } from './TestResult.types';
+import { ITestResult } from './test-result.types';
 
 export class TestCase {
   //setup shared properties
@@ -14,11 +14,11 @@ export class TestCase {
 
   showDetails: boolean;
 
-  constructor(showDetails: boolean) {
-	  this.showDetails = false;
+  constructor() {
+    this.showDetails = false;
   }
 
-  async init(): Promise<ITestResult<undefined>> {
+  async init(): Promise<ITestResult> {
     try {
       //try to get the platform local directory - can't run tests if we can't save a database to a directory
       const filePathResult = await TestCase.getPlatformPath();
@@ -26,6 +26,7 @@ export class TestCase {
         this.directory = filePathResult.data;
       } else {
         return {
+          testName: 'init',
           success: false,
           message: filePathResult.message,
           data: undefined,
@@ -53,24 +54,30 @@ export class TestCase {
         this.directory,
         '',
       );
-      if (dbResult.success) {
-        this.database = dbResult.data;
+      if (dbResult instanceof Database) {
+        this.database = dbResult;
         await this.database?.open();
       } else {
-        return {
-          success: false,
-          message: dbResult.message,
-          data: undefined,
-        };
+        if (typeof dbResult === 'string') {
+          const message = dbResult as string;
+          return {
+            testName: 'init',
+            success: false,
+            message: message,
+            data: undefined,
+          };
+        }
       }
 
       return {
+        testName: 'init',
         success: true,
         message: undefined,
         data: undefined,
       };
     } catch (error: any) {
       return {
+        testName: 'init',
         success: false,
         message: JSON.stringify(error),
         data: undefined,
@@ -78,17 +85,19 @@ export class TestCase {
     }
   }
 
-  async tearDown(): Promise<ITestResult<undefined>> {
+  async tearDown(): Promise<ITestResult> {
     try {
       await this.database?.close();
       await this.otherDatabase?.close();
       return {
+        testName: 'init',
         success: true,
         message: undefined,
         data: undefined,
       };
     } catch (error: any) {
       return {
+        testName: 'init',
         success: false,
         message: JSON.stringify(error),
         data: undefined,
@@ -96,16 +105,18 @@ export class TestCase {
     }
   }
 
-  async deleteDatabase(db: Database): Promise<ITestResult<undefined>> {
+  async deleteDatabase(db: Database): Promise<ITestResult> {
     try {
       await db.deleteDatabase();
       return {
+        testName: 'deleteDatabase',
         success: true,
         message: undefined,
         data: undefined,
       };
     } catch (error: any) {
       return {
+        testName: 'deleteDatabase',
         success: false,
         message: JSON.stringify(error),
         data: undefined,
@@ -113,17 +124,19 @@ export class TestCase {
     }
   }
 
-  static async getPlatformPath(): Promise<ITestResult<string>> {
+  static async getPlatformPath(): Promise<ITestResult> {
     const pd = new PlatformDirectory();
     try {
       const result: string = await pd.getDefaultPath();
       return {
+        testName: 'getPlatformPath',
         success: true,
         message: undefined,
         data: result,
       };
     } catch (error: any) {
       return {
+        testName: 'getPlatformPath',
         success: false,
         message: JSON.stringify(error),
         data: undefined,
@@ -135,23 +148,15 @@ export class TestCase {
     name: string,
     path: string | undefined,
     encryptionKey: string | undefined,
-  ): Promise<ITestResult<Database>> {
+  ): Promise<Database | string> {
     const config = new DatabaseConfiguration();
     try {
       config.directory = path ?? '';
       config.encryptionKey = encryptionKey ?? '';
       const db = new Database(name, config);
-      return {
-        success: true,
-        message: undefined,
-        data: db,
-      };
+      return db;
     } catch (error: any) {
-      return {
-        success: false,
-        message: JSON.stringify(error),
-        data: undefined,
-      };
+      return JSON.stringify(error);
     }
   }
 }

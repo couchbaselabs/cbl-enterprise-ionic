@@ -1,41 +1,17 @@
-// TestRunners.tsx
-import React, { useState, useContext } from 'react';
-import DatabaseContext from '../../providers/DatabaseContext';
+// FTS.tsx
+import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import {
-  IonItemDivider,
-  IonLabel,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-} from '@ionic/react';
+import { FTSTests } from 'couchbase-lite-ee-ionic';
 
 const FTSTestsPage: React.FC = () => {
-	const [showDetails, setShowDetails] = useState<boolean>(false);
-
-	function reset() {
-	}
-
-	function update() {
-
-	}
 
   return (
-  	<DetailPageTestContainerRunner
- 	 navigationTitle="FTS Tests"
-  	collapseTitle="FTS Tests"
-  	sectionTitle="Run Tests"
-	showDetails={showDetails}
-	setShowDetails={setShowDetails}
-  	onReset={reset}
-  	onUpdate={update}>
-		<>
-		</>
-  	</DetailPageTestContainerRunner>
-	);
+    <DetailPageTestContainerRunner
+      navigationTitle="FTS Tests"
+      collapseTitle="FTS Tests"
+      testCase={FTSTests}
+    ></DetailPageTestContainerRunner>
+  );
 };
 export default FTSTestsPage;

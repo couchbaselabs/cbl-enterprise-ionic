@@ -1,41 +1,17 @@
-// TestRunners.tsx
-import React, { useState, useContext } from 'react';
-import DatabaseContext from '../../providers/DatabaseContext';
+// FileLogging.tsx
+import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import {
-  IonItemDivider,
-  IonLabel,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-} from '@ionic/react';
+import { FileLoggingTests } from 'couchbase-lite-ee-ionic';
 
 const FileLoggingTestsPage: React.FC = () => {
-	const [showDetails, setShowDetails] = useState<boolean>(false);
-
-	function reset() {
-	}
-
-	function update() {
-
-	}
 
   return (
-  	<DetailPageTestContainerRunner
- 	 navigationTitle="File Logging Tests"
-  	collapseTitle="File Loggin Tests"
-  	sectionTitle="Run Tests"
-	showDetails={showDetails}
-	setShowDetails={setShowDetails}
-  	onReset={reset}
-  	onUpdate={update}>
-		<>
-		</>
-  	</DetailPageTestContainerRunner>
-	);
+    <DetailPageTestContainerRunner
+      navigationTitle="File Logging Tests"
+      collapseTitle="File Loggin Tests"
+      testCase={FileLoggingTests}
+    ></DetailPageTestContainerRunner>
+  );
 };
 export default FileLoggingTestsPage;

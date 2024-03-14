@@ -1,41 +1,16 @@
-// TestRunners.tsx
-import React, { useState, useContext } from 'react';
-import DatabaseContext from '../../providers/DatabaseContext';
+// ReplicatorPendingDoc.tsx
+import React, { useState } from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import {
-  IonItemDivider,
-  IonLabel,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-} from '@ionic/react';
+import { ReplicatorPendindDocIdsTests } from 'couchbase-lite-ee-ionic';
 
 const ReplicatorPendingDocTestsPage: React.FC = () => {
-	const [showDetails, setShowDetails] = useState<boolean>(false);
-
-	function reset() {
-	}
-
-	function update() {
-
-	}
-
   return (
-  	<DetailPageTestContainerRunner
- 	 navigationTitle="Sync Pending Doc Tests"
-  	collapseTitle="Sync Pending Doc Tests"
-  	sectionTitle="Run Tests"
-	showDetails={showDetails}
-	setShowDetails={setShowDetails}
-  	onReset={reset}
-  	onUpdate={update}>
-		<>
-		</>
-  	</DetailPageTestContainerRunner>
-	);
+    <DetailPageTestContainerRunner
+      navigationTitle="Sync Pending Doc Tests"
+      collapseTitle="Sync Pending Doc Tests"
+      testCase={ReplicatorPendindDocIdsTests}
+    ></DetailPageTestContainerRunner>
+  );
 };
 export default ReplicatorPendingDocTestsPage;
