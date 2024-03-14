@@ -36,4 +36,24 @@ export class CollectionTests extends TestCase {
       data: undefined,
     };
   }
+
+  async testRunnerTenSeconds(): Promise<ITestResult> {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    return {
+      testName: 'testRunnerTenSeconds',
+      success: true,
+      message: 'success',
+      data: undefined,
+    };
+  }
+
+  async testRunnerTwentySeconds(): Promise<ITestResult> {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    return {
+      testName: 'testRunnerTwentySeconds',
+      success: true,
+      message: 'success',
+      data: undefined,
+    };
+  }
 }

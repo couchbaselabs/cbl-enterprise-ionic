@@ -19,17 +19,15 @@ import {
   IonLabel,
 } from '@ionic/react';
 
-interface ContainerProps<T extends new() => TestCase> {
+interface ContainerProps<T extends new () => TestCase> {
   navigationTitle: string;
   collapseTitle: string;
   testCase: T;
 }
 
-const DetailPageTestRunnerContainer: React.FC<ContainerProps<new() => TestCase>> = ({
-  navigationTitle,
-  collapseTitle,
-  testCase,
-}) => {
+const DetailPageTestRunnerContainer: React.FC<
+  ContainerProps<new () => TestCase>
+> = ({ navigationTitle, collapseTitle, testCase }) => {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [shouldCancel, setShouldCancel] = useState<boolean>(false);
   const [resultMessages, setResultMessages] = useState<ITestResult[]>([]);
@@ -40,33 +38,45 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new() => TestCase>>
 
   function reset() {
     setSuccessCount(0);
-    setSuccessCount(0);
+    setFailedCount(0);
     setShowDetails(false);
     setShouldCancel(false);
     setResultMessages([]);
   }
 
   function update() {
-	//reset ui elements
-	setResultMessages([]);
-	setSuccessCount(0);
-	setSuccessCount(0);
+    //reset ui elements
+    setResultMessages([]);
+    setSuccessCount(0);
+    setSuccessCount(0);
 
-	testRunner = new TestRunner();
-	const testGenerator = testRunner.runTests(testCase, showDetails, shouldCancel);
-	(async () => {
-		for await (const result of testGenerator) {
-			const testResult = result as ITestResult;
-			if (testResult.success) {
-				setSuccessCount(successCount => successCount + 1);	
-			} else {
-				setFailedCount(failedCount => failedCount + 1);	
-			}
-			
-			setResultMessages((resultsMessage) => [...resultsMessage, testResult]);
-		}
-	})();
-}
+    testRunner = new TestRunner();
+    const testGenerator = testRunner.runTests(
+      testCase,
+      showDetails,
+      shouldCancel,
+    );
+    (async () => {
+      for await (const result of testGenerator) {
+        if (result.message === 'running') {
+          setResultMessages(prev => [...prev, result]);
+        } else {
+          if (result.success) {
+            setSuccessCount(successCount => successCount + 1);
+          } else {
+            setFailedCount(failedCount => failedCount + 1);
+          }
+          let newMessages = resultMessages.map(message => 
+            message.message === 'running' && message.testName == result.testName ? result : message);
+          if (newMessages.length > 0) {
+            setResultMessages(prev => [...prev, result]);
+          } else {
+            setResultMessages(newMessages);
+          }
+        }
+      }
+    })();
+  }
 
   return (
     <IonPage>
@@ -143,7 +153,15 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new() => TestCase>>
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <h2>{result.testName}</h2>
-                  <h2>{result.success ? 'Success' : 'Failed'}</h2>
+                  {result.message === 'running' ? (
+                    <i className="fa-duotone fa-spinner-third fa-spin"></i>
+                  ) : (
+                    <i
+                      className={`fa-duotone ${
+                        result.success ? 'fa-check' : 'fa-x'
+                      }`}
+                    ></i>
+                  )}
                 </div>
                 {showDetails && <p>{result.message}</p>}
               </IonLabel>

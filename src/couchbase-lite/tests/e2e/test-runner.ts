@@ -28,6 +28,15 @@ export class TestRunner {
         if (cancelToken) {
           return;
         }
+        //yield that we are running a test
+        let runningResult: ITestResult = {
+          testName: method,
+          success: true,
+          message: 'running',
+          data: undefined,
+        };
+        yield runningResult;
+
         const result: ITestResult = await instance[method]();
         yield result;
       }
