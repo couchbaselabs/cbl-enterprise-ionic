@@ -70,4 +70,5 @@ export * from './tests/e2e/replicator-test';
 export * from './tests/e2e/test-case';
 export * from './tests/e2e/test-result.types';
 export * from './tests/e2e/test-runner';
+export * from './tests/e2e/testing-test';
 export * from './tests/e2e/vector-search-test';

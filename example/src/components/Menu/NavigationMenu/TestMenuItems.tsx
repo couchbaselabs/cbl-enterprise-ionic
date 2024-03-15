@@ -129,7 +129,13 @@ const TestMenuItems: React.FC = () => {
 		>
 		  <IonLabel>Vector Search</IonLabel>
 		</IonItem>
-
+		<IonItem
+		  style={{ marginLeft: 20 }}
+		  routerLink="/tests/testing"
+		  routerDirection="none"
+		>
+		  <IonLabel>Testing Tests</IonLabel>
+		</IonItem>
 	  </>
 	);
   };

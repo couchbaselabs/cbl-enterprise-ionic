@@ -1,8 +1,10 @@
 import { PlatformDirectory } from '../../platform-directory';
+import { MutableDocument } from '../../mutable-document';
 import { Database } from '../../database';
 import { DatabaseConfiguration } from '../../database-configuration';
 
 import { ITestResult } from './test-result.types';
+import { Dictionary } from '../../definitions';
 
 export class TestCase {
   //setup shared properties
@@ -12,10 +14,7 @@ export class TestCase {
   otherDatabaseName: string = 'otherDb';
   directory: string | undefined = undefined;
 
-  showDetails: boolean;
-
   constructor() {
-    this.showDetails = false;
   }
 
   async init(): Promise<ITestResult> {
@@ -159,4 +158,29 @@ export class TestCase {
       return JSON.stringify(error);
     }
   }
+
+  static createDocument() : MutableDocument {
+    return new MutableDocument();
+  } 
+
+  static createDocumentWithId(id: string) : MutableDocument {
+    return new MutableDocument(id);
+  }
+
+  static createDocumentWithIdAndData(id: string, data: Dictionary) : MutableDocument {
+    let doc = new MutableDocument(id);
+    doc.setData(data);
+    return doc;
+  }
+
+  static createDocumentNumbered(start: number, end: number) : Array<MutableDocument> {
+    let docs = new Array<MutableDocument>();
+    for (let counter = start; counter <= end; counter++) {
+      let doc = new MutableDocument("doc-" + counter);
+      doc.setNumber('number', counter);
+      docs.push(doc);
+    }
+    return docs;
+  }
+
 }

@@ -48,17 +48,16 @@ const DetailPageTestRunnerContainer: React.FC<
   }
 
   function update() {
-    //reset ui elements
     setCurrentMessage(null);
     setResultMessages([]);
     setSuccessCount(0);
     setSuccessCount(0);
 
+    //todo fix cancellation token
     testRunner = new TestRunner();
     const testGenerator = testRunner.runTests(
       testCase,
-      showDetails,
-      shouldCancel,
+      shouldCancel
     );
 
     (async () => {

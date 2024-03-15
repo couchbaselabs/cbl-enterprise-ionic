@@ -65,6 +65,7 @@ import {
     ReplicatorTestsPage,
     ReplicatorCustomConflictTestsPage,
     ReplicatorPendingDocTestsPage,
+    TestingTestPage,
     VectorSearchTestsPage,
 } from './pages/tests';
 
@@ -123,6 +124,7 @@ const App: React.FC = () => {
                         <Route path="/tests/replicatorConflicts" component={ReplicatorCustomConflictTestsPage} exact/>
                         <Route path="/tests/replicatorPendingDoc" component={ReplicatorPendingDocTestsPage} exact/>
                         <Route path="/tests/vectorSearch" component={VectorSearchTestsPage} exact/>
+                        <Route path="/tests/testing" component={TestingTestPage} exact/>
 
                         <Route path="/log/console" component={ConsoleLogPage} exact/>
                         <Route path="/log/file" component={FileLogPage} exact/>

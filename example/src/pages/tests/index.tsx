@@ -14,4 +14,5 @@ export {default as QueryBuilderTestsPage } from './QueryBuilder';
 export {default as ReplicatorTestsPage } from './Replicator';
 export {default as ReplicatorCustomConflictTestsPage } from './ReplicatorCustomConflict';
 export {default as ReplicatorPendingDocTestsPage } from './ReplicatorPendingDoc';
+export {default as TestingTestPage } from './Testing';
 export {default as VectorSearchTestsPage } from './VectorSearch';

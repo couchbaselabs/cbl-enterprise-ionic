@@ -1,6 +1,8 @@
 import { TestCase } from './test-case';
 import { ITestResult } from './test-result.types';
 import { MutableDocument } from '../../mutable-document';
+import { Database } from '../../database';
+import { getPlatformId } from '@capacitor/core/types/util';
 
 /**
  * DatabaseTests - reminder all test cases must start with 'test' in the name of the method or they will not run
@@ -27,39 +29,77 @@ export class DatabaseTests extends TestCase {
     return this.verifyDoc('testCreateDocument', id, JSON.stringify(dic));
   }
 
-   /**
+  /**
    * This method creates a new document with a predefined ID and name, saves it to the database,
-   * and then deletes the document and validates the document is no longer in the database 
+   * and then deletes the document and validates the document is no longer in the database
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-   async testDeleteDocument(): Promise<ITestResult> {
+  async testDeleteDocument(): Promise<ITestResult> {
     const id = '123';
     const doc = new MutableDocument();
     doc.setId(id);
     doc.setString('name', 'Scott');
     let dic = doc.toDictionary;
     await this.database?.save(doc);
-    let verifyResults = await this.verifyDoc('testDeleteDocument', id, JSON.stringify(dic));
+    let verifyResults = await this.verifyDoc(
+      'testDeleteDocument',
+      id,
+      JSON.stringify(dic),
+    );
     if (verifyResults.success) {
-    return await this.database?.deleteDocument(doc).then(() => {
-      return {
-        testName: 'testDeleteDocument',
-        success: true,
-        message: 'success',
-        data: undefined,
-      }
-    }).catch((err) => {
-      return {
-        testName: 'testDeleteDocument',
-        success: false,
-        message: 'failed',
-        data: JSON.stringify(err),
-      }
-    });
-  } else {
-    return verifyResults
+      return await this.database
+        ?.deleteDocument(doc)
+        .then(() => {
+          return {
+            testName: 'testDeleteDocument',
+            success: true,
+            message: 'success',
+            data: undefined,
+          };
+        })
+        .catch(err => {
+          return {
+            testName: 'testDeleteDocument',
+            success: false,
+            message: 'failed',
+            data: JSON.stringify(err),
+          };
+        });
+    } else {
+      return verifyResults;
+    }
   }
+
+  /**
+   * This method tests the properties of a database
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testProperties(): Promise<ITestResult> {
+    let pathResults = await TestCase.getPlatformPath();
+    if (!pathResults.success) {
+      return pathResults;
+    }
+    let path = pathResults.data;
+    try {
+      //TODO fix this
+      let dbPath = await this.database.getPath();
+      let dbName = await this.database.getName();
+      return {
+        testName: 'testProperties',
+        success: true,
+        message: 'success', 
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'testProperties',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
   }
 
   async verifyDoc(
