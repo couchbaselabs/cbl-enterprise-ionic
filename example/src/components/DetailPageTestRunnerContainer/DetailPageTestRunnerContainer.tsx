@@ -1,6 +1,7 @@
 // DetailPageTestContainerRunner.tsx
 import './DetailPageTestRunnerContainer.css';
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
+import  useState from 'react-usestateref';
 import { TestRunner, ITestResult, TestCase } from 'couchbase-lite-ee-ionic';
 
 import {
@@ -31,6 +32,7 @@ const DetailPageTestRunnerContainer: React.FC<
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [shouldCancel, setShouldCancel] = useState<boolean>(false);
   const [resultMessages, setResultMessages] = useState<ITestResult[]>([]);
+  const [currentMessage, setCurrentMessage] = useState<ITestResult | null>(null);
   const [successCount, setSuccessCount] = useState<number>(0);
   const [failedCount, setFailedCount] = useState<number>(0);
 
@@ -42,10 +44,12 @@ const DetailPageTestRunnerContainer: React.FC<
     setShowDetails(false);
     setShouldCancel(false);
     setResultMessages([]);
+    setCurrentMessage(null);
   }
 
   function update() {
     //reset ui elements
+    setCurrentMessage(null);
     setResultMessages([]);
     setSuccessCount(0);
     setSuccessCount(0);
@@ -56,28 +60,23 @@ const DetailPageTestRunnerContainer: React.FC<
       showDetails,
       shouldCancel,
     );
+
     (async () => {
       for await (const result of testGenerator) {
-        if (result.message === 'running') {
-          setResultMessages(prev => [...prev, result]);
+      if (result.message === 'running') {
+        setCurrentMessage(result);
+      } else {
+        if (result.success) {
+          setSuccessCount(successCount => successCount + 1);
         } else {
-          if (result.success) {
-            setSuccessCount(successCount => successCount + 1);
-          } else {
-            setFailedCount(failedCount => failedCount + 1);
-          }
-          let newMessages = resultMessages.map(message => 
-            message.message === 'running' && message.testName == result.testName ? result : message);
-          if (newMessages.length > 0) {
-            setResultMessages(prev => [...prev, result]);
-          } else {
-            setResultMessages(newMessages);
-          }
+          setFailedCount(failedCount => failedCount + 1);
+        }
+          setResultMessages(prev => [...prev, result]);
         }
       }
+      setCurrentMessage(null);  
     })();
   }
-
   return (
     <IonPage>
       <IonHeader>
@@ -101,7 +100,7 @@ const DetailPageTestRunnerContainer: React.FC<
         </IonHeader>
         <IonList>
           <IonItemDivider>
-            <IonLabel>"Run Tests"</IonLabel>
+            <IonLabel>Run Tests</IonLabel>
             <IonButtons slot="end">
               <IonToggle
                 onIonChange={(e: any) => setShowDetails(e.detail.checked)}
@@ -133,7 +132,20 @@ const DetailPageTestRunnerContainer: React.FC<
               </IonButton>
             </IonButtons>
           </IonItemDivider>
-          <hr style={{ padding: '10px' }} />
+          <hr style={{ padding: '5px' }} />
+          { currentMessage !== null ? ( 
+          <IonItem key="999">
+              <IonLabel>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <h2>{currentMessage.testName}</h2>
+                    <i className="fa-duotone fa-spinner-third fa-spin"></i>
+                </div>
+                {showDetails && <p>{currentMessage.message}</p>}
+              </IonLabel>
+            </IonItem>
+          ) : <></> }
           <IonItemDivider>
             <div
               style={{
@@ -146,7 +158,8 @@ const DetailPageTestRunnerContainer: React.FC<
               <IonLabel>Failed: {failedCount}</IonLabel>
             </div>
           </IonItemDivider>
-          {resultMessages.map((result, index) => (
+          {//resultMessages.map((result, index) => (
+            Array.from(resultMessages.values()).map((result, index) => (
             <IonItem key={index}>
               <IonLabel>
                 <div

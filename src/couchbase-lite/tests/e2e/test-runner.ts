@@ -3,6 +3,7 @@ import { ITestResult } from './test-result.types';
 import { TestCase } from './test-case';
 
 export class TestRunner {
+
   async *runTests<T extends TestCase>(
     testCase: new () => T,
     showDetails: boolean,
@@ -36,7 +37,6 @@ export class TestRunner {
           data: undefined,
         };
         yield runningResult;
-
         const result: ITestResult = await instance[method]();
         yield result;
       }
