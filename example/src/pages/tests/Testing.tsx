@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { TestingTests } from 'couchbase-lite-ee-ionic';
+import { TestingTests } from 'cblite-core-tests';
 
 const TestingTestsPage: React.FC = () => {
   return (

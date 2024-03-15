@@ -1,4 +1,4 @@
-import { CouchbaseLiteException } from '../../couchbase-lite-exception';
+import { CouchbaseLiteException } from 'couchbase-lite-ee-ionic';
 import { TestCase } from './test-case';
 import { ITestResult } from './test-result.types';
 

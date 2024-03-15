@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { QueryTests } from 'couchbase-lite-ee-ionic';
+import { QueryTests } from 'cblite-core-tests';
 
 const QueryTestPage: React.FC = () => {
   return (

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { ConsoleLoggingTests } from 'couchbase-lite-ee-ionic';
+import { ConsoleLoggingTests } from 'cblite-core-tests';
 
 const ConsoleLoggingTestsPage: React.FC = () => {
 

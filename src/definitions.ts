@@ -9,6 +9,8 @@ import {
 } from './couchbase-lite';
 import { DatabaseFileLoggingConfiguration } from './couchbase-lite/database-logging';
 
+
+//TODO remove these from here and use the ones from cblite-core
 export interface PluginConfigureArgs {
   config: any;
 }

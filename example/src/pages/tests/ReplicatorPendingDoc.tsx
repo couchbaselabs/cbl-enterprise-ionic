@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { ReplicatorPendindDocIdsTests } from 'couchbase-lite-ee-ionic';
+import { ReplicatorPendindDocIdsTests } from 'cblite-core-tests';
 
 const ReplicatorPendingDocTestsPage: React.FC = () => {
   return (

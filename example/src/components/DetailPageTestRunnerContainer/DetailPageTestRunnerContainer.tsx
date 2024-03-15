@@ -1,8 +1,8 @@
 // DetailPageTestContainerRunner.tsx
 import './DetailPageTestRunnerContainer.css';
-import React, { useReducer } from 'react';
+import React from 'react';
 import  useState from 'react-usestateref';
-import { TestRunner, ITestResult, TestCase } from 'couchbase-lite-ee-ionic';
+import { TestRunner, ITestResult, TestCase } from 'cblite-core-tests';
 
 import {
   IonButtons,

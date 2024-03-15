@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { NotificationTests } from 'couchbase-lite-ee-ionic';
+import { NotificationTests } from 'cblite-core-tests';
 
 const NotificationsTestPage: React.FC = () => {
 

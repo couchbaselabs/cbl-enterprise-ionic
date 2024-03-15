@@ -1,7 +1,10 @@
 import { TestCase } from './test-case';
 import { ITestResult } from './test-result.types';
-import { MutableDocument } from '../../mutable-document';
-import { Database } from '../../database';
+import { 
+  Database, 
+  PlatformDirectory, 
+  MutableDocument 
+} from 'couchbase-lite-ee-ionic';
 import { getPlatformId } from '@capacitor/core/types/util';
 
 /**
@@ -48,8 +51,15 @@ export class DatabaseTests extends TestCase {
       JSON.stringify(dic),
     );
     if (verifyResults.success) {
-      return await this.database
-        ?.deleteDocument(doc)
+      if (!this.database) {
+        return {
+          testName: 'testDeleteDocument',
+          success: false,
+          message: 'failed',
+          data: 'Database is undefined',
+        };
+      }
+      return await this.database.deleteDocument(doc)
         .then(() => {
           return {
             testName: 'testDeleteDocument',
@@ -84,8 +94,8 @@ export class DatabaseTests extends TestCase {
     let path = pathResults.data;
     try {
       //TODO fix this
-      let dbPath = await this.database.getPath();
-      let dbName = await this.database.getName();
+      let dbPath = await this.database?.getPath();
+      let dbName = await this.database?.getName();
       return {
         testName: 'testProperties',
         success: true,
@@ -117,7 +127,7 @@ export class DatabaseTests extends TestCase {
       };
     } else {
       if (
-        doc.getId() === withId &&
+        doc?.getId() === withId &&
         JSON.stringify(doc.toDictionary) === withData
       ) {
         return {

@@ -1,0 +1,21 @@
+{
+  "name": "cblite-core-tests",
+  "version": "1.0.0",
+  "description": "A testing library for cblite-core-ts",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "typescript": "^5.4.2",
+    "couchbase-lite-ee-ionic": "file:.."
+  },
+  "keywords": [
+    "couchbase",
+    "couchbase-lite",
+    "test"
+  ],
+  "author": "Developer Advocates @ Couchbase",
+  "license": "Apache-2.0"
+}

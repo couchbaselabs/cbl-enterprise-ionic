@@ -1,12 +1,15 @@
-import { PlatformDirectory } from '../../platform-directory';
-import { MutableDocument } from '../../mutable-document';
-import { Database } from '../../database';
-import { DatabaseConfiguration } from '../../database-configuration';
+import { 
+  Database, 
+  PlatformDirectory, 
+  MutableDocument,
+  DatabaseConfiguration,
+  Dictionary
+} from 'couchbase-lite-ee-ionic';
 
 import { ITestResult } from './test-result.types';
-import { Dictionary } from '../../definitions';
 
 export class TestCase {
+  [key: string]: any;
   //setup shared properties
   database: Database | undefined = undefined;
   otherDatabase: Database | undefined = undefined;

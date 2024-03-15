@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { DocumentExpirationTests } from 'couchbase-lite-ee-ionic';
+import { DocumentExpirationTests } from 'cblite-core-tests';
 
 const DocumentExpirationTestsPage: React.FC = () => {
 
