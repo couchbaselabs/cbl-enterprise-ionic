@@ -8,8 +8,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "typescript": "^5.4.2",
-    "cblite-core": "file:../cblite-core/"
+    "cblite-core": "file:../cblite-core/",
+    "chai": "^5.1.0",
+    "typescript": "^5.4.2"
   },
   "keywords": [
     "couchbase",

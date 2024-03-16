@@ -202,9 +202,10 @@ export class Database {
     document: Document,
     concurrencyControl: ConcurrencyControl = null,
   ): Promise<void> {
+    let id = document.getId();
     return this._engine.Database_DeleteDocument({
       name: this.databaseName,
-      document: document,
+      docId: id,
       concurrencyControl: concurrencyControl,
     });
   }

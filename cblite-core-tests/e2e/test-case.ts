@@ -1,15 +1,23 @@
-import { 
-  Database, 
-  PlatformDirectory, 
+import {
+  Database,
+  PlatformDirectory,
   MutableDocument,
   DatabaseConfiguration,
-  Dictionary
+  Dictionary,
+  QueryBuilder,
+  SelectResult,
+  DataSource,
+  Expression,
+  Function,
 } from 'cblite-core';
+
+import { assert, expect } from 'chai';
 
 import { ITestResult } from './test-result.types';
 
 export class TestCase {
   [key: string]: any;
+
   //setup shared properties
   database: Database | undefined = undefined;
   otherDatabase: Database | undefined = undefined;
@@ -17,13 +25,12 @@ export class TestCase {
   otherDatabaseName: string = 'otherDb';
   directory: string | undefined = undefined;
 
-  constructor() {
-  }
+  constructor() {}
 
   async init(): Promise<ITestResult> {
     try {
       //try to get the platform local directory - can't run tests if we can't save a database to a directory
-      const filePathResult = await TestCase.getPlatformPath();
+      const filePathResult = await this.getPlatformPath();
       if (filePathResult.success) {
         this.directory = filePathResult.data;
       } else {
@@ -51,7 +58,7 @@ export class TestCase {
       }
 
       //create a database and then open it
-      const dbResult = await TestCase.getDatabase(
+      const dbResult = await this.getDatabase(
         this.databaseName,
         this.directory,
         '',
@@ -87,26 +94,6 @@ export class TestCase {
     }
   }
 
-  async tearDown(): Promise<ITestResult> {
-    try {
-      await this.database?.close();
-      await this.otherDatabase?.close();
-      return {
-        testName: 'init',
-        success: true,
-        message: undefined,
-        data: undefined,
-      };
-    } catch (error: any) {
-      return {
-        testName: 'init',
-        success: false,
-        message: JSON.stringify(error),
-        data: undefined,
-      };
-    }
-  }
-
   async deleteDatabase(db: Database): Promise<ITestResult> {
     try {
       await db.deleteDatabase();
@@ -126,7 +113,7 @@ export class TestCase {
     }
   }
 
-  static async getPlatformPath(): Promise<ITestResult> {
+  async getPlatformPath(): Promise<ITestResult> {
     const pd = new PlatformDirectory();
     try {
       const result: string = await pd.getDefaultPath();
@@ -146,7 +133,7 @@ export class TestCase {
     }
   }
 
-  static async getDatabase(
+  async getDatabase(
     name: string,
     path: string | undefined,
     encryptionKey: string | undefined,
@@ -162,28 +149,121 @@ export class TestCase {
     }
   }
 
-  static createDocument() : MutableDocument {
-    return new MutableDocument();
-  } 
-
-  static createDocumentWithId(id: string) : MutableDocument {
-    return new MutableDocument(id);
+  async createDocumentWithId(id: string): Promise<MutableDocument> {
+    let doc = new MutableDocument(id);
+    doc.setValue('key', 1);
+    await this.database?.save(doc);
+    let savedDoc = await this.database?.getDocument(id);
+    assert.equal(savedDoc?.getId(), id);
+    assert.equal(savedDoc?.getSequence(), 1);
+    let mutableSavedDoc = MutableDocument.fromDocument(savedDoc);
+    return mutableSavedDoc;
   }
 
-  static createDocumentWithIdAndData(id: string, data: Dictionary) : MutableDocument {
+  createDocumentWithIdAndData(id: string, data: Dictionary): MutableDocument {
     let doc = new MutableDocument(id);
     doc.setData(data);
     return doc;
   }
 
-  static createDocumentNumbered(start: number, end: number) : Array<MutableDocument> {
-    let docs = new Array<MutableDocument>();
+  createDocumentNumbered(start: number, end: number): MutableDocument[] {
+    let docs: MutableDocument[] = [];
     for (let counter = start; counter <= end; counter++) {
-      let doc = new MutableDocument("doc-" + counter);
+      let doc = new MutableDocument('doc-' + counter);
       doc.setNumber('number', counter);
       docs.push(doc);
     }
     return docs;
   }
 
+  async createDocs(
+    methodName: string,
+    number: number,
+  ): Promise<MutableDocument[]> {
+    let docs = this.createDocumentNumbered(1, number);
+    try {
+      for (let doc of docs) {
+        await this.database?.save(doc);
+      }
+    } catch (error: any) {
+      throw new Error("Can't create docs:" + JSON.stringify(error));
+    }
+    return docs;
+  }
+
+  async verifyDocs(testName: string, number: number): Promise<ITestResult> {
+    try {
+      for (let counter = 1; counter <= number; counter++) {
+        let id = 'doc-' + counter;
+        let doc = await this.database?.getDocument(id);
+        let dictionary = doc.toDictionary();
+        let json = JSON.stringify(dictionary);
+        let verify = await this.verifyDoc(testName, id, json);
+        if (!verify.success) {
+          return verify;
+        }
+      }
+    } catch (error: any) {
+      return {
+        testName: testName,
+        success: false,
+        message: 'failed',
+        data: JSON.stringify(error),
+      };
+    }
+    return {
+      testName: testName,
+      success: true,
+      message: 'success',
+      data: undefined,
+    };
+  }
+
+  async verifyDoc(
+    testName: string,
+    withId: string,
+    withData: string,
+  ): Promise<ITestResult> {
+    const doc = await this.database?.getDocument(withId);
+    if (doc === undefined && doc === null) {
+      return {
+        testName: testName,
+        success: false,
+        message: 'Document not found',
+        data: undefined,
+      };
+    } else {
+      if (
+        doc?.getId() === withId &&
+        JSON.stringify(doc.toDictionary) === withData
+      ) {
+        return {
+          testName: testName,
+          success: true,
+          message: 'success',
+          data: undefined,
+        };
+      } else {
+        return {
+          testName: testName,
+          success: false,
+          message: 'failed',
+          data: "id or data doesn't match",
+        };
+      }
+    }
+  }
+
+  async getDocumentCount(): Promise<number> {
+    let query = QueryBuilder.select(
+      SelectResult.expression(Function.count(Expression.string('*'))).as(
+        'count',
+      ),
+    ).from(DataSource.database(this.database));
+    let resultSet = await (await query.execute()).allResults();
+    for (let result of resultSet) {
+      return Number.parseInt(result.count);
+    }
+    return 0;
+  }
 }

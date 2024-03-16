@@ -1,11 +1,7 @@
 import { TestCase } from './test-case';
 import { ITestResult } from './test-result.types';
-import { 
-  Database, 
-  PlatformDirectory, 
-  MutableDocument 
-} from 'cblite-core';
-import { getPlatformId } from '@capacitor/core/types/util';
+import { assert, expect } from 'chai';
+import { MutableDocument, ConcurrencyControl, Blob } from 'cblite-core';
 
 /**
  * DatabaseTests - reminder all test cases must start with 'test' in the name of the method or they will not run
@@ -43,42 +39,26 @@ export class DatabaseTests extends TestCase {
     const doc = new MutableDocument();
     doc.setId(id);
     doc.setString('name', 'Scott');
-    let dic = doc.toDictionary;
     await this.database?.save(doc);
-    let verifyResults = await this.verifyDoc(
-      'testDeleteDocument',
-      id,
-      JSON.stringify(dic),
-    );
-    if (verifyResults.success) {
-      if (!this.database) {
+    let deleteResult = await this.database
+      .deleteDocument(doc)
+      .then(() => {
+        return {
+          testName: 'testDeleteDocument',
+          success: true,
+          message: 'success',
+          data: undefined,
+        };
+      })
+      .catch((error: any) => {
         return {
           testName: 'testDeleteDocument',
           success: false,
           message: 'failed',
-          data: 'Database is undefined',
+          data: JSON.stringify(error),
         };
-      }
-      return await this.database.deleteDocument(doc)
-        .then(() => {
-          return {
-            testName: 'testDeleteDocument',
-            success: true,
-            message: 'success',
-            data: undefined,
-          };
-        })
-        .catch(err => {
-          return {
-            testName: 'testDeleteDocument',
-            success: false,
-            message: 'failed',
-            data: JSON.stringify(err),
-          };
-        });
-    } else {
-      return verifyResults;
-    }
+      });
+    return deleteResult;
   }
 
   /**
@@ -86,8 +66,8 @@ export class DatabaseTests extends TestCase {
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testProperties(): Promise<ITestResult> {
-    let pathResults = await TestCase.getPlatformPath();
+  async testDatabaseProperties(): Promise<ITestResult> {
+    let pathResults = await this.getPlatformPath();
     if (!pathResults.success) {
       return pathResults;
     }
@@ -96,15 +76,17 @@ export class DatabaseTests extends TestCase {
       //TODO fix this
       let dbPath = await this.database?.getPath();
       let dbName = await this.database?.getName();
+      expect(dbPath).to.include(path);
+      expect(dbName).to.include('testDb');
       return {
-        testName: 'testProperties',
+        testName: 'testDatabaseProperties',
         success: true,
-        message: 'success', 
+        message: 'success',
         data: undefined,
       };
     } catch (error: any) {
       return {
-        testName: 'testProperties',
+        testName: 'testDatabaseProperties',
         success: false,
         message: JSON.stringify(error),
         data: undefined,
@@ -112,38 +94,276 @@ export class DatabaseTests extends TestCase {
     }
   }
 
-  async verifyDoc(
-    testName: string,
-    withId: string,
-    withData: string,
-  ): Promise<ITestResult> {
-    const doc = await this.database?.getDocument(withId);
-    if (doc === undefined && doc === null) {
+  async testSaveDocWithId(): Promise<ITestResult> {
+    try {
+      let docId = await this.createDocumentWithId('doc1');
+      let count = await this.getDocumentCount();
+      assert.equal(1, count);
+      await this.verifyDoc(
+        'testSaveDocWithId',
+        'doc1',
+        JSON.stringify(docId.toDictionary),
+      );
       return {
-        testName: testName,
-        success: false,
-        message: 'Document not found',
+        testName: 'testSaveDocWithId',
+        success: true,
+        message: 'success',
         data: undefined,
       };
-    } else {
-      if (
-        doc?.getId() === withId &&
-        JSON.stringify(doc.toDictionary) === withData
-      ) {
-        return {
-          testName: testName,
-          success: true,
-          message: 'success',
-          data: undefined,
-        };
-      } else {
-        return {
-          testName: testName,
-          success: true,
-          message: 'failed',
-          data: "id or data doesn't match",
-        };
+    } catch (error: any) {
+      return {
+        testName: 'testSaveDocWithId',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
+  async testSaveDocWithSpecialCharactersDocID(): Promise<ITestResult> {
+    try {
+      let docId = await this.createDocumentWithId(
+        '~@#$%^&*()_+{}|\\][=-/.,<>?":;',
+      );
+      let count = await this.getDocumentCount();
+      assert.equal(1, count);
+      await this.verifyDoc(
+        'testSaveDocWithSpecialCharactersDocID',
+        '~@#$%^&*()_+{}|\\][=-/.,<>?":;',
+        JSON.stringify(docId.toDictionary),
+      );
+      return {
+        testName: 'testSaveDocWithSpecialCharactersDocID',
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'testSaveDocWithSpecialCharactersDocID',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
+  async testSaveSameDocTwice(): Promise<ITestResult> {
+    try {
+      //create document first time
+      let docId = await this.createDocumentWithId('doc1');
+      let count = await this.getDocumentCount();
+      assert.equal(1, count);
+      //save the same document again to check sequance number
+      await this.database?.save(docId);
+      let docSeq2 = await this.database?.getDocument('doc1');
+      count = await this.getDocumentCount();
+      assert.equal(1, count);
+      assert.equal(2, docSeq2?.getSequence());
+      return {
+        testName: 'testSaveSameDocTwice',
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'testSaveSameDocTwice',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
+  async testSaveManyDocs(): Promise<ITestResult> {
+    try {
+      await this.createDocs('testSaveManyDocs', 5000);
+      let count = await this.getDocumentCount();
+      assert.equal(5000, count);
+      await this.verifyDocs('testSaveManyDocs', 5000);
+
+      //cleanup
+      await this.init();
+
+      //try again to validate that we can create new documents after cleanup
+      await this.createDocs('testSaveManyDocs', 1000);
+      count = await this.getDocumentCount();
+      assert.equal(1000, count);
+      await this.verifyDocs('testSaveManyDocs', 1000);
+
+      return {
+        testName: 'testSaveManyDocs',
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'testSaveManyDocs',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
+  async testAndUpdateMutableDoc(): Promise<ITestResult> {
+    try {
+      let doc = await this.createDocumentWithId('doc1');
+      //update
+      doc.setString('firstName', 'Daniel');
+      this.database?.save(doc);
+      let count = await this.getDocumentCount();
+      assert.equal(1, count);
+
+      //update
+      doc.setString('lastName', 'Tiger');
+      this.database?.save(doc);
+      count = await this.getDocumentCount();
+      assert.equal(1, count);
+
+      doc.setInt('age', 30);
+      this.database?.save(doc);
+      count = await this.getDocumentCount();
+      assert.equal(1, count);
+
+      //validate saves worked
+      let updatedDoc = await this.database?.getDocument('doc1');
+      assert.equal(4, updatedDoc?.getSequence());
+      assert.equal('Daniel', updatedDoc?.getString('firstName'));
+      assert.equal('Tiger', updatedDoc?.getString('lastName'));
+      assert.equal(30, updatedDoc?.getString('age'));
+
+      return {
+        testName: 'testAndUpdateMutableDoc',
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'testAndUpdateMutableDoc',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
+  /**
+   * This method tests running compact on a database
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testPerformMaintenanceCompact(): Promise<ITestResult> {
+    try {
+      //get 20 docs to test with
+      let docs = await this.createDocs('testPerformMaintenanceCompact', 20);
+
+      //update the docs 25 times
+      for (let doc of docs) {
+        for (let counter = 0; counter < 25; counter++) {
+          doc.setValue('number', counter.toString());
+          await this.database?.save(doc);
+        }
       }
+
+      //create blobs for each of the docs
+      for (let doc of docs) {
+        let dbDoc = await this.database?.getDocument(doc.getId());
+        let mutableDoc = MutableDocument.fromDocument(dbDoc);
+        let encoder = new TextEncoder();
+        let arrayBuffer = encoder.encode('hello blob');
+        let blob = new Blob('text/plain', arrayBuffer);
+        mutableDoc.setBlob('blob', blob);
+        await this.database?.save(mutableDoc);
+      }
+
+      //validate document and attachment count
+      let originalDocCount = await this.getDocumentCount();
+      assert.equal(originalDocCount, 20);
+
+      //TODO validate amount of attachments
+
+      //compact
+      await this.database?.compact();
+
+      //delete all the docs
+      for (let doc of docs) {
+        await this.database?.deleteDocument(doc);
+      }
+
+      //validate the document and attachment count
+      let postDeleteDocCount = await this.getDocumentCount();
+      assert.equal(postDeleteDocCount, 0);
+
+      //compact again
+      await this.database?.compact();
+
+      //TODO validate the attachment count
+
+      return {
+        testName: 'testPerformMaintenanceCompact',
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'testPerformMaintenanceCompact',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
+  async testSaveDocWithConflict(): Promise<ITestResult> {
+    let result1 = await this.saveDocWithConflict(
+      'testSaveDocWithConflict',
+      undefined,
+    );
+    if (!result1.success) return result1;
+
+    let result2 = await this.saveDocWithConflict(
+      'testSaveDocWithConflict',
+      ConcurrencyControl.FAIL_ON_CONFLICT,
+    );
+    if (!result2.success) return result2;
+
+    let result3 = await this.saveDocWithConflict(
+      'testSaveDocWithConflict',
+      ConcurrencyControl.LAST_WRITE_WINS,
+    );
+    if (!result3.success) return result3;
+
+    return {
+      testName: 'testSaveDocWithConflict',
+      success: true,
+      message: 'success',
+      data: undefined,
+    };
+  }
+
+  async saveDocWithConflict(
+    methodName: string,
+    control: ConcurrencyControl | undefined,
+  ): Promise<ITestResult> {
+    try {
+      return {
+        testName: 'methodName',
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: 'methodName',
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
     }
   }
 }

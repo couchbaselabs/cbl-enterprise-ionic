@@ -75,7 +75,7 @@ export interface DatabasePurgeDocumentArgs extends DatabaseArgs {
 }
 
 export interface DatabaseDeleteDocumentArgs extends DatabaseArgs {
-  document: Dictionary;
+  docId: string;
   concurrencyControl: ConcurrencyControl;
 }
 
