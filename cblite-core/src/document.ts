@@ -44,7 +44,7 @@ export class Document {
     return database
       .getEngine()
       .Document_GetBlobContent({
-        databaseName: database.getName(),
+        name: database.getName(),
         documentId: this.getId(),
         key: key,
       });

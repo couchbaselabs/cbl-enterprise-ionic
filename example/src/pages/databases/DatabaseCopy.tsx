@@ -12,7 +12,7 @@ import {
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
 
 //import the database in order to create/open a database
-import { DatabaseConfiguration, PlatformDirectory } from 'couchbase-lite-ee-ionic';
+import { DatabaseConfiguration, PlatformDirectory } from 'cblite-core';
 
 const DatabaseCopyPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;

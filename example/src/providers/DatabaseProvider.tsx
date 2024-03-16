@@ -1,16 +1,18 @@
 import React, { useState, ReactNode } from 'react';
-import { Database } from 'couchbase-lite-ee-ionic';
+import { Database } from 'cblite-core';
 import DatabaseContext from './DatabaseContext';
 import { DatabaseContextType } from './DatabaseContextType';
+import { CapacitorEngine } from 'couchbase-lite-ee-ionic';
 
 type DatabaseProviderProps = {
   children: ReactNode;
 };
 
 const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
-  const [databases, setDatabases] = useState<Record<string, Database>>({});
 
+  const [databases, setDatabases] = useState<Record<string, Database>>({});
   const value: DatabaseContextType = { databases, setDatabases };
+  const engine = new CapacitorEngine();
 
   return (
     <DatabaseContext.Provider value={value}>

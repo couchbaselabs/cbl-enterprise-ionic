@@ -6,7 +6,7 @@ import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm
 
 import { IonItemDivider, IonLabel, IonItem, IonInput, IonButton, IonToggle } from '@ionic/react';
 
-import { IndexBuilder, FullTextIndexItem } from 'couchbase-lite-ee-ionic';
+import { IndexBuilder, FullTextIndexItem } from 'cblite-core';
 
 const CreateFTSIndexPage: React.FC = () => {
 

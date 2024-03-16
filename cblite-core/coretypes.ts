@@ -2,7 +2,6 @@ import {
   AbstractIndex,
   ConcurrencyControl,
   DatabaseConfiguration,
-  MutableDocument,
   Dictionary,
   Document,
   Query,
@@ -18,8 +17,6 @@ import { DatabaseFileLoggingConfiguration } from './src/database-logging';
 export interface PluginListenerHandle {
   remove: () => Promise<void>;
 }
-
-/* END OF TODO */
 //=================================================//
 
 export interface EngineDatabaseSaveResult {
@@ -35,7 +32,7 @@ export interface PluginConfigureArgs {
 }
 
 export interface DatabaseArgs {
-  databaseName: string;
+  name: string;
 }
 
 export interface DatabaseOpenArgs extends DatabaseArgs {
@@ -43,7 +40,8 @@ export interface DatabaseOpenArgs extends DatabaseArgs {
 }
 
 export interface DatabaseSaveArgs extends DatabaseArgs {
-  document: MutableDocument;
+  id: string;
+  document: Dictionary;
   concurrencyControl: ConcurrencyControl | null;
 }
 
@@ -72,7 +70,7 @@ export interface DatabaseExistsArgs extends DatabaseArgs {
 }
 
 export interface DatabasePurgeDocumentArgs extends DatabaseArgs {
-  document: Document;
+  docId: string;
 }
 
 export interface DatabaseDeleteDocumentArgs extends DatabaseArgs {
@@ -98,7 +96,11 @@ export interface DocumentGetBlobContentArgs extends DatabaseArgs {
   key: string;
 }
 
-export interface QueryExecuteArgs extends DatabaseArgs {
+export interface DocumentResult {
+  document: Document;
+}
+
+export interface EngineQueryExecuteArgs extends DatabaseArgs {
   query: Query;
 }
 
@@ -111,7 +113,7 @@ export interface ResultSetNextBatchArgs extends DatabaseArgs {
 }
 
 export interface ResultSetAllResultsArgs extends DatabaseArgs {
-  databaseName: string;
+  name: string;
   resultSetId: string;
   callback: (data: any, err: any) => void;
 }
@@ -143,57 +145,93 @@ export interface ReplicatorChangeListenerArgs {
 
 export interface ICoreEngine {
   //File System - used for copy and opening database
-  File_GetDefaultPath(): Promise<{ path: string }>;
+  File_GetDefaultPath()
+    : Promise<{ path: string }>;
 
   //Database top level functions
-  Database_Open(args: DatabaseOpenArgs): Promise<void>;
-  Database_GetPath(args: DatabaseArgs): Promise<{ path: string }>;
-  Database_Copy(args: DatabaseCopyArgs): Promise<void>;
-  Database_Exists(args: DatabaseExistsArgs): Promise<{ exists: boolean }>;
-  Database_Close(args: DatabaseArgs): Promise<void>;
-  Database_Delete(args: DatabaseArgs): Promise<void>;
+  Database_Open(args: DatabaseOpenArgs)
+    : Promise<void>;
+  Database_GetPath(args: DatabaseArgs)
+    : Promise<{ path: string }>;
+  Database_Copy(args: DatabaseCopyArgs)
+    : Promise<void>;
+  Database_Exists(args: DatabaseExistsArgs)
+    : Promise<{ exists: boolean }>;
+  Database_Close(args: DatabaseArgs)
+    : Promise<void>;
+  Database_Delete(args: DatabaseArgs)
+    : Promise<void>;
 
   //Database maintenance
-  Database_Compact(args: DatabaseArgs): Promise<void>;
+  Database_Compact(args: DatabaseArgs)
+    : Promise<void>;
 
   //Database logging
-  Database_SetLogLevel(args: DatabaseSetLogLevelArgs): Promise<void>;
-  Database_SetFileLoggingConfig(args: DatabaseSetFileLoggingConfigArgs,): Promise<void>;
+  Database_SetLogLevel(args: DatabaseSetLogLevelArgs)
+    : Promise<void>;
+  Database_SetFileLoggingConfig(args: DatabaseSetFileLoggingConfigArgs)
+    : Promise<void>;
 
   //Database Indexing 
-  Database_CreateIndex(args: DatabaseCreateIndexArgs): Promise<void>;
-  Database_DeleteIndex(args: DatabaseDeleteIndexArgs): Promise<void>;
-  Database_GetIndexes( args: DatabaseArgs,): Promise<{ indexes: string[]; }>;
+  Database_CreateIndex(args: DatabaseCreateIndexArgs)
+    : Promise<void>;
+  Database_DeleteIndex(args: DatabaseDeleteIndexArgs)
+    : Promise<void>;
+  Database_GetIndexes(args: DatabaseArgs)
+    : Promise<{ indexes: string[]; }>;
 
   //Database - Documents
-  Database_Save(args: DatabaseSaveArgs): Promise<{ _id: string }>;
-  Database_GetCount( args: DatabaseArgs,): Promise<{ count: number; }>;
-  Database_PurgeDocument(args: DatabasePurgeDocumentArgs): Promise<void>;
-  Database_DeleteDocument(args: DatabaseDeleteDocumentArgs): Promise<void>;
-  Database_GetDocument( args: DatabaseGetDocumentArgs,): Promise<{ document: Document; }>;
+  Database_Save(args: DatabaseSaveArgs)
+    : Promise<{ _id: string }>;
+  Database_GetCount(args: DatabaseArgs)
+    : Promise<{ count: number; }>;
+  Database_PurgeDocument(args: DatabasePurgeDocumentArgs)
+    : Promise<void>;
+  Database_DeleteDocument(args: DatabaseDeleteDocumentArgs) 
+    : Promise<void>;
+  Database_GetDocument(args: DatabaseGetDocumentArgs)
+    : Promise<DocumentResult>;
 
   //Blobs
-  Document_GetBlobContent(args: DocumentGetBlobContentArgs,): Promise< ArrayBuffer>;
+  Document_GetBlobContent(args: DocumentGetBlobContentArgs)
+    : Promise< ArrayBuffer>;
 
   //Query Builder
-  Query_Execute(args: QueryExecuteArgs,): Promise<ResultSet>;
-  ResultSet_Next(args: ResultSetNextArgs,): Promise<{ result: Result; }>;
-  ResultSet_NextBatch(args: ResultSetNextBatchArgs,): Promise<{ results: Result[]; }>;
-  ResultSet_Cleanup(args: ResultSetCleanupArgs): Promise<void>;
+  Engine_Query_Execute(args: EngineQueryExecuteArgs)
+    : Promise<ResultSet>;
+  ResultSet_Next(args: ResultSetNextArgs)
+    : Promise<{ result: Result; }>;
+  ResultSet_NextBatch(args: ResultSetNextBatchArgs)
+    : Promise<{ results: Result[]; }>;
+  ResultSet_Cleanup(args: ResultSetCleanupArgs)
+    : Promise<void>;
 
   //Replicator
-  Replicator_Create( args: ReplicatorCreateArgs,): Promise<{ replicatorId: string }>;
-  Replicator_Start(args: ReplicatorArgs): Promise<void>;
-  Replicator_Restart(args: ReplicatorArgs): Promise<void>;
-
-  Replicator_Stop(args: ReplicatorArgs): Promise<void>;
-  Replicator_ResetCheckpoint(args: ReplicatorArgs): Promise<void>;
-  Replicator_GetStatus(args: ReplicatorArgs): Promise<void>;
-  Replicator_Cleanup(args: ReplicatorArgs): Promise<void>;
+  Replicator_Create(args: ReplicatorCreateArgs)
+    : Promise<{ replicatorId: string }>;
+  Replicator_Start(args: ReplicatorArgs)
+    : Promise<void>;
+  Replicator_Restart(args: ReplicatorArgs)
+    : Promise<void>;
+  Replicator_Stop(args: ReplicatorArgs)
+    : Promise<void>;
+  Replicator_ResetCheckpoint(args: ReplicatorArgs)
+    : Promise<void>;
+  Replicator_GetStatus(args: ReplicatorArgs)
+    : Promise<void>;
+  Replicator_Cleanup(args: ReplicatorArgs)
+    : Promise<void>;
 
   //change listeners
-  ResultSet_AllResults(args: ResultSetAllResultsArgs): Promise<PluginListenerHandle>;
-  Database_AddChangeListener(args: DatabaseAddChangeListenerArgs): Promise<PluginListenerHandle>;
-  Replicator_AddChangeListener(args: ReplicatorChangeListenerArgs): Promise<PluginListenerHandle>;
-  Replicator_AddDocumentListener(args: ReplicatorChangeListenerArgs): Promise<PluginListenerHandle>;
+  ResultSet_AllResults(args: ResultSetAllResultsArgs)
+    : Promise<PluginListenerHandle>;
+
+  Database_AddChangeListener(args: DatabaseAddChangeListenerArgs)
+    : Promise<PluginListenerHandle>;
+
+  Replicator_AddChangeListener(args: ReplicatorChangeListenerArgs)
+    : Promise<PluginListenerHandle>;
+
+  Replicator_AddDocumentListener(args: ReplicatorChangeListenerArgs)
+    : Promise<PluginListenerHandle>;
 }

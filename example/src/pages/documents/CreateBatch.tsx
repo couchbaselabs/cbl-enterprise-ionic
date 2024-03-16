@@ -20,14 +20,13 @@ import {
 import { trashOutline, checkmarkCircleOutline, playOutline } from 'ionicons/icons';
 
 import {
-  Database,
   MutableDocument,
   QueryBuilder,
   SelectResult,
   DataSource,
   Expression,
   Meta
-} from 'couchbase-lite-ee-ionic';
+} from 'cblite-core';
 
 const CreateBatchPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;

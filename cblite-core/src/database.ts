@@ -5,7 +5,7 @@ import { DatabaseLogging } from './database-logging';
 
 import { AbstractIndex } from './abstract-index';
 
-import { ICoreEngine } from '../core.types';
+import { ICoreEngine } from '../coretypes';
 import { EngineLocator } from './engine-locator';
 
 import { ConcurrencyControl } from './concurrency-control';
@@ -68,7 +68,7 @@ export class Database {
    */
   open() {
     return this._engine.Database_Open({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       config: this.databaseConfig,
     });
   }
@@ -82,7 +82,7 @@ export class Database {
 
     if (!this.didStartListener) {
       this._engine.Database_AddChangeListener(
-        { databaseName: this.getName(), 
+        { name: this.getName(), 
          callback: (data: any, err: any) => {
           if (err) {
             console.log('Database change listener error', err);
@@ -124,14 +124,14 @@ export class Database {
    * Closes a database.
    */
   close() {
-    return this._engine.Database_Close({ databaseName: this.databaseName });
+    return this._engine.Database_Close({ name: this.databaseName });
   }
 
   /**
    * Compacts the database file by deleting unused attachment files and vacuuming the SQLite database
    */
   compact(): Promise<void> {
-    return this._engine.Database_Compact({ databaseName: this.databaseName });
+    return this._engine.Database_Compact({ name: this.databaseName });
   }
 
   /**
@@ -146,7 +146,7 @@ export class Database {
     name;
     config;
     return this._engine.Database_Copy({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       path: path,
       newName: name,
       config: config,
@@ -157,7 +157,7 @@ export class Database {
    * Deletes a database.
    */
   deleteDatabase() {
-    return this._engine.Database_Delete({ databaseName: this.databaseName });
+    return this._engine.Database_Delete({ name: this.databaseName });
   }
 
   /**
@@ -165,7 +165,7 @@ export class Database {
    */
   async getPath(): Promise<string> {
     return (
-      await this._engine.Database_GetPath({ databaseName: this.databaseName })
+      await this._engine.Database_GetPath({ name: this.databaseName })
     ).path;
   }
 
@@ -174,7 +174,7 @@ export class Database {
    */
   async exists(name: string, directory: string): Promise<boolean> {
     const ret = await this._engine.Database_Exists({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       existsName: name,
       directory: directory,
     });
@@ -203,7 +203,7 @@ export class Database {
     concurrencyControl: ConcurrencyControl = null,
   ): Promise<void> {
     return this._engine.Database_DeleteDocument({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       document: document,
       concurrencyControl: concurrencyControl,
     });
@@ -214,8 +214,8 @@ export class Database {
    */
   purgeDocument(document: Document) {
     return this._engine.Database_PurgeDocument({
-      databaseName: this.databaseName,
-      document: document,
+      name: this.databaseName,
+      docId: document.getId(),
     });
   }
 
@@ -224,7 +224,7 @@ export class Database {
    */
   async getCount(): Promise<number> {
     const count = await this._engine.Database_GetCount({
-      databaseName: this.databaseName,
+      name: this.databaseName,
     });
     return Promise.resolve(count.count);
   }
@@ -234,7 +234,7 @@ export class Database {
    */
   async getDocument(id: string): Promise<Document> {
     const docJson = await this._engine.Database_GetDocument({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       docId: id,
     });
     if (docJson) {
@@ -263,8 +263,9 @@ export class Database {
     concurrencyControl: ConcurrencyControl = null,
   ): Promise<void> {
     const ret = await this._engine.Database_Save({
-      databaseName: this.databaseName,
-      document: document,
+      name: this.databaseName,
+      id: document.getId(),
+      document: document.toDictionary(),
       concurrencyControl: concurrencyControl,
     });
 
@@ -280,7 +281,7 @@ export class Database {
     indexName;
     index;
     return this._engine.Database_CreateIndex({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       indexName: indexName,
       index: index,
     });
@@ -292,7 +293,7 @@ export class Database {
   async getIndexes(): Promise<string[]> {
     return (
       await this._engine.Database_GetIndexes({
-        databaseName: this.databaseName,
+        name: this.databaseName,
       })
     ).indexes;
   }
@@ -302,7 +303,7 @@ export class Database {
    */
   deleteIndex(indexName: string): Promise<void> {
     return this._engine.Database_DeleteIndex({
-      databaseName: this.databaseName,
+      name: this.databaseName,
       indexName: indexName,
     });
   }

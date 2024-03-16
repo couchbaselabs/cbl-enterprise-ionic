@@ -27,7 +27,7 @@ import {
 
 import {
   Query
-} from 'couchbase-lite-ee-ionic';
+} from 'cblite-core';
 
 import { playOutline } from 'ionicons/icons';
 

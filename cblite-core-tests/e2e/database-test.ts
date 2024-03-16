@@ -4,7 +4,7 @@ import {
   Database, 
   PlatformDirectory, 
   MutableDocument 
-} from 'couchbase-lite-ee-ionic';
+} from 'cblite-core';
 import { getPlatformId } from '@capacitor/core/types/util';
 
 /**

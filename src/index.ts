@@ -1,4 +1,4 @@
-export * from './couchbase-lite/index';
 export * from './definitions';
+export * from './couchbase-lite/capacitor-engine';
 export * from './ionic-couchbase-lite';
 

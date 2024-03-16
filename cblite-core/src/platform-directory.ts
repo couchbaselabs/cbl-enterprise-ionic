@@ -1,4 +1,4 @@
-import { ICoreEngine } from '../core.types';
+import { ICoreEngine } from '../coretypes';
 import { EngineLocator } from './engine-locator';
 
 export class PlatformDirectory {

@@ -15,7 +15,7 @@ export class ResultSet {
       const results: any = [];
 
       db.getEngine().ResultSet_AllResults({
-        databaseName: db.getName(),
+        name: db.getName(),
         resultSetId: this.resultSetId,
         callback: (ret: any, err: any) => {
           const data = ret.results;
@@ -35,19 +35,19 @@ export class ResultSet {
 
   next(): Promise<Result> {
     const db = this.query.getFrom().getSource() as Database;
-    return db.getEngine().ResultSet_Next({databaseName: db.getName(), resultSetId: this.resultSetId});
+    return db.getEngine().ResultSet_Next({name: db.getName(), resultSetId: this.resultSetId});
   }
 
   async nextBatch(): Promise<Result[]> {
     const db = this.query.getFrom().getSource() as Database;
     return (
-      await db.getEngine().ResultSet_NextBatch({databaseName: db.getName(), resultSetId: this.resultSetId})
+      await db.getEngine().ResultSet_NextBatch({name: db.getName(), resultSetId: this.resultSetId})
     ).results;
   }
 
   cleanup(): Promise<void> {
     const db = this.query.getFrom().getSource() as Database;
-    return db.getEngine().ResultSet_Cleanup({databaseName: db.getName(), resultSetId: this.resultSetId});
+    return db.getEngine().ResultSet_Cleanup({name: db.getName(), resultSetId: this.resultSetId});
   }
 
   async forEach(itemHandler: (result: Result) => void) {

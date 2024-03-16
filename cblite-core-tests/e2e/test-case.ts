@@ -4,7 +4,7 @@ import {
   MutableDocument,
   DatabaseConfiguration,
   Dictionary
-} from 'couchbase-lite-ee-ionic';
+} from 'cblite-core';
 
 import { ITestResult } from './test-result.types';
 

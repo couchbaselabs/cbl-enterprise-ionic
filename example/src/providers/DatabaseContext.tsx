@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database } from 'couchbase-lite-ee-ionic';
+import { Database } from 'cblite-core';
 import { DatabaseContextType } from './DatabaseContextType';
 
 const DatabaseContext = React.createContext<DatabaseContextType | undefined>(undefined);

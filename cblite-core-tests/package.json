@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "typescript": "^5.4.2",
-    "couchbase-lite-ee-ionic": "file:.."
+    "cblite-core": "file:../cblite-core/"
   },
   "keywords": [
     "couchbase",

@@ -24,7 +24,7 @@ import {
   DataSource,
   ResultSet,
   Result,
-} from 'couchbase-lite-ee-ionic';
+} from 'cblite-core';
 
 const QueryBuilderPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;

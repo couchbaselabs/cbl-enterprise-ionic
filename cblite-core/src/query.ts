@@ -111,8 +111,8 @@ export abstract class Query {
 
   execute(): Promise<ResultSet> {
     const db = this._from && (this._from.getSource() as Database);
-    return db.getEngine().Query_Execute({
-      databaseName: db.getName(),
+    return db.getEngine().Engine_Query_Execute({
+      name: db.getName(),
       query: this,
     });
   }

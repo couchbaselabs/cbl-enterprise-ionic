@@ -8,7 +8,7 @@ import {
   Expression,
   Ordering,
   Meta,
-} from 'couchbase-lite-ee-ionic';
+} from 'cblite-core';
 
 export interface QueryDictionary {
   [key: string]: Query;

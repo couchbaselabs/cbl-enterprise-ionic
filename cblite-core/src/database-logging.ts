@@ -15,7 +15,7 @@ export class DatabaseLogging {
     return this.db
       .getEngine()
       .Database_SetFileLoggingConfig({
-        databaseName: this.db.getName(),
+        name: this.db.getName(),
         config: config,
       });
   }

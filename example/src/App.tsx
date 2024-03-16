@@ -99,7 +99,6 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 setupIonicReact();
-
 const App: React.FC = () => {
     return (
         <IonApp>

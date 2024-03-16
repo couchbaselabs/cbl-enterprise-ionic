@@ -1,3 +1,7 @@
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+
 export default {
   input: 'dist/esm/index.js',
   output: [
@@ -7,6 +11,7 @@ export default {
       name: 'capacitorIonicCouchbaseLite',
       globals: {
         '@capacitor/core': 'capacitorExports',
+        'cblite-core': 'cbliteCoreExports'
       },
       sourcemap: true,
       inlineDynamicImports: true,
@@ -19,4 +24,9 @@ export default {
     },
   ],
   external: ['@capacitor/core'],
+  plugins: [
+    resolve(), // add the resolve plugin
+    commonjs(), // add the commonjs plugin
+    typescript(), //add typescript plugin
+  ],
 };

@@ -13,7 +13,7 @@
     "outDir": "dist/esm",
     "pretty": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true
   },
   "files": ["index.ts"]

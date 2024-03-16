@@ -13,7 +13,7 @@ import {
   IonSelect,
   IonSelectOption
   } from '@ionic/react';
-import { MutableDocument, Blob } from 'couchbase-lite-ee-ionic';
+import { MutableDocument, Blob } from 'cblite-core';
 
 const EditDocumentPage: React.FC = () => {
   //database stuff
