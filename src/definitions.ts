@@ -8,7 +8,8 @@ export interface PluginConfigureArgs {
 }
 
 export interface QueryExecuteArgs extends DatabaseArgs {
-  query: {[key: string]: any};
+  query: any;
+  columnNames: { [name:string]: any };
 }
 
 export interface IonicCouchbaseLitePlugin extends ICoreEngine {

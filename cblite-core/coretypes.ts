@@ -7,6 +7,7 @@ import {
   Query,
   Result,
   ResultSet,
+  Database,
   ReplicatorConfiguration,
 } from './src';
 
@@ -113,9 +114,7 @@ export interface ResultSetNextBatchArgs extends DatabaseArgs {
 }
 
 export interface ResultSetAllResultsArgs extends DatabaseArgs {
-  name: string;
   resultSetId: string;
-  callback: (data: any, err: any) => void;
 }
 
 export interface ResultSetCleanupArgs extends DatabaseArgs {
@@ -223,7 +222,9 @@ export interface ICoreEngine {
     : Promise<void>;
 
   //change listeners
-  ResultSet_AllResults(args: ResultSetAllResultsArgs)
+  ResultSet_AllResults(
+    args: ResultSetAllResultsArgs,
+    callback:(data: any, err: any) => void)
     : Promise<PluginListenerHandle>;
 
   Database_AddChangeListener(args: DatabaseAddChangeListenerArgs)

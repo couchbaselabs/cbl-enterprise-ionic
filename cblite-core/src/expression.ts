@@ -174,7 +174,7 @@ export class PropertyExpression extends Expression {
 
   asJSON() {
     const json = [];
-    if (this._from != "") {
+    if (this._from !== null && this._from != "") {
       json.push("." + this._from + "." + this.keyPath);
     } else {
       json.push("." + this.keyPath);

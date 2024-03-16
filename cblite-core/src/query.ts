@@ -111,10 +111,11 @@ export abstract class Query {
 
   execute(): Promise<ResultSet> {
     const db = this._from && (this._from.getSource() as Database);
-    return db.getEngine().Engine_Query_Execute({
+    const val = db.getEngine().Engine_Query_Execute({
       name: db.getName(),
       query: this,
-    });
+    })
+    return val;
   }
 
   explain(): Promise<string> {

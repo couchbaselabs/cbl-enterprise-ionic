@@ -14,10 +14,13 @@ export class ResultSet {
       const db = this.query.getFrom().getSource() as Database;
       const results: any = [];
 
-      db.getEngine().ResultSet_AllResults({
-        name: db.getName(),
-        resultSetId: this.resultSetId,
-        callback: (ret: any, err: any) => {
+      db.getEngine()
+        .ResultSet_AllResults( 
+          {
+            name: db.getName(),
+            resultSetId: this.resultSetId,
+          },
+          (ret: any, err: any) => {
           const data = ret.results;
           if (err) {
             reject(err);
@@ -27,9 +30,7 @@ export class ResultSet {
             resolve(results);
           }
           results.push(...data);
-        }
-
-      });
+        });
     });
   }
 

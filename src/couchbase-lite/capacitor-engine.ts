@@ -1,6 +1,7 @@
 import { 
   ResultSet,
   Result,
+  Database,
   DocumentResult,
   EngineLocator,
   DatabaseOpenArgs,
@@ -163,7 +164,8 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
   args.query.check();
   let queryArgs = {
       name: args.name, 
-      query: args.query.toJson()
+      query: args.query.toJson(),
+      columnNames: args.query.getColumnNames()
     };
   const ret = await this.Query_Execute(queryArgs);
   return new ResultSet(
@@ -174,12 +176,11 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
 
   async Query_Execute(args: QueryExecuteArgs)
     : Promise<{ id: string; }> {
-    args.query.check();
-    let queryArgs = {
-        name: args.name, 
-        query: args.query.toJson()
-      };
-    return await IonicCouchbaseLite.Query_Execute(queryArgs);
+    return await IonicCouchbaseLite.Query_Execute({
+      name: args.name,
+      query: args.query,
+      columnNames: args.columnNames,
+    });
   }
 
   async ResultSet_Next(args: ResultSetNextArgs): Promise<{ result: Result }> {
@@ -191,9 +192,11 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
     return IonicCouchbaseLite.ResultSet_NextBatch(args);
   }
 
-  ResultSet_AllResults(args: ResultSetAllResultsArgs)
+  ResultSet_AllResults(
+    args: ResultSetAllResultsArgs,
+    cb: (data: any, err: any) => void)
     : Promise<PluginListenerHandle> {
-    return IonicCouchbaseLite.ResultSet_AllResults(args);
+    return IonicCouchbaseLite.ResultSet_AllResults(args, cb);
   }
 
   async ResultSet_Cleanup(args: ResultSetCleanupArgs)
