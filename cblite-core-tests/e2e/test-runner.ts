@@ -32,6 +32,7 @@ export class TestRunner {
 
         //run the actual test
         const result: ITestResult = await instance[method]();
+        await instance.init();
         yield result;
       } else {
         //we failed to initailize the test case, return the failure

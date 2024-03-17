@@ -36,8 +36,6 @@ const DetailPageTestRunnerContainer: React.FC<
   const [successCount, setSuccessCount] = useState<number>(0);
   const [failedCount, setFailedCount] = useState<number>(0);
 
-  let testRunner: TestRunner | undefined = undefined;
-
   function reset() {
     setSuccessCount(0);
     setFailedCount(0);
@@ -51,10 +49,10 @@ const DetailPageTestRunnerContainer: React.FC<
     setCurrentMessage(null);
     setResultMessages([]);
     setSuccessCount(0);
-    setSuccessCount(0);
+    setFailedCount(0);
 
     //todo fix cancellation token
-    testRunner = new TestRunner();
+    const testRunner = new TestRunner();
     const testGenerator = testRunner.runTests(
       testCase,
       shouldCancel

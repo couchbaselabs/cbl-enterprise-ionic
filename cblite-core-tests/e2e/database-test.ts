@@ -94,6 +94,12 @@ export class DatabaseTests extends TestCase {
     }
   }
 
+  /**
+   * This method tests creating documents with an ID and then 
+   * make sure the document was saved 
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
   async testSaveDocWithId(): Promise<ITestResult> {
     try {
       let docId = await this.createDocumentWithId('doc1');
@@ -120,6 +126,13 @@ export class DatabaseTests extends TestCase {
     }
   }
 
+  /**
+   * This method tests creating documents with weird special characters
+   * in the documentId to make sure the Javascript to Native Bridge 
+   * doesn't eat the characters and the document is saved correctly. 
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
   async testSaveDocWithSpecialCharactersDocID(): Promise<ITestResult> {
     try {
       let docId = await this.createDocumentWithId(
@@ -148,6 +161,12 @@ export class DatabaseTests extends TestCase {
     }
   }
 
+  /**
+   * This method tests updating documents multiple times and then 
+   * verifying the document sequence number
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
   async testSaveSameDocTwice(): Promise<ITestResult> {
     try {
       //create document first time
@@ -176,54 +195,28 @@ export class DatabaseTests extends TestCase {
     }
   }
 
-  async testSaveManyDocs(): Promise<ITestResult> {
-    try {
-      await this.createDocs('testSaveManyDocs', 5000);
-      let count = await this.getDocumentCount();
-      assert.equal(5000, count);
-      await this.verifyDocs('testSaveManyDocs', 5000);
 
-      //cleanup
-      await this.init();
-
-      //try again to validate that we can create new documents after cleanup
-      await this.createDocs('testSaveManyDocs', 1000);
-      count = await this.getDocumentCount();
-      assert.equal(1000, count);
-      await this.verifyDocs('testSaveManyDocs', 1000);
-
-      return {
-        testName: 'testSaveManyDocs',
-        success: true,
-        message: 'success',
-        data: undefined,
-      };
-    } catch (error: any) {
-      return {
-        testName: 'testSaveManyDocs',
-        success: false,
-        message: JSON.stringify(error),
-        data: undefined,
-      };
-    }
-  }
-
+  /**
+   * This method tests creating and then updating the same document 
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
   async testAndUpdateMutableDoc(): Promise<ITestResult> {
     try {
       let doc = await this.createDocumentWithId('doc1');
       //update
-      doc.setString('firstName', 'Daniel');
+      doc.setString('firstName', 'Steve');
       this.database?.save(doc);
       let count = await this.getDocumentCount();
       assert.equal(1, count);
 
       //update
-      doc.setString('lastName', 'Tiger');
+      doc.setString('lastName', 'Jobs');
       this.database?.save(doc);
       count = await this.getDocumentCount();
       assert.equal(1, count);
 
-      doc.setInt('age', 30);
+      doc.setInt('age', 56);
       this.database?.save(doc);
       count = await this.getDocumentCount();
       assert.equal(1, count);
@@ -231,9 +224,9 @@ export class DatabaseTests extends TestCase {
       //validate saves worked
       let updatedDoc = await this.database?.getDocument('doc1');
       assert.equal(4, updatedDoc?.getSequence());
-      assert.equal('Daniel', updatedDoc?.getString('firstName'));
-      assert.equal('Tiger', updatedDoc?.getString('lastName'));
-      assert.equal(30, updatedDoc?.getString('age'));
+      assert.equal('Steve', updatedDoc?.getString('firstName'));
+      assert.equal('Jobs', updatedDoc?.getString('lastName'));
+      assert.equal(56, updatedDoc?.getString('age'));
 
       return {
         testName: 'testAndUpdateMutableDoc',
@@ -250,6 +243,233 @@ export class DatabaseTests extends TestCase {
       };
     }
   }
+
+  /**
+   * This method tests custom conflict resolution by creating a document, 
+   * updating it, and then testing if the update worked based on the  
+   * ConcurrencyControl parameter passed in. 
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSaveDocWithConflict(): Promise<ITestResult> {
+    let result1 = await this.saveDocWithConflict(
+      'testSaveDocWithConflict',
+      undefined,
+    );
+    if (!result1.success) return result1;
+
+    //reset the database
+    await this.init();
+    let result2 = await this.saveDocWithConflict(
+      'testSaveDocWithConflict',
+      ConcurrencyControl.FAIL_ON_CONFLICT,
+    );
+    if (result2.success) {
+      return {
+        testName: 'testSaveDocWithConflict',
+        success: false,
+        message: 'Expected conflict error with ConcurrencyControl.FAIL_ON_CONFLICT but did not get one',
+        data: undefined,
+      };
+    }
+
+    //reset the database
+    await this.init();
+    let result3 = await this.saveDocWithConflict(
+      'testSaveDocWithConflict',
+      ConcurrencyControl.LAST_WRITE_WINS,
+    );
+    if (!result3.success) return result3;
+
+    return {
+      testName: 'testSaveDocWithConflict',
+      success: true,
+      message: 'success',
+      data: undefined,
+    };
+  }
+
+  async testSaveDocWithNoParentConflict(): Promise<ITestResult> {
+    return {
+      testName: 'testSaveDocWithNoParentConflict',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testSaveDocWithDeletedConflict(): Promise<ITestResult> {
+    return {
+      testName: 'testSaveDocWithDeletedConflict',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeletePreSaveDoc(): Promise<ITestResult> {
+    return {
+      testName: 'testDeletePreSaveDoc',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeleteSameDocTwice(): Promise<ITestResult> {
+    return {
+      testName: 'testDeleteSameDocTwice',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeleteNoneExistingDoc(): Promise<ITestResult> {
+    return {
+      testName: 'testDeleteNoneExistingDoc',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeleteAndUpdateDoc(): Promise<ITestResult> {
+    return {
+      testName: 'testDeleteAndUpdateDoc',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeleteAlreadyDeletedDoc(): Promise<ITestResult> {
+    return {
+      testName: 'testDeleteAlreadyDeletedDoc',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeleteDocWithConflict(): Promise<ITestResult> {
+    return {
+      testName: 'testDeleteDocWithConflict',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testPurgePreSaveDoc(): Promise<ITestResult> {
+    return {
+      testName: 'testPurgePreSaveDoc',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testPurgeDoc(): Promise<ITestResult> {
+    return {
+      testName: 'testPurgeDoc',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testPurgeSameDocTwice(): Promise<ITestResult> {
+    return {
+      testName: 'testPurgeSameDocTwice',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+  
+  async testPurgeDocumentOnADeletedDocument(): Promise<ITestResult> {
+    return {
+      testName: 'testPurgeDocumentOnADeletedDocument',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testPreSavePurgeDocumentWithID(): Promise<ITestResult> {
+    return {
+      testName: 'testPreSavePurgeDocumentWithID',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testPurgeDocumentWithID(): Promise<ITestResult> {
+    return {
+      testName: 'testPurgeDocumentWithID',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testCallPurgeDocumentWithIDTwice(): Promise<ITestResult> {
+    return {
+      testName: 'testCallPurgeDocumentWithIDTwice',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDeletePurgedDocumentWithID(): Promise<ITestResult> {
+    return {
+      testName: 'testDeletePurgedDocumentWithID',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testPurgeDocumentWithIDOnADeletedDocument(): Promise<ITestResult> {
+    return {
+      testName: 'testDeletePurgedDocumentWithID',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testDefaultDatabaseConfiguration(): Promise<ITestResult> {
+    return {
+      testName: 'testDefaultDatabaseConfiguration',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testCopyingDatabaseConfiguration(): Promise<ITestResult> {
+    return {
+      testName: 'testCopyingDatabaseConfiguration',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+  async testCopyingDatabase(): Promise<ITestResult> {
+    return {
+      testName: 'testCopyingDatabase',
+      success: false,
+      message: 'failed',
+      data: 'Not implemented',
+    };
+  }
+
+
 
   /**
    * This method tests running compact on a database
@@ -319,51 +539,99 @@ export class DatabaseTests extends TestCase {
     }
   }
 
-  async testSaveDocWithConflict(): Promise<ITestResult> {
-    let result1 = await this.saveDocWithConflict(
-      'testSaveDocWithConflict',
-      undefined,
-    );
-    if (!result1.success) return result1;
-
-    let result2 = await this.saveDocWithConflict(
-      'testSaveDocWithConflict',
-      ConcurrencyControl.FAIL_ON_CONFLICT,
-    );
-    if (!result2.success) return result2;
-
-    let result3 = await this.saveDocWithConflict(
-      'testSaveDocWithConflict',
-      ConcurrencyControl.LAST_WRITE_WINS,
-    );
-    if (!result3.success) return result3;
-
-    return {
-      testName: 'testSaveDocWithConflict',
-      success: true,
-      message: 'success',
-      data: undefined,
-    };
-  }
-
-  async saveDocWithConflict(
-    methodName: string,
-    control: ConcurrencyControl | undefined,
-  ): Promise<ITestResult> {
+    /**
+   * This method tests adding many documents to a database, then cleaing
+   * up and trying again to validte that the init process works and the
+   * database isn't the same database file.
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSaveManyDocs(): Promise<ITestResult> {
     try {
+      await this.createDocs('testSaveManyDocs', 5000);
+      let count = await this.getDocumentCount();
+      assert.equal(5000, count);
+      await this.verifyDocs('testSaveManyDocs', 5000);
+
+      //cleanup
+      await this.init();
+
+      //try again to validate that we can create new documents after cleanup
+      await this.createDocs('testSaveManyDocs', 1000);
+      count = await this.getDocumentCount();
+      assert.equal(1000, count);
+      await this.verifyDocs('testSaveManyDocs', 1000);
+
       return {
-        testName: 'methodName',
+        testName: 'testSaveManyDocs',
         success: true,
         message: 'success',
         data: undefined,
       };
     } catch (error: any) {
       return {
-        testName: 'methodName',
+        testName: 'testSaveManyDocs',
         success: false,
         message: JSON.stringify(error),
         data: undefined,
       };
     }
   }
+
+
+   /**
+   * This is a helper method used to test ConcurrencyControl
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async saveDocWithConflict(
+    methodName: string,
+    control: ConcurrencyControl | undefined,
+  ): Promise<ITestResult> {
+    try {
+        let doc  = await this.createDocumentWithId('doc1');
+        doc.setString('firstName', 'Steve');
+        doc.setString('lastName', 'Jobs');
+        await this.database.save(doc);
+
+        //get two of the same document
+        let doc1a = await this.database.getDocument('doc1');
+        let doc1b = await this.database.getDocument('doc1');
+        let mutableDoc1a = MutableDocument.fromDocument(doc1a);
+        let mutableDoc1b = MutableDocument.fromDocument(doc1b);
+
+        //modify doc1a
+        mutableDoc1a.setString('lastName', 'Wozniak');
+        await this.database.save(mutableDoc1a);
+        mutableDoc1a.setString('nickName', 'The Woz');
+        await this.database.save(mutableDoc1a);
+        let updatedDoc1a = await this.database.getDocument('doc1');
+        assert.equal('Wozniak', updatedDoc1a?.getString('lastName'));
+        assert.equal('The Woz', updatedDoc1a?.getString('nickName'));
+        assert.equal('Steve', updatedDoc1a?.getString('firstName'));
+        assert.equal(4, updatedDoc1a?.getSequence());
+        if(control === undefined){
+          let result = await this.database.save(mutableDoc1b);
+        } else {
+          let result = await this.database.save(mutableDoc1b, control);
+        }
+        let updatedDoc1b = await this.database.getDocument('doc1');
+        assert.equal(mutableDoc1b.getString('lastName'), updatedDoc1b.getString('lastName'));
+        assert.equal(5, updatedDoc1b.getSequence());
+      return {
+        testName: methodName,
+        success: true,
+        message: 'success',
+        data: undefined,
+      };
+    } catch (error: any) {
+      return {
+        testName: methodName,
+        success: false,
+        message: JSON.stringify(error),
+        data: undefined,
+      };
+    }
+  }
+
 }
