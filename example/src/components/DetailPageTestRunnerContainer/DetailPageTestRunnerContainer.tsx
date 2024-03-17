@@ -1,7 +1,7 @@
 // DetailPageTestContainerRunner.tsx
 import './DetailPageTestRunnerContainer.css';
 import React from 'react';
-import  useState from 'react-usestateref';
+import useState from 'react-usestateref';
 import { TestRunner, ITestResult, TestCase } from 'cblite-core-tests';
 
 import {
@@ -23,12 +23,11 @@ import {
 interface ContainerProps<T extends new () => TestCase> {
   navigationTitle: string;
   collapseTitle: string;
-  testCase: T;
+  testCases: T[];
 }
 
-const DetailPageTestRunnerContainer: React.FC<
-  ContainerProps<new () => TestCase>
-> = ({ navigationTitle, collapseTitle, testCase }) => {
+const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>> 
+  = ({ navigationTitle, collapseTitle, testCases }) => {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [shouldCancel, setShouldCancel] = useState<boolean>(false);
   const [resultMessages, setResultMessages] = useState<ITestResult[]>([]);
@@ -45,35 +44,39 @@ const DetailPageTestRunnerContainer: React.FC<
     setCurrentMessage(null);
   }
 
-  function update() {
+  function shouldTestCaseCancel (): boolean { 
+    return shouldCancel;
+  } 
+
+  async function update() {
     setCurrentMessage(null);
     setResultMessages([]);
     setSuccessCount(0);
     setFailedCount(0);
 
     //todo fix cancellation token
-    const testRunner = new TestRunner();
-    const testGenerator = testRunner.runTests(
-      testCase,
-      shouldCancel
-    );
-
-    (async () => {
-      for await (const result of testGenerator) {
-      if (result.message === 'running') {
-        setCurrentMessage(result);
-      } else {
-        if (result.success) {
-          setSuccessCount(successCount => successCount + 1);
-        } else {
-          setFailedCount(failedCount => failedCount + 1);
+    for (let counter = 0; counter < testCases.length; counter++) {
+      setCurrentMessage(null);
+      const testRunner = new TestRunner();
+      const testGenerator = testRunner.runTests(
+        testCases[counter],
+        shouldTestCaseCancel,
+      );
+        for await (const result of testGenerator) {
+          if (result.message === 'running') {
+            setCurrentMessage(result);
+          } else {
+            if (result.success) {
+              setSuccessCount(successCount => successCount + 1);
+            } else {
+              setFailedCount(failedCount => failedCount + 1);
+            }
+            setResultMessages(prev => [...prev, result]);
+          }
         }
-          setResultMessages(prev => [...prev, result]);
-        }
+        setCurrentMessage(null); 
       }
-      setCurrentMessage(null);  
-    })();
-  }
+    }
   return (
     <IonPage>
       <IonHeader>
@@ -130,19 +133,21 @@ const DetailPageTestRunnerContainer: React.FC<
             </IonButtons>
           </IonItemDivider>
           <hr style={{ padding: '5px' }} />
-          { currentMessage !== null ? ( 
-          <IonItem key="999">
+          {currentMessage !== null ? (
+            <IonItem key="999">
               <IonLabel>
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <h2>{currentMessage.testName}</h2>
-                    <i className="fa-duotone fa-spinner-third fa-spin"></i>
+                  <i className="fa-duotone fa-spinner-third fa-spin"></i>
                 </div>
                 {showDetails && <p>{currentMessage.message}</p>}
               </IonLabel>
             </IonItem>
-          ) : <></> }
+          ) : (
+            <></>
+          )}
           <IonItemDivider>
             <div
               style={{
@@ -155,28 +160,30 @@ const DetailPageTestRunnerContainer: React.FC<
               <IonLabel>Failed: {failedCount}</IonLabel>
             </div>
           </IonItemDivider>
-          {//resultMessages.map((result, index) => (
+          {
+            //resultMessages.map((result, index) => (
             Array.from(resultMessages.values()).map((result, index) => (
-            <IonItem key={index}>
-              <IonLabel>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <h2>{result.testName}</h2>
-                  {result.message === 'running' ? (
-                    <i className="fa-duotone fa-spinner-third fa-spin"></i>
-                  ) : (
-                    <i
-                      className={`fa-duotone ${
-                        result.success ? 'fa-check' : 'fa-x'
-                      }`}
-                    ></i>
-                  )}
-                </div>
-                {showDetails && <p>{result.message}</p>}
-              </IonLabel>
-            </IonItem>
-          ))}
+              <IonItem key={index}>
+                <IonLabel>
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    <h2>{result.testName}</h2>
+                    {result.message === 'running' ? (
+                      <i className="fa-duotone fa-spinner-third fa-spin"></i>
+                    ) : (
+                      <i
+                        className={`fa-duotone ${
+                          result.success ? 'fa-check' : 'fa-x'
+                        }`}
+                      ></i>
+                    )}
+                  </div>
+                  {showDetails && <p>{result.message}</p>}
+                </IonLabel>
+              </IonItem>
+            ))
+          }
         </IonList>
       </IonContent>
     </IonPage>

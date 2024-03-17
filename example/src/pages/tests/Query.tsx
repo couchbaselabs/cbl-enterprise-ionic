@@ -9,7 +9,7 @@ const QueryTestPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Query SQL++ Tests"
       collapseTitle="Query SQL++ Tests"
-      testCase={QueryTests}
+      testCases={[QueryTests]}
     ></DetailPageTestContainerRunner>
   );
 };

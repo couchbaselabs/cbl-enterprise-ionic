@@ -10,7 +10,7 @@ const PredicateQueryTestPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Predicate Query Tests"
       collapseTitle="Predicate Query Tests"
-      testCase={PredicateQueryTests}
+      testCases={[PredicateQueryTests]}
     ></DetailPageTestContainerRunner>
   );
 };

@@ -98,18 +98,27 @@ export class TestCase {
     try {
       await db.deleteDatabase();
       return {
-        testName: 'deleteDatabase',
+        testName: this.constructor.name + '.deleteDatabase',
         success: true,
         message: undefined,
         data: undefined,
       };
     } catch (error: any) {
-      return {
-        testName: 'deleteDatabase',
-        success: false,
-        message: JSON.stringify(error),
-        data: undefined,
-      };
+      if (error.errorMessage !== 'No such open database') {
+        return {
+          testName: this.constructor.name + '.deleteDatabase',
+          success: false,
+          message: JSON.stringify(error),
+          data: undefined,
+        };
+      } else {
+        return {
+          testName: this.constructor.name + '.deleteDatabase',
+          success: true,
+          message: undefined,
+          data: undefined,
+        };
+      }
     }
   }
 
@@ -118,14 +127,14 @@ export class TestCase {
     try {
       const result: string = await pd.getDefaultPath();
       return {
-        testName: 'getPlatformPath',
+        testName: this.constructor.name + '.getPlatformPath',
         success: true,
         message: undefined,
         data: result,
       };
     } catch (error: any) {
       return {
-        testName: 'getPlatformPath',
+        testName: this.constructor.name + '.getPlatformPath',
         success: false,
         message: JSON.stringify(error),
         data: undefined,

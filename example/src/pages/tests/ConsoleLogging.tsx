@@ -10,7 +10,7 @@ const ConsoleLoggingTestsPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Console Logging Tests"
       collapseTitle="Console Logging Tests"
-      testCase={ConsoleLoggingTests}
+      testCases={[ConsoleLoggingTests]}
     ></DetailPageTestContainerRunner>
   );
 };

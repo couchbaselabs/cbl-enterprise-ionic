@@ -10,29 +10,92 @@ export class QueryBuilderTests extends TestCase {
   }
 
   /**
-   * This is a sample test that just returns a passing result. It's used to test the test runner.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerPass(): Promise<ITestResult> {
+  async testSelectCount(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerPass',
-      success: true,
-      message: 'success',
+      testName: 'testSelectCount',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }
 
   /**
-   * This is a sample test that just returns a failed result. It's used to test the test runner.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerFail(): Promise<ITestResult> {
+  async testSelectAll(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerFail',
+      testName: 'testSelectAll',
       success: false,
-      message: 'failed',
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSelectFieldsWhere(): Promise<ITestResult> {
+    return {
+      testName: 'testSelectAll',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSelectWhere(): Promise<ITestResult> {
+    return {
+      testName: 'testSelectWhere',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSelectJoin(): Promise<ITestResult> {
+    return {
+      testName: 'testSelectJoin',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSelectGroupBy(): Promise<ITestResult> {
+    return {
+      testName: 'testSelectGroupBy',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSelectGroupByHaving(): Promise<ITestResult> {
+    return {
+      testName: 'testSelectGroupByHaving',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }

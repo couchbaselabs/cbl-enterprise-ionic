@@ -54,8 +54,8 @@ export class DatabaseTests extends TestCase {
         return {
           testName: 'testDeleteDocument',
           success: false,
-          message: 'failed',
-          data: JSON.stringify(error),
+          message: JSON.stringify(error),
+          data: undefined 
         };
       });
     return deleteResult;
@@ -293,8 +293,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testSaveDocWithNoParentConflict',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -302,8 +302,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testSaveDocWithDeletedConflict',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -311,8 +311,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeletePreSaveDoc',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -320,8 +320,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeleteSameDocTwice',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -329,8 +329,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeleteNoneExistingDoc',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -338,8 +338,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeleteAndUpdateDoc',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -347,8 +347,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeleteAlreadyDeletedDoc',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -356,8 +356,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeleteDocWithConflict',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -365,8 +365,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testPurgePreSaveDoc',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -374,8 +374,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testPurgeDoc',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -383,8 +383,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testPurgeSameDocTwice',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
   
@@ -392,8 +392,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testPurgeDocumentOnADeletedDocument',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -401,8 +401,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testPreSavePurgeDocumentWithID',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -410,8 +410,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testPurgeDocumentWithID',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -419,8 +419,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testCallPurgeDocumentWithIDTwice',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -428,8 +428,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeletePurgedDocumentWithID',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -437,8 +437,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDeletePurgedDocumentWithID',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -446,8 +446,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testDefaultDatabaseConfiguration',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -455,8 +455,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testCopyingDatabaseConfiguration',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 
@@ -464,8 +464,8 @@ export class DatabaseTests extends TestCase {
     return {
       testName: 'testCopyingDatabase',
       success: false,
-      message: 'failed',
-      data: 'Not implemented',
+      message: 'Not implemented',
+      data: undefined,
     };
   }
 

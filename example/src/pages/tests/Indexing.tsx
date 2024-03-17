@@ -10,7 +10,7 @@ const IndexingTestPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Index Tests"
       collapseTitle="Index Tests"
-      testCase={IndexingTests}
+      testCases={[IndexingTests]}
     ></DetailPageTestContainerRunner>
   );
 };

@@ -9,7 +9,7 @@ const CollectionTestsPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Collection Tests"
       collapseTitle="Collection Tests"
-      testCase={CollectionTests}
+      testCases={[CollectionTests]}
     ></DetailPageTestContainerRunner>
   );
 };

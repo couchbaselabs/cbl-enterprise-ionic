@@ -10,7 +10,7 @@ const DatabaseTestsPage: React.FC = () => {
   	<DetailPageTestContainerRunner
  	 	navigationTitle="Database Tests"
   		collapseTitle="Database Tests"
-		testCase={DatabaseTests}
+		testCases={[DatabaseTests]}
 		>
   	</DetailPageTestContainerRunner>
 	);

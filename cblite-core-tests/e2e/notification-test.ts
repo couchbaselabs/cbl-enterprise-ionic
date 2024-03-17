@@ -10,29 +10,53 @@ export class NotificationTests extends TestCase {
   }
 
   /**
-   * This is a sample test that just returns a passing result. It's used to test the test runner.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerPass(): Promise<ITestResult> {
+  async testDatabaseChange(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerPass',
-      success: true,
-      message: 'success',
+      testName: 'testDatabaseChange',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }
 
   /**
-   * This is a sample test that just returns a failed result. It's used to test the test runner.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerFail(): Promise<ITestResult> {
+  async testDocumentChange(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerFail',
+      testName: 'testDocumentChange',
       success: false,
-      message: 'failed',
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testAddSameChangeListeners(): Promise<ITestResult> {
+    return {
+      testName: 'testAddSameChangeListeners',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testRemoveDocumentChangeListener(): Promise<ITestResult> {
+    return {
+      testName: 'testRemoveDocumentChangeListener',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }

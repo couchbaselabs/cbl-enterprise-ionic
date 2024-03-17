@@ -5,7 +5,7 @@ import { TestCase } from './test-case';
 export class TestRunner {
   async *runTests<T extends TestCase>(
     testCase: new () => T,
-    cancelToken: boolean,
+    cancelToken: () => boolean,
   ): AsyncGenerator<ITestResult, void, unknown> {
     const instance = new testCase();
 
@@ -19,7 +19,7 @@ export class TestRunner {
     );
 
     for (const method of methods) {
-      if (cancelToken) {
+      if (cancelToken()) {
         return;
       }
       //start with a clean database
@@ -27,7 +27,12 @@ export class TestRunner {
 
       if (initResult.success) {
         //yield that we are running a test
-        let runningResult: ITestResult = { testName: method, success: true, message: 'running', data: undefined, };
+        let runningResult: ITestResult = {
+          testName: method,
+          success: true,
+          message: 'running',
+          data: undefined,
+        };
         yield runningResult;
 
         //run the actual test

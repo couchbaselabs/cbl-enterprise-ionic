@@ -12,6 +12,13 @@ const TestMenuItems: React.FC = () => {
 	   </IonItemDivider>
 	   <IonItem
 		  style={{ marginLeft: 20 }}
+		  routerLink="/tests/all"
+		  routerDirection="none"
+		>
+		  <IonLabel>All</IonLabel>
+		</IonItem>
+	   <IonItem
+		  style={{ marginLeft: 20 }}
 		  routerLink="/tests/collections"
 		  routerDirection="none"
 		>
@@ -61,13 +68,6 @@ const TestMenuItems: React.FC = () => {
 		</IonItem>
 		<IonItem
 		  style={{ marginLeft: 20 }}
-		  routerLink="/tests/fts"
-		  routerDirection="none"
-		>
-		  <IonLabel>FTS</IonLabel>
-		</IonItem>
-		<IonItem
-		  style={{ marginLeft: 20 }}
 		  routerLink="/tests/indexes"
 		  routerDirection="none"
 		>
@@ -107,20 +107,6 @@ const TestMenuItems: React.FC = () => {
 		  routerDirection="none"
 		>
 		  <IonLabel>Replicator</IonLabel>
-		</IonItem>
-		<IonItem
-		  style={{ marginLeft: 20 }}
-		  routerLink="/tests/replicatorConflicts"
-		  routerDirection="none"
-		>
-		  <IonLabel>Sync Custom Conflicts</IonLabel>
-		</IonItem>
-		<IonItem
-		  style={{ marginLeft: 20 }}
-		  routerLink="/tests/replicatorPendingDoc"
-		  routerDirection="none"
-		>
-		  <IonLabel>Sync Pending Docs</IonLabel>
 		</IonItem>
 		<IonItem
 		  style={{ marginLeft: 20 }}

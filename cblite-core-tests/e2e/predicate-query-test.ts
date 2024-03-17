@@ -10,29 +10,53 @@ export class PredicateQueryTests extends TestCase {
   }
 
   /**
-   * This is a sample test that just returns a passing result. It's used to test the test runner.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerPass(): Promise<ITestResult> {
+  async testAllDocs(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerPass',
-      success: true,
-      message: 'success',
+      testName: 'testAllDocs',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }
 
   /**
-   * This is a sample test that just returns a failed result. It's used to test the test runner.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerFail(): Promise<ITestResult> {
+  async testNoWhereQuery(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerFail',
+      testName: 'testNoWhereQuery',
       success: false,
-      message: 'failed',
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testPropertyQuery(): Promise<ITestResult> {
+    return {
+      testName: 'testPropertyQuery',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testProjection(): Promise<ITestResult> {
+    return {
+      testName: 'testProjection',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }

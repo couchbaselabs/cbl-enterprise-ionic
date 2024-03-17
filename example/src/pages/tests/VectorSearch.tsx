@@ -9,7 +9,7 @@ const VectorSearchTestsPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Vector Search Tests"
       collapseTitle="Vector Search Tests"
-      testCase={VectorSearchTests}
+      testCases={[VectorSearchTests]}
     ></DetailPageTestContainerRunner>
   );
 };

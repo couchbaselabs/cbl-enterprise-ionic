@@ -10,7 +10,7 @@ const NotificationsTestPage: React.FC = () => {
     <DetailPageTestContainerRunner
       navigationTitle="Notifications Tests"
       collapseTitle="Notifications Tests"
-      testCase={NotificationTests}
+      testCases={[NotificationTests]}
     ></DetailPageTestContainerRunner>
   );
 };

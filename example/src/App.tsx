@@ -49,6 +49,7 @@ import {
 } from './pages/query';
 
 import {
+    AllTestsPage,
     CollectionTestsPage,
     ConsoleLoggingTestsPage,
     CustomLoggingTestsPage,
@@ -56,15 +57,12 @@ import {
     DocumentTestsPage,
     DocumentExpirationTestsPage,
     FileLoggingTestsPage,
-    FTSTestsPage,
     IndexingTestsPage,
     NotificationsTestsPage,
     PredicateQueryTestsPage,
     QueryTestsPage,
     QueryBuilderTestsPage,
     ReplicatorTestsPage,
-    ReplicatorCustomConflictTestsPage,
-    ReplicatorPendingDocTestsPage,
     TestingTestPage,
     VectorSearchTestsPage,
 } from './pages/tests';
@@ -106,6 +104,7 @@ const App: React.FC = () => {
                 <IonSplitPane contentId="main">
                     <Menu/>
                     <IonRouterOutlet id="main">
+                        <Route path="/tests/all" component={AllTestsPage} exact/>
                         <Route path="/tests/collections" component={CollectionTestsPage} exact/>
                         <Route path="/tests/consoleLogging" component={ConsoleLoggingTestsPage} exact/>
                         <Route path="/tests/customLogging" component={CustomLoggingTestsPage} exact/>
@@ -113,15 +112,12 @@ const App: React.FC = () => {
                         <Route path="/tests/document" component={DocumentTestsPage} exact/>
                         <Route path="/tests/documentExpiration" component={DocumentExpirationTestsPage} exact/>
                         <Route path="/tests/fileLogging" component={FileLoggingTestsPage} exact/>
-                        <Route path="/tests/fts" component={FTSTestsPage} exact/>
                         <Route path="/tests/indexes" component={IndexingTestsPage} exact/>
                         <Route path="/tests/notifications" component={NotificationsTestsPage} exact/>
                         <Route path="/tests/predicateQuery" component={PredicateQueryTestsPage} exact/>
                         <Route path="/tests/query" component={QueryTestsPage} exact/>
                         <Route path="/tests/queryBuilder" component={QueryBuilderTestsPage} exact/>
                         <Route path="/tests/replicator" component={ReplicatorTestsPage} exact/>
-                        <Route path="/tests/replicatorConflicts" component={ReplicatorCustomConflictTestsPage} exact/>
-                        <Route path="/tests/replicatorPendingDoc" component={ReplicatorPendingDocTestsPage} exact/>
                         <Route path="/tests/vectorSearch" component={VectorSearchTestsPage} exact/>
                         <Route path="/tests/testing" component={TestingTestPage} exact/>
 

@@ -9,30 +9,201 @@ export class DocumentExpirationTests extends TestCase {
     super();
   }
   /**
-   * This is a sample test that just returns a passing result. It's used to test the test runner.
+   * This test get's the expiration of a document before saving to
+   * test the default
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerPass(): Promise<ITestResult> {
+  async testGetExpirationPreSave(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerPass',
-      success: true,
-      message: 'success',
+      testName: 'testGetExpirationPreSave',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testExpirationFromDocumentWithoutExpiry(): Promise<ITestResult> {
+    return {
+      testName: 'testExpirationFromDocumentWithoutExpiry',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }
 
   /**
-   * This is a sample test that just returns a failed result. It's used to test the test runner.
+   *
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerFail(): Promise<ITestResult> {
+  async testSetAndGetExpiration(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerFail',
+      testName: 'testSetAndGetExpiration',
       success: false,
-      message: 'failed',
-      data: undefined,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSetExpiryToNonExistingDocument(): Promise<ITestResult> {
+    return {
+      testName: 'testSetExpiryToNonExistingDocument',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testDocumentPurgingAfterSettingExpiry(): Promise<ITestResult> {
+    return {
+      testName: 'testDocumentPurgingAfterSettingExpiry',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testDocumentPurgedAfterExpiration(): Promise<ITestResult> {
+    return {
+      testName: 'testDocumentPurgedAfterExpiration',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testDocumentNotShownUpInQueryAfterExpiration(): Promise<ITestResult> {
+    return {
+      testName: 'testDocumentNotShownUpInQueryAfterExpiration',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testDocumentNotPurgedBeforeExpiration(): Promise<ITestResult> {
+    return {
+      testName: 'testDocumentNotPurgedBeforeExpiration',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSetExpirationThenCloseDatabase(): Promise<ITestResult> {
+    return {
+      testName: 'testSetExpirationThenCloseDatabase',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testExpiredDocumentPurgedAfterReopenDatabase(): Promise<ITestResult> {
+    return {
+      testName: 'testExpiredDocumentPurgedAfterReopenDatabase',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testOverrideExpirationWithFartherDate(): Promise<ITestResult> {
+    return {
+      testName: 'testOverrideExpirationWithFartherDate',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testOverrideExpirationWithCloserDate(): Promise<ITestResult> {
+    return {
+      testName: 'testOverrideExpirationWithCloserDate',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testRemoveExpirationDate(): Promise<ITestResult> {
+    return {
+      testName: 'testRemoveExpirationDate',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testSetExpirationThenDeletionAfterwards(): Promise<ITestResult> {
+    return {
+      testName: 'testSetExpirationThenDeletionAfterwards',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
+    };
+  }
+
+  /**
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testPurgeImmedietly(): Promise<ITestResult> {
+    return {
+      testName: 'testPurgeImmedietly',
+      success: false,
+      message: 'Not implemented',
+      data: undefined
     };
   }
 }

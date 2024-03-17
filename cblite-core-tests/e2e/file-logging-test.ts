@@ -8,31 +8,116 @@ export class FileLoggingTests extends TestCase {
   constructor() {
     super();
   }
+
   /**
-   * This is a sample test that just returns a passing result. It's used to test the test runner.
+   *
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerPass(): Promise<ITestResult> {
+  async testFileLoggingLevels(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerPass',
-      success: true,
-      message: 'success',
+      testName: 'testFileLoggingLevels',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }
 
   /**
-   * This is a sample test that just returns a failed result. It's used to test the test runner.
+   *
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerFail(): Promise<ITestResult> {
+  async testFileLoggingDefaultBinaryFormat(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerFail',
+      testName: 'testFileLoggingDefaultBinaryFormat',
       success: false,
-      message: 'failed',
+      message: 'Not implemented',
       data: undefined,
     };
   }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testFileLoggingUsePlainText(): Promise<ITestResult> {
+    return {
+      testName: 'testFileLoggingUsePlainText',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testFileLoggingLogFilename(): Promise<ITestResult> {
+    return {
+      testName: 'testFileLoggingLogFilename',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testFileLoggingMaxSize(): Promise<ITestResult> {
+    return {
+      testName: 'testFileLoggingMaxSize',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testFileLoggingDisableLogging(): Promise<ITestResult> {
+    return {
+      testName: 'testFileLoggingDisableLogging',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testFileLoggingReEnableLogging(): Promise<ITestResult> {
+    return {
+      testName: 'testFileLoggingReEnableLogging',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+    /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+    async testFileLoggingHeader(): Promise<ITestResult> {
+      return {
+        testName: 'testFileLoggingHeader',
+        success: false,
+        message: 'Not implemented',
+        data: undefined,
+      };
+    }
 }

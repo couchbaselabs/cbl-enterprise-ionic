@@ -8,31 +8,62 @@ export class CustomLoggingTests extends TestCase {
   constructor() {
     super();
   }
+
   /**
-   * This is a sample test that just returns a passing result. It's used to test the test runner.
+   *
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerPass(): Promise<ITestResult> {
+  async testCustomLoggingLevels(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerPass',
-      success: true,
-      message: 'success',
+      testName: 'testCustomLoggingLevels',
+      success: false,
+      message: 'Not implemented',
       data: undefined,
     };
   }
 
   /**
-   * This is a sample test that just returns a failed result. It's used to test the test runner.
+   *
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async testRunnerFail(): Promise<ITestResult> {
+  async testEnableAndDisableCustomLogging(): Promise<ITestResult> {
     return {
-      testName: 'testRunnerFail',
+      testName: 'testEnableAndDisableCustomLogging',
       success: false,
-      message: 'failed',
+      message: 'Not implemented',
       data: undefined,
     };
   }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testNonASCII(): Promise<ITestResult> {
+    return {
+      testName: 'testNonASCII',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+  /**
+   *
+   *
+   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
+   */
+  async testPercentEscape(): Promise<ITestResult> {
+    return {
+      testName: 'testPercentEscape',
+      success: false,
+      message: 'Not implemented',
+      data: undefined,
+    };
+  }
+
+
 }

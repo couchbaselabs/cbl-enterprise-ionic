@@ -2,7 +2,7 @@ export interface ITestResult {
 	testName: string;
 	success: boolean;
   	message: string | undefined;
-  	data: string | undefined;
+	  data: string | undefined;
 }
 
 export interface ITestCaseResult {
