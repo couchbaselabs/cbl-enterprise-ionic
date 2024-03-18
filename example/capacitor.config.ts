@@ -6,6 +6,9 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     androidScheme: 'https'
+  },
+  "plugins": {
+    "couchbase-lite-ee-ionic": {}
   }
 };
 

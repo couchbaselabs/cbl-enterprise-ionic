@@ -6,6 +6,7 @@
 CAP_PLUGIN(IonicCouchbaseLite, "IonicCouchbaseLite",
            CAP_PLUGIN_METHOD(echo, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Plugin_Configure, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(File_GetDefaultPath, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Open, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Exists, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Save, CAPPluginReturnPromise);
@@ -23,6 +24,8 @@ CAP_PLUGIN(IonicCouchbaseLite, "IonicCouchbaseLite",
            CAP_PLUGIN_METHOD(Database_Compact, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_GetDocument, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_SetLogLevel, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(Database_GetLogLevel, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(Database_GetLogDomain, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_SetFileLoggingConfig, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Document_GetBlobContent, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Query_Execute, CAPPluginReturnPromise);

@@ -1,31 +1,24 @@
 // DocumentMenuItems.tsx
-import { IonIcon, IonItem, IonLabel } from '@ionic/react';
+import { IonIcon, IonItem, IonLabel, IonItemDivider } from '@ionic/react';
 
 import React from 'react';
-
-import { documentText, documentTextOutline } from 'ionicons/icons';
 
 import '../Menu.css';
 
 const DatabaseMenuItems: React.FC = () => {
   return (
     <>
-      <IonItem className="menuRoot">
-        <IonIcon
-          aria-hidden="true"
-          slot="start"
-          ios={documentTextOutline}
-          md={documentText}
-        />
-        <IonLabel>Document API</IonLabel>
-      </IonItem>
+     <IonItemDivider>
+        <i className="fa-duotone fa-file-lines"></i>
+        <IonLabel style={{ marginLeft: 20}}>Document API</IonLabel>
+     </IonItemDivider>
       <IonItem
         lines="none"
         style={{ marginLeft: 20 }}
         routerLink="/documents/create"
         routerDirection="none"
       >
-        <IonLabel>Create</IonLabel>
+        <IonLabel>Editor</IonLabel>
       </IonItem>
       <IonItem
         lines="none"
@@ -38,22 +31,6 @@ const DatabaseMenuItems: React.FC = () => {
       <IonItem
         lines="none"
         style={{ marginLeft: 20 }}
-        routerLink="/documents/update"
-        routerDirection="none"
-      >
-        <IonLabel>Update</IonLabel>
-      </IonItem>
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
-        routerLink="/documents/change"
-        routerDirection="none"
-      >
-        <IonLabel>Listen to Changes</IonLabel>
-      </IonItem>
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
         routerLink="/documents/delete"
         routerDirection="none"
       >
@@ -62,26 +39,18 @@ const DatabaseMenuItems: React.FC = () => {
       <IonItem
         lines="none"
         style={{ marginLeft: 20 }}
-        routerLink="/documents/blob/create"
+        routerLink="/documents/batch/create"
         routerDirection="none"
       >
-        <IonLabel>Create Blob</IonLabel>
+        <IonLabel>Batch</IonLabel>
       </IonItem>
       <IonItem
         lines="none"
         style={{ marginLeft: 20 }}
-        routerLink="/documents/blob/get"
+        routerLink="/documents/change"
         routerDirection="none"
       >
-        <IonLabel>Get Blob</IonLabel>
-      </IonItem>
-      <IonItem
-        lines="none"
-        style={{ marginLeft: 20 }}
-        routerLink="/documents/blob/delete"
-        routerDirection="none"
-      >
-        <IonLabel>Delete Blob</IonLabel>
+        <IonLabel>Listen to Changes</IonLabel>
       </IonItem>
     </>
   );

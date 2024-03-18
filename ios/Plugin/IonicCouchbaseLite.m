@@ -17,7 +17,6 @@
 @implementation CustomQuery
 
 -(instancetype) initWithJson:(NSData *)jsonData database:(CBLDatabase*)database {
-  // NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
   SEL sel = NSSelectorFromString(@"initWithDatabase:JSONRepresentation:");
   id queryInstance = [CBLQuery alloc];
 
@@ -121,9 +120,17 @@
   }
 }
 
+-(void)File_GetDefaultPath:(CAPPluginCall*)call {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *defaultDirectory = [paths firstObject];
+    [call resolve:@{ @"path": defaultDirectory }];
+}
+
 -(void)Database_Open:(CAPPluginCall*)call {
+  dispatch_async(dispatch_get_main_queue(), ^{
   NSString *name = [call getString:@"name" defaultValue:NULL];
   NSDictionary *configValue = [call getObject:@"config" defaultValue:NULL];
+      
   
   CBLDatabaseConfiguration *config = [self buildDBConfig:configValue];
   NSError *error;
@@ -132,10 +139,32 @@
   if ([self checkError:call error:error message:@"Unable to open database"]) {
     return;
   }
-  
-  [openDatabases setObject:database forKey:name];
     
-  [call resolve];
+   if([openDatabases objectForKey:name] != nil){
+      [openDatabases removeObjectForKey:name];
+   }
+   [openDatabases setObject:database forKey:name];
+   [call resolve];
+  });
+}
+
+-(void)Database_Close:(CAPPluginCall*)call {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *name = [call getString:@"name" defaultValue:NULL];
+    CBLDatabase *db = [self getDatabase:name];
+    if (db == NULL) {
+      [call reject:@"No such open database" :NULL :NULL :@{}];
+      return;
+    }
+    
+    NSError *error;
+    [db close:&error];
+    
+    if ([self checkError:call error:error message:@"Unable to close database"]) {
+      return;
+    }
+    [call resolve];
+  });
 }
 
 -(CBLDatabaseConfiguration *)buildDBConfig:(NSDictionary *)config {
@@ -143,6 +172,7 @@
   NSString *encKey = [config objectForKey:@"encryptionKey"];
   NSString *directory = [config objectForKey:@"directory"];
   if (directory != NULL) {
+      //used to auto set the database to be in the documents folder,  otherwise the directory won't work because we need a full path
     [c setDirectory:directory];
   }
   if (encKey != NULL) {
@@ -378,40 +408,29 @@
   });
 }
 
--(void)Database_Close:(CAPPluginCall*)call {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *name = [call getString:@"name" defaultValue:NULL];
-    CBLDatabase *db = [self getDatabase:name];
-    if (db == NULL) {
-      [call reject:@"No such open database" :NULL :NULL :@{}];
-      return;
-    }
-    
-    NSError *error;
-    [db close:&error];
-    
-    [self->openDatabases removeObjectForKey:name];
-    
-    if ([self checkError:call error:error message:@"Unable to close database"]) {
-      return;
-    }
-    
-    [call resolve];
-  });
-}
+
 
 -(void)Database_Delete:(CAPPluginCall*)call {
   NSString *name = [call getString:@"name" defaultValue:NULL];
   CBLDatabase *db = [self getDatabase:name];
-  if (db == NULL) {
+  if (db == NULL || db == nil) {
     [call reject:@"No such open database" :NULL :NULL :@{}];
     return;
   }
-  NSError *error;
-  [db delete:&error];
+  NSError *error; 
+  //FIX TO TRY AND STOP BOMBING
+  //this happens when databases that are closed and then tried to delete will cause the app to bomb out
+  @try {
+      [db delete:&error];
+  } @catch(NSException *exception) {
+      [call reject:@"Uncatch Exception: probably tried to delete a database that wasn't open" :NULL :NULL :@{}];
+  }
   
   if ([self checkError:call error:error message:@"Unable to delete database"]) {
     return;
+  } else {
+      //UPDATED to remove the database from the managed database stack because it was removed from disk
+      [openDatabases removeObjectForKey:name];
   }
   
   [call resolve];
@@ -427,20 +446,22 @@
       [call reject:@"No such open database" :NULL :NULL :@{}];
       return;
     }
-    
-    CBLDocument *doc = [db documentWithID:docId];
-    
+      
     NSError *error;
-    
-    if (concurrencyControlValue != NULL) {
-        [db deleteDocument:doc concurrencyControl:[concurrencyControlValue intValue] error:&error];
-    } else {
-        [db deleteDocument:doc error:&error];
+    @try {
+        CBLDocument *doc = [db documentWithID:docId];
+        if (concurrencyControlValue != NULL) {
+            [db deleteDocument:doc concurrencyControl:[concurrencyControlValue intValue] error:&error];
+        } else {
+            [db deleteDocument:doc error:&error];
+        }
+        if ([self checkError:call error:error message:@"Unable to delete document"]) {
+            return;
+        }
+    } @catch(NSException *exception) {
+        [call reject:@"Uncatch Exception: documentId is probably invalid" :NULL :NULL :@{}];
+        return;
     }
-    if ([self checkError:call error:error message:@"Unable to delete document"]) {
-      return;
-    }
-    
     [call resolve];
   });
 }
@@ -479,8 +500,16 @@
     /* TODO change out to Database Maintenance instead of compact
      https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-objc/Classes/CBLDatabase.html#/c:objc(cs)CBLDatabase(im)performMaintenance:error:
      */
-      
-    [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
+    @try {
+        [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
+    } @catch(NSException *exception) {
+        if ([self checkError:call error:error message:@"Unable to compact database"]) {
+          return;
+        } else {
+            NSString *errorMessage = [NSString stringWithFormat:@"Unknown error trying to compact database: %@", exception.reason];
+            [call reject:errorMessage :NULL :NULL :@{}];
+        }
+    }
     
     if ([self checkError:call error:error message:@"Unable to compact database"]) {
       return;
@@ -518,13 +547,19 @@
 
 -(void)Database_SetLogLevel:(CAPPluginCall*)call {
   dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *domainValue = [call getString:@"domain" defaultValue:NULL];
-    NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:NULL];
+    NSString *domainValue = [call getString:@"domain" defaultValue:nil];
+    NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:nil];
       
-    if (logLevelValue != NULL) {
+    if (logLevelValue == nil) {
       [call reject:@"No log level supplied" :NULL :NULL :@{}];
       return;
     }
+      
+    if (domainValue == nil) {
+      [call reject:@"No domain supplied" :NULL :NULL :@{}];
+      return;
+    }
+      
     CBLLogDomain domain = kCBLLogDomainAll;
     
     if ([domainValue isEqualToString:@"ALL"]) domain = kCBLLogDomainAll;
@@ -534,7 +569,6 @@
     else if ([domainValue isEqualToString:@"REPLICATOR"]) domain = kCBLLogDomainReplicator;
    
     /* fix logging by using this syntax https://docs.couchbase.com/couchbase-lite/current/objc/troubleshooting-logs.html */
-    //TODO
     CBLLogLevel logValue = (CBLLogLevel)[logLevelValue integerValue];
     CBLDatabase.log.console.domains = domain;
     CBLDatabase.log.console.level = logValue;
@@ -613,32 +647,42 @@
 
 -(void)Query_Execute:(CAPPluginCall*)call {
 
-  //dispatch_async(dispatch_get_main_queue(), ^{
+    //dispatch_async(dispatch_get_main_queue(), ^{
     NSString *name = [call getString:@"name" defaultValue:NULL];
     CBLDatabase *db = [self getDatabase:name];
     if (db == NULL) {
       [call reject:@"No such open database" :NULL :NULL :@{}];
       return;
     }
+    
     NSDictionary *queryJson = [call getObject:@"query" defaultValue:NULL];
     NSError *jsonError;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:queryJson options:0 error:&jsonError];
     
-    CustomQuery *query = [[CustomQuery alloc] initWithJson:jsonData database:db];
-    NSError *error;
-    CBLQueryResultSet *result = [query execute:&error];
-    
-    if (error != NULL) {
-      [call reject:@"Unable to execute query" :NULL :error :@{}];
-      return;
+    @try {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:queryJson options:0 error:&jsonError];
+        CustomQuery *query = [[CustomQuery alloc] initWithJson:jsonData database:db];
+        NSError *error;
+        CBLQueryResultSet *result = [query execute:&error];
+        
+        if (error != NULL) {
+            [call reject:@"Unable to execute query" :NULL :error :@{}];
+            return;
+        }
+        
+        [queryResultSets setObject:result forKey: [@(_queryCount) stringValue]];
+        NSInteger queryId = _queryCount;
+        _queryCount++;
+        [call resolve:@{ @"id": @(queryId) }];
     }
-
-    [queryResultSets setObject:result forKey: [@(_queryCount) stringValue]];
-    NSInteger queryId = _queryCount;
-    _queryCount++;
-    
-    [call resolve:@{ @"id": @(queryId) }];
-  //}];
+    @catch (NSException *exception){
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: [exception reason],
+            NSLocalizedFailureReasonErrorKey: [exception name]
+        };
+        NSError *error = [NSError errorWithDomain:@"com.couchbaseLite" code:100 userInfo:userInfo];
+        NSString *errorMessage = [NSString stringWithFormat:@"Unable to execute query - jsonValue was: %@", queryJson];
+        [call reject:errorMessage :NULL :error :@{}];
+    }
 }
 
 -(void)ResultSet_Next:(CAPPluginCall*)call {

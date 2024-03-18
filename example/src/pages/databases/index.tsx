@@ -1,3 +1,4 @@
+export {default as DatabaseSetupPage } from './DatabaseSetup';
 export {default as DatabaseOpenPage } from './DatabaseOpen';
 export {default as DatabaseChangePage } from './DatabaseChange';
 export {default as DatabaseClosePage } from './DatabaseClose';
