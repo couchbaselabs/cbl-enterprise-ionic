@@ -281,7 +281,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             } else {
                 c.setDirectory(directory);
             }
-            if (encKey != null) {
+            if (encKey != null && !encKey.isBlank() && !encKey.isBlank()) {
                 c.setEncryptionKey(new EncryptionKey(encKey));
             }
         }
