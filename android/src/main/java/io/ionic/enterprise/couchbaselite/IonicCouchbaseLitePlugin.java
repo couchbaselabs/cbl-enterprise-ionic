@@ -66,6 +66,7 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import io.ionic.enterprise.couchbaselite.JsonQueryBuilder;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
@@ -248,11 +249,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 .post(() -> {
                             try {
                                 Context context = bridge.getContext();
-                                File defaultDirectory = context.getFilesDir();
+                                String defaultDirectory = context.getFilesDir().getCanonicalPath();
                                 call.resolve(
                                         new JSObject() {
                                             {
-                                                put("path", defaultDirectory.getPath());
+                                                put("path", defaultDirectory);
                                             }
                                         }
                                 );
@@ -264,7 +265,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void Database_Open(PluginCall call) throws JSONException, CouchbaseLiteException {
+    public void Database_Open(PluginCall call) throws JSONException, CouchbaseLiteException, IOException {
         String name = call.getString("name");
         JSONObject config = call.getObject("config");
         Log.d(TAG, "Opening database: " + name);
@@ -276,8 +277,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             String encKey = config.optString("encryptionKey", null);
             if (directory == null) {
                 Context context = bridge.getContext();
-                File defaultDirectory = context.getFilesDir();
-                c.setDirectory(defaultDirectory.getPath());
+                String defaultDirectory = context.getFilesDir().getCanonicalPath();
+                c.setDirectory(defaultDirectory);
             } else {
                 c.setDirectory(directory);
             }
@@ -832,8 +833,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 call.resolve(null);
                 return;
             }
-
-            Map<String, Object> data = processResultMap(result.toMap());
+            Map<String, Object> resultsMap = result.toMap();
+            Map<String, Object> data = processResultMap(resultsMap);
             if (data.containsKey("_id")) {
                 data.put("id", data.get("_id"));
                 data.remove("_id");
@@ -893,7 +894,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             Result result;
             int i = 0;
             while (i++ < chunkSize && ((result = r.next()) != null)) {
-                Map<String, Object> data = processResultMap(result.toMap());
+                Map<String, Object> resultMap = result.toMap();
+                Map<String, Object> data = processResultMap(resultMap);
                 if (data.containsKey("_id")) {
                     data.put("id", data.get("_id"));
                     data.remove("_id");
@@ -959,8 +961,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                     resultsChunk = new ArrayList<>(chunkSize);
                 }
             }
-
-            Map<String, Object> data = processResultMap(queryResult.toMap());
+            Map<String, Object> queryResultMap = queryResult.toMap();
+            Map<String, Object> data = processResultMap(queryResultMap);
             if (data.containsKey("_id")) {
                 data.put("id", data.get("_id"));
                 data.remove("_id");
