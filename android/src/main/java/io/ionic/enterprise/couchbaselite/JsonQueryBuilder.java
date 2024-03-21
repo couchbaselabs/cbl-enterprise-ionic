@@ -29,12 +29,7 @@ public class JsonQueryBuilder {
         try {
             DataSource source = DataSource.database(db);
             query = QueryBuilder.select().from(source);
-            //TODO fixed for 3.x due to createJsonQuery vs createSQLQuery
-
-            //C4Database c4database = getC4Database(db);
-            //setC4Query(query, c4database.createJsonQuery(json));
             setC4Query(query, db, json);
-            //setColumnNames(query, generateColumnNames(db, json));
         } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
             ex.printStackTrace();
         }
@@ -71,29 +66,7 @@ public class JsonQueryBuilder {
 
         return columns;
     }
-    /*
-    private static C4Database getC4Database(Database db) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, LiteCoreException {
-        Class cls = db.getClass().getSuperclass(); // AbstractDatabase
-        Method m = cls.getDeclaredMethod("getC4Database", null);
-        m.setAccessible(true);
 
-        return (C4Database) m.invoke(db, null);
-    }
-
-    private static void setC4Query(Query query, C4Query c4query) throws IllegalAccessException, NoSuchFieldException {
-        Class queryClass = query.getClass().getSuperclass(); // AbstractQuery
-        Field f = queryClass.getDeclaredField("c4query");
-        f.setAccessible(true);
-        f.set(query, c4query);
-    }
-
-    private static void setColumnNames(Query query, Map<String, Integer> columnNames) throws NoSuchFieldException, IllegalAccessException {
-        Class queryClass = query.getClass().getSuperclass().getSuperclass(); // AbstractQuery
-        Field f = queryClass.getDeclaredField("columnNames");
-        f.setAccessible(true);
-        f.set(query, columnNames);
-    }
-    */
     private static void setC4Query(Query query, Database db, String json) throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
         //get the C4Query object
         Class clsDbSuper = db.getClass().getSuperclass(); // AbstractDatabase

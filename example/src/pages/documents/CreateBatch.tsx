@@ -135,7 +135,7 @@ const CreateBatchPage: React.FC = () => {
           const resultSet = await (await query.execute()).allResults();
           setResultsCount(resultSet.length.toString());
           for (let result of resultSet) {
-            let doc = result._doc;
+            let doc = result[databaseName];
             let id = doc.id;
             let name = doc.name;
             setResultsMessage(prev => [
