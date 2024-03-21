@@ -252,7 +252,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                                 call.resolve(
                                         new JSObject() {
                                             {
-                                                put("path", defaultDirectory.getPath());
+                                                String path = defaultDirectory.getCanonicalPath();
+                                                put("path", path);
                                             }
                                         }
                                 );
@@ -266,30 +267,29 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     @PluginMethod
     public void Database_Open(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
-        JSONObject config = call.getObject("config");
-        Log.d(TAG, "Opening database: " + name);
-
-        DatabaseConfiguration c = new DatabaseConfiguration();
-
-        if (config != null) {
-            String directory = config.optString("directory", null);
-            String encKey = config.optString("encryptionKey", null);
-            if (directory == null) {
-                Context context = bridge.getContext();
-                File defaultDirectory = context.getFilesDir();
-                c.setDirectory(defaultDirectory.getPath());
-            } else {
-                c.setDirectory(directory);
-            }
-            if (encKey != null) {
-                c.setEncryptionKey(new EncryptionKey(encKey));
-            }
-        }
+        JSONObject jsonConfig = call.getObject("config");
         new Handler(Looper.getMainLooper())
                 .post(
                         () -> {
                             try {
-                                Database d = new Database(name, c);
+                                DatabaseConfiguration databaseConfig = new DatabaseConfiguration();
+                                if (jsonConfig != null) {
+                                    String directory = jsonConfig.optString("directory", null);
+                                    String encKey = jsonConfig.optString("encryptionKey", null);
+                                    if (directory == null) {
+                                        Context context = bridge.getContext();
+                                        File defaultDirectory = context.getFilesDir();
+                                        String path = defaultDirectory.getPath();
+                                        databaseConfig = databaseConfig.setDirectory(path);
+                                    } else {
+                                        databaseConfig = databaseConfig.setDirectory(directory);
+                                    }
+                                    if (encKey != null && !encKey.isBlank() && !encKey.isEmpty()) {
+                                        databaseConfig = databaseConfig.setEncryptionKey(new EncryptionKey(encKey));
+                                    }
+                                }
+
+                                Database d = new Database(name, databaseConfig);
                                 this.openDatabases.put(name, d);
                                 call.resolve();
                             } catch (Exception ex) {
