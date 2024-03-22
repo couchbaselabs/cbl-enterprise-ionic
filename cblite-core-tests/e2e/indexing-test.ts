@@ -89,7 +89,7 @@ export class IndexingTests extends TestCase {
             .from(DataSource.database(this.database))
             .where(whereClause);
       let queryResults = await (await ftsQuery.execute()).allResults();
-      let resultDoc = queryResults[0];
+      let resultDoc = queryResults[0][this.database.getName()];
       expect(queryResults).to.have.lengthOf(1);
       expect(resultDoc.quote).to.equal('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat');
     } catch (error) {
