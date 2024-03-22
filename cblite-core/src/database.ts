@@ -284,7 +284,7 @@ export class Database {
     return this._engine.Database_CreateIndex({
       name: this.databaseName,
       indexName: indexName,
-      index: index,
+      index: index.toJson(),
     });
   }
 

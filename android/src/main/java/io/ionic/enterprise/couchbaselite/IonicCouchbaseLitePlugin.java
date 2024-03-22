@@ -455,23 +455,22 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             call.reject("No such database");
             return;
         }
-        String indexName = call.getString("indexName");
-        JSONObject indexData = call.getObject("index");
-
-        String type = indexData.getString("type");
-        JSONArray items = indexData.getJSONArray("items");
-
-        Index index = null;
-
-        if (type.equals("value")) {
-            index = IndexBuilder.valueIndex(makeValueIndexItems(items));
-        } else if (type.equals("full-text")) {
-            index = IndexBuilder.fullTextIndex(makeFullTextIndexItems(items));
-        }
 
         try {
-            d.createIndex(indexName, index);
+            String indexName = call.getString("indexName");
+            JSONObject indexData = call.getObject("index");
 
+            String type = indexData.getString("type");
+            JSONArray items = indexData.getJSONArray("items");
+
+            Index index = null;
+
+            if (type.equals("value")) {
+                index = IndexBuilder.valueIndex(makeValueIndexItems(items));
+            } else if (type.equals("full-text")) {
+                index = IndexBuilder.fullTextIndex(makeFullTextIndexItems(items));
+            }
+            d.createIndex(indexName, index);
             call.resolve();
         } catch (Exception ex) {
             call.reject("Error creating index", ex);
