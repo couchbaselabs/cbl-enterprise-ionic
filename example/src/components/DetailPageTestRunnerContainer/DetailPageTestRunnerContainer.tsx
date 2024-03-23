@@ -99,8 +99,8 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
           </IonToolbar>
         </IonHeader>
         <IonList>
-          <IonItemDivider>
-            <IonLabel>Run Tests</IonLabel>
+          <IonItemDivider key="divider1">
+            <IonLabel key="divider1Label">Run Tests</IonLabel>
             <IonButtons slot="end">
               <IonToggle
                 onIonChange={(e: any) => setShowDetails(e.detail.checked)}
@@ -109,6 +109,7 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
                 Show Details
               </IonToggle>
               <IonButton
+                key="btnCancel"
                 onClick={() => setShouldCancel(true)}
                 style={{
                   display: 'block',
@@ -120,6 +121,7 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
                 <i className="fa-solid fa-stop"></i>
               </IonButton>
               <IonButton
+                key="btnUpdate"
                 onClick={update}
                 style={{
                   display: 'block',
@@ -134,11 +136,9 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
           </IonItemDivider>
           <hr style={{ padding: '5px' }} />
           {currentMessage !== null ? (
-            <IonItem key="999">
-              <IonLabel>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
+            <IonItem key="itemCurrentRunning">
+              <IonLabel key="lblCurrentRunning">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }} >
                   <h2>{currentMessage.testName}</h2>
                   <i className="fa-duotone fa-spinner-third fa-spin"></i>
                 </div>
@@ -148,7 +148,7 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
           ) : (
             <></>
           )}
-          <IonItemDivider>
+          <IonItemDivider key="dividerStatusCounter">
             <div
               style={{
                 display: 'flex',
@@ -156,18 +156,15 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
                 width: '100%',
               }}
             >
-              <IonLabel>Success: {successCount}</IonLabel>
-              <IonLabel>Failed: {failedCount}</IonLabel>
+              <IonLabel key="lblSuccessCount">Success: {successCount}</IonLabel>
+              <IonLabel key="lblFailedCount">Failed: {failedCount}</IonLabel>
             </div>
           </IonItemDivider>
           {
-            //resultMessages.map((result, index) => (
             Array.from(resultMessages.values()).map((result, index) => (
-              <IonItem key={index}>
-                <IonLabel>
-                  <div
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
+              <IonItem key={'item-' + index}>
+                <IonLabel key={'lbl-' + index}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }} >
                     <h2>{result.testName}</h2>
                     {result.message === 'running' ? (
                       <i className="fa-duotone fa-spinner-third fa-spin"></i>

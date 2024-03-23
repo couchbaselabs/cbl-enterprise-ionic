@@ -37,6 +37,8 @@ export class TestRunner {
 
         //run the actual test
         const result: ITestResult = await instance[method]();
+        //sleep for 1 second to try and fix android issues with deleting databases
+        await new Promise(resolve => setTimeout(resolve, 300));
         await instance.init();
         yield result;
       } else {

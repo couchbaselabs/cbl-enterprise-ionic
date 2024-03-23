@@ -2,7 +2,7 @@ import React, { useState, ReactNode } from 'react';
 import { Database } from 'cblite-core';
 import DatabaseContext from './DatabaseContext';
 import { DatabaseContextType } from './DatabaseContextType';
-import { CapacitorEngine } from 'couchbase-lite-ee-ionic';
+import { CapacitorEngine } from 'cblite-ionic';
 
 type DatabaseProviderProps = {
   children: ReactNode;

@@ -17,6 +17,6 @@
     "couchbase-lite",
     "test"
   ],
-  "author": "Developer Advocates @ Couchbase",
+  "author": "Developer Integrations @ Couchbase",
   "license": "Apache-2.0"
 }

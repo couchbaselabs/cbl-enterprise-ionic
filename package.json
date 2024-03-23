@@ -1,7 +1,7 @@
 {
-  "name": "couchbase-lite-ee-ionic",
+  "name": "cblite-ionic",
   "version": "3.1.0",
-  "description": "Plugin for Couchbase Lite Enterprise Edition for Ionic capacitor apps",
+  "description": "Plugin for Couchbase Lite Enterprise Edition for Ionic Capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -13,7 +13,7 @@
     "ios/Plugin/",
     "CouchbaseLiteEeIonic.podspec"
   ],
-  "author": "Developer Advocates @ Couchbase",
+  "author": "Deveveloper Integrations  @ Couchbase",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -46,10 +46,10 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^5.7.0",
-    "@capacitor/core": "^5.7.0",
+    "@capacitor/android": "^5.7.4",
+    "@capacitor/core": "^5.7.4",
     "@capacitor/docgen": "^0.0.18",
-    "@capacitor/ios": "^5.7.0",
+    "@capacitor/ios": "^5.7.4",
     "@ionic/eslint-config": "^0.3.0",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
@@ -64,7 +64,7 @@
     "typescript": "5.4.2"
   },
   "peerDependencies": {
-    "@capacitor/core": "^5.7.0"
+    "@capacitor/core": "^5.7.4"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
