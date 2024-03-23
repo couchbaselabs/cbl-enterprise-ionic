@@ -1,21 +1,18 @@
 {
-  "name": "cblite-core-tests",
+  "name": "cblite",
   "version": "1.0.0",
-  "description": "A testing library for cblite-core-ts",
+  "description": "The core Typescript API definition module for CBLite for mobile platforms",
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "cblite-core": "file:../cblite-core/",
-    "chai": "^5.1.0",
     "typescript": "^5.4.2"
   },
   "keywords": [
     "couchbase",
-    "couchbase-lite",
-    "test"
+    "couchbase-lite"
   ],
   "author": "Developer Integrations @ Couchbase",
   "license": "Apache-2.0"

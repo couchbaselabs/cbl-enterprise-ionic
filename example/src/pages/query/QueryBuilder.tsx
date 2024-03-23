@@ -3,15 +3,9 @@ import React, { useState, useContext } from 'react';
 import DatabaseContext from '../../providers/DatabaseContext';
 import DetailPageContainerItemResults from '../../components/DetailPageContainerItemResults/DetailPageContainerItemResults';
 import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
-import {
-  DataGeneratorService,
-  ProductType,
-  WidgetType,
-} from '../../services/DataGeneratorService';
 
 import {
   QueryGeneratorService,
-  QueryDictionary,
 } from '../../services/QueryBuilderGeneratorService';
 
 import {
@@ -27,7 +21,7 @@ import {
 
 import {
   Query
-} from 'cblite-core';
+} from 'cblite';
 
 import { playOutline } from 'ionicons/icons';
 

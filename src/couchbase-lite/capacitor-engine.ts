@@ -1,7 +1,6 @@
 import {
   ResultSet,
   Result,
-  Database,
   DocumentResult,
   EngineLocator,
   DatabaseOpenArgs,
@@ -26,7 +25,7 @@ import {
   ReplicatorCreateArgs,
   ReplicatorArgs,
   ReplicatorChangeListenerArgs,
-} from 'cblite-core';
+} from 'cblite';
 
 import { IonicCouchbaseLite } from '../ionic-couchbase-lite';
 import { IonicCouchbaseLitePlugin, QueryExecuteArgs } from '../definitions';

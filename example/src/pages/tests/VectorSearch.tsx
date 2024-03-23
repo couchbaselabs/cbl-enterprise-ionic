@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { VectorSearchTests } from 'cblite-core-tests';
+import { VectorSearchTests } from 'cblite-tests';
 
 const VectorSearchTestsPage: React.FC = () => {
   return (

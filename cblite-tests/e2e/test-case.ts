@@ -9,7 +9,7 @@ import {
   DataSource,
   Expression,
   Function,
-} from 'cblite-core';
+} from 'cblite';
 
 import { assert, expect } from 'chai';
 

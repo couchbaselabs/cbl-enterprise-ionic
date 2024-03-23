@@ -1,7 +1,7 @@
 import { 
   DatabaseArgs,
   ICoreEngine,
- } from 'cblite-core';
+ } from 'cblite';
 
 export interface PluginConfigureArgs {
   config: any;

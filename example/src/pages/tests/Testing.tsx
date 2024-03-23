@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { TestingTests } from 'cblite-core-tests';
+import { TestingTests } from 'cblite-tests';
 
 const TestingTestsPage: React.FC = () => {
   return (

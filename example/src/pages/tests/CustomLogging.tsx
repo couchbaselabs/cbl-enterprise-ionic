@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { CustomLoggingTests } from 'cblite-core-tests';
+import { CustomLoggingTests } from 'cblite-tests';
 
 const CustomLoggingTestsPage: React.FC = () => {
 

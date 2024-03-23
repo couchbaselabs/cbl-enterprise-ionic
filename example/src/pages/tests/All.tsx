@@ -16,7 +16,7 @@ import {
 	QueryBuilderTests,
 	QueryTests,
 	ReplicatorTests
-} from 'cblite-core-tests';
+} from 'cblite-tests';
 
 const AllTestsPage: React.FC = () => {
   return (

@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from 'react';
-import { Database } from 'cblite-core';
+import { Database } from 'cblite';
 import DatabaseContext from './DatabaseContext';
 import { DatabaseContextType } from './DatabaseContextType';
 import { CapacitorEngine } from 'cblite-ionic';

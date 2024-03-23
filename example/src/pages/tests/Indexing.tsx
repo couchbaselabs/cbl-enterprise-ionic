@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { IndexingTests } from 'cblite-core-tests';
+import { IndexingTests } from 'cblite-tests';
 
 const IndexingTestPage: React.FC = () => {
 

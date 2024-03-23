@@ -14,7 +14,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "cblite-core-tests": "file:../cblite-core-tests/",
+    "cblite-tests": "file:../cblite-tests/",
     "cblite-ionic": "file:..",
     "@capacitor/android": "5.7.4",
     "@capacitor/app": "5.0.7",

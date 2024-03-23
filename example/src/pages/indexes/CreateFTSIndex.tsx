@@ -6,7 +6,7 @@ import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm
 
 import { IonItemDivider, IonLabel, IonItem, IonInput, IonButton, IonToggle } from '@ionic/react';
 
-import { IndexBuilder, FullTextIndexItem } from 'cblite-core';
+import { IndexBuilder, FullTextIndexItem } from 'cblite';
 
 const CreateFTSIndexPage: React.FC = () => {
 

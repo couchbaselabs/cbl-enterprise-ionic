@@ -8,7 +8,7 @@ import {
   Expression,
   Ordering,
   Meta,
-} from 'cblite-core';
+} from 'cblite';
 
 export interface QueryDictionary {
   [key: string]: Query;

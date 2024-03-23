@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { FileLoggingTests } from 'cblite-core-tests';
+import { FileLoggingTests } from 'cblite-tests';
 
 const FileLoggingTestsPage: React.FC = () => {
 

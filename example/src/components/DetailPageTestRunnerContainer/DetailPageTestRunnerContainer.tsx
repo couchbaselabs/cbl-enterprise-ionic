@@ -2,7 +2,7 @@
 import './DetailPageTestRunnerContainer.css';
 import React from 'react';
 import useState from 'react-usestateref';
-import { TestRunner, ITestResult, TestCase } from 'cblite-core-tests';
+import { TestRunner, ITestResult, TestCase } from 'cblite-tests';
 
 import {
   IonButtons,

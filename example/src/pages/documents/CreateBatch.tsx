@@ -26,7 +26,7 @@ import {
   DataSource,
   Expression,
   Meta
-} from 'cblite-core';
+} from 'cblite';
 
 const CreateBatchPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;
