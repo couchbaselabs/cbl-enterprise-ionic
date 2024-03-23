@@ -10,9 +10,6 @@ import { EngineLocator } from './engine-locator';
 
 import { ConcurrencyControl } from './concurrency-control';
 
-export interface DatabaseChange {
-  documentIDs: string[];
-}
 
 export interface DocumentChange {
   documentID: string;
@@ -20,7 +17,7 @@ export interface DocumentChange {
 
 export interface ListenerToken {}
 
-export type DatabaseChangeListener = (change: DatabaseChange) => void;
+
 export type DocumentChangeListener = (change: DocumentChange) => void;
 
 export enum LogDomain {
@@ -46,11 +43,11 @@ export enum LogLevel {
 export class Database {
   _documents: { [id: string]: Document } = {};
 
-  private changeListenerTokens: DatabaseChangeListener[] = [];
+
 
   private _engine: ICoreEngine = EngineLocator.getEngine(EngineLocator.key);
 
-  private didStartListener = false;
+
 
   public log = new DatabaseLogging(this);
 
@@ -73,31 +70,7 @@ export class Database {
     });
   }
 
-  /**
-   * Set the given DatabaseChangeListener to the this database.
-   */
-
-  addChangeListener(listener: DatabaseChangeListener) {
-    this.changeListenerTokens.push(listener);
-
-    if (!this.didStartListener) {
-      this._engine.Database_AddChangeListener(
-        { name: this.getName(), 
-         callback: (data: any, err: any) => {
-          if (err) {
-            console.log('Database change listener error', err);
-            return;
-          }
-          this.notifyDatabaseChangeListeners(data);
-        },
-      });
-      this.didStartListener = true;
-    }
-  }
-
-  private notifyDatabaseChangeListeners(data: any) {
-    this.changeListenerTokens.forEach(l => l(data));
-  }
+ 
 
   /**
    * Add the given DocumentChangeListener to the specified document.
@@ -111,14 +84,7 @@ export class Database {
     return null;
   }
 
-  /**
-   * Remove the given DatabaseChangeListener from the this database.
-   */
-  removeChangeListener(listener: ListenerToken) {
-    this.changeListenerTokens = this.changeListenerTokens.filter(
-      l => l !== listener,
-    );
-  }
+
 
   /**
    * Closes a database.

@@ -133,10 +133,6 @@ export interface ReplicatorArgs {
   replicatorId: string;
 }
 
-export interface DatabaseAddChangeListenerArgs extends DatabaseArgs {
-  callback: (data: any, err: any) => void;
-}
-
 export interface ReplicatorChangeListenerArgs {
   replicatorId: string;
   callback: (data: any, err: any) => void;
@@ -227,8 +223,6 @@ export interface ICoreEngine {
     callback:(data: any, err: any) => void)
     : Promise<PluginListenerHandle>;
 
-  Database_AddChangeListener(args: DatabaseAddChangeListenerArgs)
-    : Promise<PluginListenerHandle>;
 
   Replicator_AddChangeListener(args: ReplicatorChangeListenerArgs)
     : Promise<PluginListenerHandle>;

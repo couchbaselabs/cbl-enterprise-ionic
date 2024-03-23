@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { NotificationTests } from 'cblite-tests';
+import { NotificationTests } from '../../tests/e2e/notification-test';
 
 const NotificationsTestPage: React.FC = () => {
 

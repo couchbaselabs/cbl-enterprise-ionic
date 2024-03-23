@@ -5,7 +5,6 @@ import {
   EngineLocator,
   DatabaseOpenArgs,
   DatabaseSaveArgs,
-  DatabaseAddChangeListenerArgs,
   DatabaseArgs,
   DatabaseCopyArgs,
   DatabaseCreateIndexArgs,
@@ -28,7 +27,11 @@ import {
 } from 'cblite';
 
 import { IonicCouchbaseLite } from '../ionic-couchbase-lite';
-import { IonicCouchbaseLitePlugin, QueryExecuteArgs } from '../definitions';
+
+import { 
+  IonicCouchbaseLitePlugin, 
+  QueryExecuteArgs, 
+} from '../definitions';
 
 import { PluginListenerHandle } from '@capacitor/core';
 
@@ -214,9 +217,11 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
   }
 
   Database_AddChangeListener(
-    args: DatabaseAddChangeListenerArgs,
-  ): Promise<PluginListenerHandle> {
-    return IonicCouchbaseLite.Database_AddChangeListener(args);
+    args: DatabaseArgs,
+    cb: (data: any, err: any) => void,
+    ): Promise<PluginListenerHandle> {
+    return IonicCouchbaseLite.Database_AddChangeListener({
+      name: args.name}, cb);
   }
 
   Replicator_AddChangeListener(
