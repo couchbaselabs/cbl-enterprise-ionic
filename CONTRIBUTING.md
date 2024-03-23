@@ -9,10 +9,10 @@ This guide provides instructions for contributing to this Capacitor plugin.
     - [Capacitor v5 cli](https://capacitorjs.com/docs/getting-started)
     - [Understanding on Capacitor Plugins Development](https://capacitorjs.com/docs/plugins/creating-plugins)
 - [Visual Studio Code](https://code.visualstudio.com/download)
-    -[Visual Studio Code Ionic Extension](https://capacitorjs.com/docs/vscode/getting-started)
+    - [Visual Studio Code Ionic Extension](https://capacitorjs.com/docs/vscode/getting-started)
 - iOS Development
     - A modern Mac 
-     - [XCode 14](https://developer.apple.com/xcode/) or higher installed and working (XCode 15 installed is preferred)
+    - [XCode 14](https://developer.apple.com/xcode/) or higher installed and working (XCode 15 installed is preferred)
     - [XCode Command Line Tools](https://developer.apple.com/download/more/) installed 
     - [Simulators](https://developer.apple.com/documentation/safari-developer-tools/installing-xcode-and-simulators) downloaded and working
     - [Homebrew](https://brew.sh/) 
@@ -39,8 +39,8 @@ This guide provides instructions for contributing to this Capacitor plugin.
 - `android/src/` this is the Android native implementation of the plugin.  The file brakedown is:
     - `main/java/io/ionic/enterprise/couchbaselite/IonicCouchbaseLitePlugin.java` - the main implementation of the plugin and bridge.  The name must match the name of the plugin.
     - ``main/java/io/ionic/enterprise/couchbaselite/JsonQueryhBuilder.java`` - Helper class for building the Query Builder implementation.  
-- `cblite-core` this is the Javascript implementation of the Couchbase Lite SDK which includes definitions for the main classes and methods in the Couchbase Lite SDK.  This is used by the plugin to call the native code.
-- `cblite-core-tests` this is the Javascript end to end (e2e) test that are used to fully test the plugin to validate that all functionality works.  This includes a custom test runner that can be used by any UI to run the tests.
+- `cblite` this is the Javascript implementation of the Couchbase Lite SDK which includes definitions for the main classes and methods in the Couchbase Lite SDK.  This is used by the plugin to call the native code.
+- `cblite-tests` this is the Javascript end to end (e2e) test that are used to fully test the plugin to validate that all functionality works.  This includes a custom test runner that can be used by any UI to run the tests.
 
 ## Local Setup
 
