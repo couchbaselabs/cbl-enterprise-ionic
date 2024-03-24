@@ -1,39 +1,184 @@
 // FileLog.tsx
 import React, { useState, useContext } from 'react';
-import DatabaseContext from '../../providers/DatabaseContext';
-import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
-import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
 
-import { IonItemDivider, IonLabel } from '@ionic/react';
+import DatabaseContext from '../../providers/DatabaseContext';
+
+import DetailPageContainerRun from '../../components/DetailPageContainerRun/DetailPageContainerRun';
+
+import {
+  IonButton,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonTextarea,
+  IonToggle,
+} from '@ionic/react';
+
+import {
+  DatabaseLogging,
+  DatabaseFileLoggingConfiguration,
+  LogLevel,
+  PlatformDirectory,
+} from 'cblite';
 
 const FileLogPage: React.FC = () => {
-
   const { databases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
-  const [resultsMessage, setResultsMessage] = useState<string>('');
+  const [selectedLogLevel, setSelectedLogLevel] = useState<string>('');
+  const [path, setPath] = useState<string>('');
+  const [maxRotateCount, setMaxRotateCount] = useState<number>(0);
+  const [maxSize, setMaxSize] = useState<number>(0);
+  const [usePlainText, setUsePlainText] = useState<boolean>(true);
+  const [resultsMessage, setResultsMessage] = useState<string[]>([]);
 
-  function update () {
-
+  function platformPath() {
+    const pd = new PlatformDirectory();
+    pd.getDefaultPath().then((result: string) => {
+      setPath(result);
+    });
   }
 
-  function reset () {
+  async function update() {
+    //reset logs for this run
+    setResultsMessage([]);
+    try {
+      //get the log level and domain from selected values back into enum form
+      let logKey = -1;
+      if (selectedLogLevel !== '') {
+        logKey = parseInt(selectedLogLevel);
+      }
+      let logLevel: LogLevel = logKey;
+      if (databaseName in databases) {
+        let db = databases[databaseName];
+        if (db != null) {
+          //set file logging config
+          let config: DatabaseFileLoggingConfiguration = {
+            directory: path,
+            level: logKey, 
+            maxRotateCount: maxRotateCount,
+            maxSize: maxSize,
+            usePlaintext: usePlainText,
+          }; 
+          let dbLogging = new DatabaseLogging(db);
+          dbLogging.setFileConfig(config)
+          .then(() => {
+            setResultsMessage(prev => [...prev, 'success']);
+          }).catch((error: any) => {
+            setResultsMessage(prev => [
+              ...prev,
+              'Error:' + error
+            ]);
+          });
+        }
+      } else {
+        setResultsMessage(prev => [
+          ...prev,
+          'Error: Database is not setup (defined)',
+        ]);
+      }
+    } catch (error) {
+      setResultsMessage(prev => [...prev, '' + error]);
+    }
+  }
 
+  function reset() {
+    setDatabaseName('');
+    setPath('');
+    setMaxRotateCount(0);
+    setMaxSize(0);
+    setUsePlainText(true);
+    setSelectedLogLevel('');
+    setResultsMessage([]);
   }
 
   return (
-    <DetailPageContainer 
-    navigationTitle="File Logging" collapseTitle="File Logging"
-    onReset={reset}
-    onAction={update}
-    resultsMessage={resultsMessage}
-    actionLabel="Update">
-      <DatabaseNameForm
-        setDatabaseName={setDatabaseName}
-        databaseName={databaseName}  />
-      <IonItemDivider>
-        <IonLabel>File Information</IonLabel>
-      </IonItemDivider>
-    </DetailPageContainer>
+    <DetailPageContainerRun
+      navigationTitle="File Logging"
+      collapseTitle="File Logging"
+      onReset={reset}
+      onAction={update}
+      databaseName={databaseName}
+      setDatabaseName={setDatabaseName}
+      sectionTitle="File Information"
+      titleButtons={
+        <IonButton
+          key="btnDefaultDirectory"
+          onClick={platformPath}
+          style={{
+            display: 'block',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            padding: '0px 2px 0px 25px',
+          }}
+        >
+          <i className="fa-solid fa-folder"></i>
+        </IonButton>
+      }
+      children={
+        <>
+          <IonItem key={1}>
+            <IonTextarea
+              key={2}
+              rows={6}
+              placeholder="Log Directory Path"
+              onInput={(e: any) => setPath(e.detail.value)}
+              value={path}
+            ></IonTextarea>
+          </IonItem>
+          <IonItem key={3}>
+            <IonToggle
+              onIonChange={(e: any) => setUsePlainText(e.detail.checked)}
+              checked={usePlainText}
+            >
+              Use Plain Text
+            </IonToggle>
+          </IonItem>
+          <IonItem key={4}>
+            <IonLabel key={5}>Select a Log Level</IonLabel>
+            <IonSelect
+              key={6}
+              value={selectedLogLevel}
+              onIonChange={e => setSelectedLogLevel(e.detail.value)}
+            >
+              {Object.entries(LogLevel).map(([key, value]) => (
+                <IonSelectOption key={'selectoption' + value} value={key}>
+                  {value}
+                </IonSelectOption>
+              ))}
+            </IonSelect>
+          </IonItem>
+          <IonItem key={7}>
+            <IonLabel position="stacked" key={7}>
+              Max Rotate Count
+            </IonLabel>
+            <IonInput
+              key={8}
+              type="number"
+              onInput={(e: any) => setMaxRotateCount(e.target.value)}
+              value={maxRotateCount}
+            ></IonInput>
+          </IonItem>
+          <IonItem key={9}>
+            <IonLabel position="stacked" key={10}>
+              Max Size (in bytes)
+            </IonLabel>
+            <IonInput
+              key={11}
+              type="number"
+              onInput={(e: any) => setMaxSize(e.target.value)}
+              value={maxSize}
+            ></IonInput>
+          </IonItem>
+        </>
+      }
+      resultsChildren={resultsMessage.map((message, index) => (
+        <IonItem key={'message-' + index}>
+          <IonLabel>{message}</IonLabel>
+        </IonItem>
+      ))}
+    ></DetailPageContainerRun>
   );
 };
 

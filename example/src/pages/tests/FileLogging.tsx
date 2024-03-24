@@ -11,7 +11,9 @@ const FileLoggingTestsPage: React.FC = () => {
       navigationTitle="File Logging Tests"
       collapseTitle="File Loggin Tests"
       testCases={[FileLoggingTests]}
-    ></DetailPageTestContainerRunner>
+    >
+
+    </DetailPageTestContainerRunner>
   );
 };
 export default FileLoggingTestsPage;

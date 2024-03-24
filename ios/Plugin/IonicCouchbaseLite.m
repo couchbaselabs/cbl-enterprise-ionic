@@ -638,32 +638,50 @@
             [call reject:@"No such open database" :NULL :NULL :@{}];
             return;
         }
-        NSDictionary *configObject = [call getObject:@"config" defaultValue:NULL];
-        id logLevelValue = [configObject objectForKey:@"level"];
-        NSString *directory = [configObject objectForKey:@"directory"];
-        NSString *rawDir = [directory stringByReplacingOccurrencesOfString:@"file://" withString:@""];
-        CBLLogFileConfiguration* config = [[CBLLogFileConfiguration alloc] initWithDirectory:rawDir];
-        
-        id maxRotateCount = [configObject objectForKey:@"maxRotateCount"];
-        id maxSize = [configObject objectForKey:@"maxSize"];
-        id usePlaintext = [configObject objectForKey:@"usePlaintext"];
-        
-        [CBLDatabase.log.file setConfig:config];
-        
-        if (maxRotateCount != NULL) {
-            [config setMaxRotateCount:(NSInteger) maxRotateCount];
+        @try{
+            NSDictionary *configObject = [call getObject:@"config" defaultValue:NULL];
+            id logLevelValue = [configObject objectForKey:@"level"];
+            NSString *directory = [configObject objectForKey:@"directory"];
+            if (directory.length <= 0) {
+                [call reject:@"config directory is not valid" :NULL :NULL :@{}];
+                return;
+            }
+            NSString *rawDir = [directory stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+            CBLLogFileConfiguration* config = [[CBLLogFileConfiguration alloc] initWithDirectory:rawDir];
+            
+            id maxRotateCount = [configObject objectForKey:@"maxRotateCount"];
+            id maxSize = [configObject objectForKey:@"maxSize"];
+            id usePlaintext = [configObject objectForKey:@"usePlaintext"];
+            
+            if (maxRotateCount != NULL) {
+                [config setMaxRotateCount:(NSInteger) maxRotateCount];
+            } else {
+                [call reject:@"config rotate count is not valid" :NULL :NULL :@{}];
+            }
+            if (maxSize != NULL && maxSize > 0) {
+                [config setMaxSize:(uint64_t) maxSize];
+            } else {
+                [call reject:@"config max size is not valid" :NULL :NULL :@{}];
+            }
+            if (usePlaintext != NULL) {
+                [config setUsePlainText:(BOOL) usePlaintext];
+            } else {
+                [call reject:@"config use plain text not valid" :NULL :NULL :@{}];
+            }
+            
+            [CBLDatabase.log.file setConfig:config];
+            if (logLevelValue != NULL) {
+                [CBLDatabase.log.file setLevel:(NSInteger) logLevelValue];
+            } else {
+                [call reject:@"config log level not valid" :NULL :NULL :@{}];
+            }
+            return [call resolve];
+        } @catch (NSException *ex){
+            [call reject:ex.reason :NULL :NULL :@{}];
+            return;
         }
-        if (maxSize != NULL) {
-            [config setMaxSize:(NSInteger) maxSize];
-        }
-        if (usePlaintext != NULL) {
-            [config setUsePlainText:(NSInteger) maxRotateCount];
-        }
-        if (logLevelValue != NULL) {
-            [CBLDatabase.log.file setLevel:(NSInteger) logLevelValue];
-        }
-        return [call resolve];
     });
+   
 }
 
 -(void)Document_GetBlobContent:(CAPPluginCall*)call {
