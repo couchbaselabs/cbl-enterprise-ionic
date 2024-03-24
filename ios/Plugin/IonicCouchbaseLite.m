@@ -48,6 +48,8 @@
     NSInteger _allResultsChunkSize;
 }
 
+// MARK: Helper methods
+
 -(void)load {
     openDatabases = [NSMutableDictionary new];
     queryResultSets = [NSMutableDictionary new];
@@ -133,6 +135,166 @@
     return docMap;
 }
 
+-(NSDictionary *)toMap:(NSDictionary *)o {
+    NSMutableDictionary *doc = [[NSMutableDictionary alloc] initWithCapacity:[o count]];
+    for (NSString *key in o) {
+        id value = o[key];
+        if ([value isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *object = (NSDictionary *) value;
+            NSString *type = [object valueForKey:@"_type"];
+            if (type != NULL && [type isEqualToString:@"blob"]) {
+                NSDictionary *blobData = object[@"data"];
+                NSString *contentType = blobData[@"contentType"];
+                NSArray *bytes = blobData[@"data"];
+                NSRange copyRange = NSMakeRange(0, [bytes count]);
+                unsigned char bytesCArray[[bytes count]];
+                int i = 0;
+                for (NSNumber *item in bytes) {
+                    bytesCArray[i++] = [item unsignedCharValue];
+                }
+                
+                NSData *data = [NSData dataWithBytes:bytesCArray  length:copyRange.length];
+                CBLBlob *blob = [[CBLBlob alloc] initWithContentType:contentType data:data];
+                [doc setObject:blob forKey:key];
+                continue;
+            }
+        }
+        
+        [doc setObject:value forKey:key];
+    }
+    return doc;
+}
+
+-(CBLDatabaseConfiguration *)buildDBConfig:(NSDictionary *)config {
+    CBLDatabaseConfiguration *c = [[CBLDatabaseConfiguration alloc] init];
+    NSString *encKey = [config objectForKey:@"encryptionKey"];
+    NSString *directory = [config objectForKey:@"directory"];
+    if (directory != NULL) {
+        //used to auto set the database to be in the documents folder,  otherwise the directory won't work because we need a full path
+        [c setDirectory:directory];
+    }
+    if (encKey != NULL) {
+        CBLEncryptionKey *key = [[CBLEncryptionKey alloc] initWithPassword:encKey];
+        [c setEncryptionKey:key];
+    }
+    return c;
+}
+
+// MARK: Replication Helper methods
+
+-(CBLReplicatorConfiguration *)replicatorConfigFromJson:(CBLDatabase *)db data:(NSDictionary *)data {
+    NSDictionary *authenticatorData = [data objectForKey:@"authenticator"];
+    NSDictionary *target = [data objectForKey:@"target"];
+    NSString *url = [target objectForKey:@"url"];
+    NSString *replicatorType = [data objectForKey:@"replicatorType"];
+    BOOL continuous = [data objectForKey:@"continuous"];
+    
+    CBLURLEndpoint *endpoint = [[CBLURLEndpoint alloc] initWithURL:[NSURL URLWithString:url]];
+    
+    CBLReplicatorConfiguration *replConfig = [[CBLReplicatorConfiguration alloc] initWithDatabase:db target:endpoint];
+    
+    if ([replicatorType isEqualToString:@"PUSH_AND_PULL"]) {
+        [replConfig setReplicatorType:kCBLReplicatorTypePushAndPull];
+    } else if ([replicatorType isEqualToString:@"PULL"]) {
+        [replConfig setReplicatorType:kCBLReplicatorTypePull];
+    } else if ([replicatorType isEqualToString:@"PUSH"]) {
+        [replConfig setReplicatorType:kCBLReplicatorTypePush];
+    }
+    
+    NSArray *channels = [data objectForKey:@"channels"];
+    if (channels != NULL) {
+        [replConfig setChannels:channels];
+    }
+    
+    [replConfig setContinuous:continuous];
+    
+    CBLAuthenticator *authenticator = [self replicatorAuthenticatorFromConfig:authenticatorData];
+    
+    if (authenticator != NULL) {
+        [replConfig setAuthenticator:authenticator];
+    }
+    
+    return replConfig;
+}
+
+-(CBLAuthenticator *)replicatorAuthenticatorFromConfig:(NSDictionary *)config {
+    NSString *type = [config objectForKey:@"type"];
+    NSDictionary *data = [config objectForKey:@"data"];
+    if ([type isEqualToString:@"session"]) {
+        NSString *sessionID = [data objectForKey:@"sessionID"];
+        NSString *cookieName = [data objectForKey:@"cookieName"];
+        CBLSessionAuthenticator *auth = [[CBLSessionAuthenticator alloc] initWithSessionID:sessionID cookieName:cookieName];
+        return auth;
+    } else if ([type isEqualToString:@"basic"]) {
+        NSString *username = [data objectForKey:@"username"];
+        NSString *password = [data objectForKey:@"password"];
+        CBLBasicAuthenticator *auth = [[CBLBasicAuthenticator alloc] initWithUsername:username password:password];
+        return auth;
+    }
+    return NULL;
+}
+
+-(NSDictionary *)generateStatusJson:(CBLReplicatorStatus *)status {
+    NSDictionary *errorJson = nil;
+    NSError *error = status.error;
+    if (error != nil) {
+        errorJson = @{
+            @"code": @(error.code),
+            @"domain": error.domain,
+            @"message": error.localizedDescription
+        };
+    }
+    
+    CBLReplicatorProgress progress = status.progress;
+    NSDictionary *progressJson = @{
+        @"completed": @(progress.completed),
+        @"total": @(progress.total)
+    };
+    if (errorJson != nil) {
+        return @{
+            @"activityLevel": @(status.activity),
+            @"error": errorJson,
+            @"progress": progressJson
+        };
+    }
+    else {
+        return @{
+            @"activityLevel": @(status.activity),
+            @"progress": progressJson
+        };
+    }
+}
+
+-(NSDictionary *)generateReplicationJson:(CBLDocumentReplication *)replication {
+    NSMutableArray* docs = [[NSMutableArray alloc] init];
+    
+    for (CBLReplicatedDocument* document in replication.documents) {
+        NSMutableArray* flags = [[NSMutableArray alloc] init];
+        if ((document.flags & kCBLDocumentFlagsDeleted) != 0) {
+            [flags addObject:@"DELETED"];
+        }
+        if ((document.flags & kCBLDocumentFlagsAccessRemoved) != 0) {
+            [flags addObject:@"ACCESS_REMOVED"];
+        }
+        NSMutableDictionary* documentDictionary = [[NSMutableDictionary alloc] initWithDictionary:@{@"id":document.id, @"flags": flags}];
+        
+        NSError *error = document.error;
+        if (error != nil) {
+            [documentDictionary setValue:@{@"code": @(error.code), @"domain": error.domain, @"message": error.localizedDescription} forKey:@"error"];
+        }
+        
+        [docs addObject:documentDictionary];
+    }
+    
+    return @{
+        @"direction": (replication.isPush) ? @"PUSH" : @"PULL",
+        @"documents": docs
+    };
+}
+
+
+// MARK: Capacitor Plugin method(s)
+
 -(void)Plugin_Configure:(CAPPluginCall*)call {
     NSDictionary *config = [call getObject:@"config" defaultValue:NULL];
     id chunkSizeVal = [config objectForKey:@"allResultsChunkSize"];
@@ -141,11 +303,15 @@
     }
 }
 
+// MARK: File System Helper Methods
+
 -(void)File_GetDefaultPath:(CAPPluginCall*)call {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *defaultDirectory = [paths firstObject];
     [call resolve:@{ @"path": defaultDirectory }];
 }
+
+// MARK: Database Methods
 
 -(void)Database_Open:(CAPPluginCall*)call {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -186,21 +352,6 @@
         }
         [call resolve];
     });
-}
-
--(CBLDatabaseConfiguration *)buildDBConfig:(NSDictionary *)config {
-    CBLDatabaseConfiguration *c = [[CBLDatabaseConfiguration alloc] init];
-    NSString *encKey = [config objectForKey:@"encryptionKey"];
-    NSString *directory = [config objectForKey:@"directory"];
-    if (directory != NULL) {
-        //used to auto set the database to be in the documents folder,  otherwise the directory won't work because we need a full path
-        [c setDirectory:directory];
-    }
-    if (encKey != NULL) {
-        CBLEncryptionKey *key = [[CBLEncryptionKey alloc] initWithPassword:encKey];
-        [c setEncryptionKey:key];
-    }
-    return c;
 }
 
 -(void)Database_Exists:(CAPPluginCall*)call {
@@ -252,50 +403,6 @@
     });
 }
 
--(NSDictionary *)toMap:(NSDictionary *)o {
-    NSMutableDictionary *doc = [[NSMutableDictionary alloc] initWithCapacity:[o count]];
-    for (NSString *key in o) {
-        id value = o[key];
-        if ([value isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *object = (NSDictionary *) value;
-            NSString *type = [object valueForKey:@"_type"];
-            if (type != NULL && [type isEqualToString:@"blob"]) {
-                NSDictionary *blobData = object[@"data"];
-                NSString *contentType = blobData[@"contentType"];
-                NSArray *bytes = blobData[@"data"];
-                NSRange copyRange = NSMakeRange(0, [bytes count]);
-                unsigned char bytesCArray[[bytes count]];
-                int i = 0;
-                for (NSNumber *item in bytes) {
-                    bytesCArray[i++] = [item unsignedCharValue];
-                }
-                
-                NSData *data = [NSData dataWithBytes:bytesCArray  length:copyRange.length];
-                CBLBlob *blob = [[CBLBlob alloc] initWithContentType:contentType data:data];
-                [doc setObject:blob forKey:key];
-                continue;
-            }
-        }
-        
-        [doc setObject:value forKey:key];
-    }
-    return doc;
-}
-
--(void)Database_GetCount:(CAPPluginCall*)call {
-    NSString *name = [call getString:@"name" defaultValue:NULL];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CBLDatabase *db = [self getDatabase:name];
-        if (db == NULL) {
-            [call reject:@"No such open database" :NULL :NULL :@{}];
-            return;
-        }
-        [call resolve:@{
-            @"count": @([db count])
-        }];
-    });
-}
-
 -(void)Database_GetPath:(CAPPluginCall*)call {
     NSString *name = [call getString:@"name" defaultValue:NULL];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -325,6 +432,69 @@
         [call resolve];
     });
 }
+
+-(void)Database_Delete:(CAPPluginCall*)call {
+    NSString *name = [call getString:@"name" defaultValue:NULL];
+    CBLDatabase *db = [self getDatabase:name];
+    if (db == NULL || db == nil) {
+        [call reject:@"No such open database" :NULL :NULL :@{}];
+        return;
+    }
+    NSError *error;
+    //FIX TO TRY AND STOP BOMBING
+    //this happens when databases that are closed and then tried to delete will cause the app to bomb out
+    @try {
+        [db delete:&error];
+    } @catch(NSException *exception) {
+        [call reject:@"Uncatch Exception: probably tried to delete a database that wasn't open" :NULL :NULL :@{}];
+    }
+    
+    if ([self checkError:call error:error message:@"Unable to delete database"]) {
+        return;
+    } else {
+        //UPDATED to remove the database from the managed database stack because it was removed from disk
+        [openDatabases removeObjectForKey:name];
+    }
+    
+    [call resolve];
+}
+
+// MARK: Database Maintenance methods
+
+-(void)Database_Compact:(CAPPluginCall*)call {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *name = [call getString:@"name" defaultValue:NULL];
+        CBLDatabase *db = [self getDatabase:name];
+        if (db == NULL) {
+            [call reject:@"No such open database" :NULL :NULL :@{}];
+            return;
+        }
+        
+        NSError *error;
+        /* TODO change out to Database Maintenance instead of compact
+         https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-objc/Classes/CBLDatabase.html#/c:objc(cs)CBLDatabase(im)performMaintenance:error:
+         */
+        @try {
+            [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
+        } @catch(NSException *exception) {
+            if ([self checkError:call error:error message:@"Unable to compact database"]) {
+                return;
+            } else {
+                NSString *errorMessage = [NSString stringWithFormat:@"Unknown error trying to compact database: %@", exception.reason];
+                [call reject:errorMessage :NULL :NULL :@{}];
+            }
+        }
+        
+        if ([self checkError:call error:error message:@"Unable to compact database"]) {
+            return;
+        }
+        
+        [call resolve];
+    });
+}
+
+
+// MARK: Index Methods
 
 -(void)Database_CreateIndex:(CAPPluginCall*)call {
     
@@ -408,85 +578,20 @@
     });
 }
 
--(void)Database_AddChangeListener:(CAPPluginCall*)call {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        //get values from arguments for listener
-        NSString *name = [call getString:@"name" defaultValue:NULL];
-        NSString *changeListenerToken = [call getString:@"changeListenerToken" defaultValue:NULL];
-        
-        CBLDatabase *db = [self getDatabase:name];
-        
-        if (db == NULL) {
-            [call reject:@"No such open database" :NULL :NULL :@{}];
-            return;
-        }
-        if (changeListenerToken == NULL) {
-            [call reject:@"No token provided" :NULL :NULL :@{}];
-            return;
-        }
-        
-        [call setKeepAlive:YES];
-        
-        id listener = [db addChangeListener:^(CBLDatabaseChange *change) {
-            NSArray<NSString *> *docIds = [change documentIDs];
-            NSDictionary *data = @{
-                @"documentIDs": docIds
-            };
-            [call resolve:data];
-        }];
-        [self->databaseChangeListeners setObject:listener forKey:changeListenerToken];
-    });
-}
+// MARK: Document methods
 
--(void)Database_RemoveChangeListener:(CAPPluginCall*)call {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        //get values from arguments for listener
-        NSString *name = [call getString:@"name" defaultValue:NULL];
-        NSString *changeListenerToken = [call getString:@"changeListenerToken" defaultValue:NULL];
-        
-        CBLDatabase *db = [self getDatabase:name];
-        
-        if (db == NULL) {
-            [call reject:@"No such open database" :NULL :NULL :@{}];
-            return;
-        }
-        if (changeListenerToken == NULL) {
-            [call reject:@"No token provided" :NULL :NULL :@{}];
-            return;
-        }
-        id listener = [self->databaseChangeListeners objectForKey:changeListenerToken];
-        [db removeChangeListenerWithToken:listener];
-        [call resolve];
-    });
-}
-
-
--(void)Database_Delete:(CAPPluginCall*)call {
+-(void)Database_GetCount:(CAPPluginCall*)call {
     NSString *name = [call getString:@"name" defaultValue:NULL];
-    CBLDatabase *db = [self getDatabase:name];
-    if (db == NULL || db == nil) {
-        [call reject:@"No such open database" :NULL :NULL :@{}];
-        return;
-    }
-    NSError *error;
-    //FIX TO TRY AND STOP BOMBING
-    //this happens when databases that are closed and then tried to delete will cause the app to bomb out
-    @try {
-        [db delete:&error];
-    } @catch(NSException *exception) {
-        [call reject:@"Uncatch Exception: probably tried to delete a database that wasn't open" :NULL :NULL :@{}];
-    }
-    
-    if ([self checkError:call error:error message:@"Unable to delete database"]) {
-        return;
-    } else {
-        //UPDATED to remove the database from the managed database stack because it was removed from disk
-        [openDatabases removeObjectForKey:name];
-    }
-    
-    [call resolve];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CBLDatabase *db = [self getDatabase:name];
+        if (db == NULL) {
+            [call reject:@"No such open database" :NULL :NULL :@{}];
+            return;
+        }
+        [call resolve:@{
+            @"count": @([db count])
+        }];
+    });
 }
 
 -(void)Database_DeleteDocument:(CAPPluginCall*)call {
@@ -519,59 +624,6 @@
     });
 }
 
--(void)Database_PurgeDocument:(CAPPluginCall*)call {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *name = [call getString:@"name" defaultValue:NULL];
-        NSString *docId = [call getString:@"docId" defaultValue:NULL];
-        CBLDatabase *db = [self getDatabase:name];
-        if (db == NULL) {
-            [call reject:@"No such open database" :NULL :NULL :@{}];
-            return;
-        }
-        
-        NSError *error;
-        [db purgeDocumentWithID:docId error:&error];
-        
-        if ([self checkError:call error:error message:@"Unable to purge document"]) {
-            return;
-        }
-        
-        [call resolve];
-    });
-}
-
--(void)Database_Compact:(CAPPluginCall*)call {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *name = [call getString:@"name" defaultValue:NULL];
-        CBLDatabase *db = [self getDatabase:name];
-        if (db == NULL) {
-            [call reject:@"No such open database" :NULL :NULL :@{}];
-            return;
-        }
-        
-        NSError *error;
-        /* TODO change out to Database Maintenance instead of compact
-         https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-objc/Classes/CBLDatabase.html#/c:objc(cs)CBLDatabase(im)performMaintenance:error:
-         */
-        @try {
-            [db performMaintenance:kCBLMaintenanceTypeCompact error:&error];
-        } @catch(NSException *exception) {
-            if ([self checkError:call error:error message:@"Unable to compact database"]) {
-                return;
-            } else {
-                NSString *errorMessage = [NSString stringWithFormat:@"Unknown error trying to compact database: %@", exception.reason];
-                [call reject:errorMessage :NULL :NULL :@{}];
-            }
-        }
-        
-        if ([self checkError:call error:error message:@"Unable to compact database"]) {
-            return;
-        }
-        
-        [call resolve];
-    });
-}
-
 -(void)Database_GetDocument:(CAPPluginCall*)call {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *name = [call getString:@"name" defaultValue:NULL];
@@ -598,90 +650,25 @@
     });
 }
 
--(void)Database_SetLogLevel:(CAPPluginCall*)call {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *domainValue = [call getString:@"domain" defaultValue:nil];
-        NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:nil];
-        
-        if (logLevelValue == nil) {
-            [call reject:@"No log level supplied" :NULL :NULL :@{}];
-            return;
-        }
-        
-        if (domainValue == nil) {
-            [call reject:@"No domain supplied" :NULL :NULL :@{}];
-            return;
-        }
-        
-        CBLLogDomain domain = kCBLLogDomainAll;
-        
-        if ([domainValue isEqualToString:@"ALL"]) domain = kCBLLogDomainAll;
-        else if ([domainValue isEqualToString:@"DATABASE"]) domain = kCBLLogDomainDatabase;
-        else if ([domainValue isEqualToString:@"NETWORK"]) domain = kCBLLogDomainNetwork;
-        else if ([domainValue isEqualToString:@"QUERY"]) domain = kCBLLogDomainQuery;
-        else if ([domainValue isEqualToString:@"REPLICATOR"]) domain = kCBLLogDomainReplicator;
-        
-        /* fix logging by using this syntax https://docs.couchbase.com/couchbase-lite/current/objc/troubleshooting-logs.html */
-        CBLLogLevel logValue = (CBLLogLevel)[logLevelValue integerValue];
-        CBLDatabase.log.console.domains = domain;
-        CBLDatabase.log.console.level = logValue;
-        
-        return [call resolve];
-    });
-}
-
--(void)Database_SetFileLoggingConfig:(CAPPluginCall*)call {
+-(void)Database_PurgeDocument:(CAPPluginCall*)call {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *name = [call getString:@"name" defaultValue:NULL];
+        NSString *docId = [call getString:@"docId" defaultValue:NULL];
         CBLDatabase *db = [self getDatabase:name];
         if (db == NULL) {
             [call reject:@"No such open database" :NULL :NULL :@{}];
             return;
         }
-        @try{
-            NSDictionary *configObject = [call getObject:@"config" defaultValue:NULL];
-            id logLevelValue = [configObject objectForKey:@"level"];
-            NSString *directory = [configObject objectForKey:@"directory"];
-            if (directory.length <= 0) {
-                [call reject:@"config directory is not valid" :NULL :NULL :@{}];
-                return;
-            }
-            NSString *rawDir = [directory stringByReplacingOccurrencesOfString:@"file://" withString:@""];
-            CBLLogFileConfiguration* config = [[CBLLogFileConfiguration alloc] initWithDirectory:rawDir];
-            
-            id maxRotateCount = [configObject objectForKey:@"maxRotateCount"];
-            id maxSize = [configObject objectForKey:@"maxSize"];
-            id usePlaintext = [configObject objectForKey:@"usePlaintext"];
-            
-            if (maxRotateCount != NULL) {
-                [config setMaxRotateCount:(NSInteger) maxRotateCount];
-            } else {
-                [call reject:@"config rotate count is not valid" :NULL :NULL :@{}];
-            }
-            if (maxSize != NULL && maxSize > 0) {
-                [config setMaxSize:(uint64_t) maxSize];
-            } else {
-                [call reject:@"config max size is not valid" :NULL :NULL :@{}];
-            }
-            if (usePlaintext != NULL) {
-                [config setUsePlainText:(BOOL) usePlaintext];
-            } else {
-                [call reject:@"config use plain text not valid" :NULL :NULL :@{}];
-            }
-            
-            [CBLDatabase.log.file setConfig:config];
-            if (logLevelValue != NULL) {
-                [CBLDatabase.log.file setLevel:(NSInteger) logLevelValue];
-            } else {
-                [call reject:@"config log level not valid" :NULL :NULL :@{}];
-            }
-            return [call resolve];
-        } @catch (NSException *ex){
-            [call reject:ex.reason :NULL :NULL :@{}];
+        
+        NSError *error;
+        [db purgeDocumentWithID:docId error:&error];
+        
+        if ([self checkError:call error:error message:@"Unable to purge document"]) {
             return;
         }
+        
+        [call resolve];
     });
-   
 }
 
 -(void)Document_GetBlobContent:(CAPPluginCall*)call {
@@ -715,6 +702,8 @@
         }
     });
 }
+
+// MARK: Query Builder Methods
 
 -(void)Query_Execute:(CAPPluginCall*)call {
     
@@ -915,6 +904,8 @@
     });
 }
 
+// MARK: Replicaton Methods
+
 -(void)Replicator_Create:(CAPPluginCall*)call {
     NSString *name = [call getString:@"name" defaultValue:NULL];
     NSDictionary *config = [call getObject:@"config" defaultValue:NULL];
@@ -952,58 +943,6 @@
     });
 }
 
--(CBLReplicatorConfiguration *)replicatorConfigFromJson:(CBLDatabase *)db data:(NSDictionary *)data {
-    NSDictionary *authenticatorData = [data objectForKey:@"authenticator"];
-    NSDictionary *target = [data objectForKey:@"target"];
-    NSString *url = [target objectForKey:@"url"];
-    NSString *replicatorType = [data objectForKey:@"replicatorType"];
-    BOOL continuous = [data objectForKey:@"continuous"];
-    
-    CBLURLEndpoint *endpoint = [[CBLURLEndpoint alloc] initWithURL:[NSURL URLWithString:url]];
-    
-    CBLReplicatorConfiguration *replConfig = [[CBLReplicatorConfiguration alloc] initWithDatabase:db target:endpoint];
-    
-    if ([replicatorType isEqualToString:@"PUSH_AND_PULL"]) {
-        [replConfig setReplicatorType:kCBLReplicatorTypePushAndPull];
-    } else if ([replicatorType isEqualToString:@"PULL"]) {
-        [replConfig setReplicatorType:kCBLReplicatorTypePull];
-    } else if ([replicatorType isEqualToString:@"PUSH"]) {
-        [replConfig setReplicatorType:kCBLReplicatorTypePush];
-    }
-    
-    NSArray *channels = [data objectForKey:@"channels"];
-    if (channels != NULL) {
-        [replConfig setChannels:channels];
-    }
-    
-    [replConfig setContinuous:continuous];
-    
-    CBLAuthenticator *authenticator = [self replicatorAuthenticatorFromConfig:authenticatorData];
-    
-    if (authenticator != NULL) {
-        [replConfig setAuthenticator:authenticator];
-    }
-    
-    return replConfig;
-}
-
--(CBLAuthenticator *)replicatorAuthenticatorFromConfig:(NSDictionary *)config {
-    NSString *type = [config objectForKey:@"type"];
-    NSDictionary *data = [config objectForKey:@"data"];
-    if ([type isEqualToString:@"session"]) {
-        NSString *sessionID = [data objectForKey:@"sessionID"];
-        NSString *cookieName = [data objectForKey:@"cookieName"];
-        CBLSessionAuthenticator *auth = [[CBLSessionAuthenticator alloc] initWithSessionID:sessionID cookieName:cookieName];
-        return auth;
-    } else if ([type isEqualToString:@"basic"]) {
-        NSString *username = [data objectForKey:@"username"];
-        NSString *password = [data objectForKey:@"password"];
-        CBLBasicAuthenticator *auth = [[CBLBasicAuthenticator alloc] initWithUsername:username password:password];
-        return auth;
-    }
-    return NULL;
-}
-
 -(void)Replicator_Stop:(CAPPluginCall*)call {
     NSNumber *replicatorId = [call getNumber:@"replicatorId" defaultValue:NULL];
     if (replicatorId == NULL) {
@@ -1021,6 +960,7 @@
         [call resolve];
     });
 }
+
 -(void)Replicator_ResetCheckpoint:(CAPPluginCall*)call {
     NSNumber *replicatorId = [call getNumber:@"replicatorId" defaultValue:NULL];
     if (replicatorId == NULL) {
@@ -1063,110 +1003,6 @@
         NSDictionary *statusJson = [self generateStatusJson:status];
         
         [call resolve:statusJson];
-    });
-}
-
--(NSDictionary *)generateStatusJson:(CBLReplicatorStatus *)status {
-    NSDictionary *errorJson = nil;
-    NSError *error = status.error;
-    if (error != nil) {
-        errorJson = @{
-            @"code": @(error.code),
-            @"domain": error.domain,
-            @"message": error.localizedDescription
-        };
-    }
-    
-    CBLReplicatorProgress progress = status.progress;
-    NSDictionary *progressJson = @{
-        @"completed": @(progress.completed),
-        @"total": @(progress.total)
-    };
-    if (errorJson != nil) {
-        return @{
-            @"activityLevel": @(status.activity),
-            @"error": errorJson,
-            @"progress": progressJson
-        };
-    }
-    else {
-        return @{
-            @"activityLevel": @(status.activity),
-            @"progress": progressJson
-        };
-    }
-}
-
--(void)Replicator_AddChangeListener:(CAPPluginCall*)call {
-    NSNumber *replicatorId = [call getNumber:@"replicatorId" defaultValue:NULL];
-    if (replicatorId == NULL) {
-        [call reject:@"No replicatorId supplied" :NULL :NULL :@{}];
-        return;
-    }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CBLReplicator *replicator = [self->replicators objectForKey:[replicatorId stringValue]];
-        if (replicator == NULL) {
-            return [call reject:@"No such replicator" :NULL :NULL :@{}];
-        }
-        
-        [call setKeepAlive:YES];
-        
-        id listener = [replicator addChangeListener:^(CBLReplicatorChange *change) {
-            NSDictionary *statusJson = [self generateStatusJson:change.status];
-            [call resolve:statusJson];
-        }];
-        
-        [self->replicatorChangeListeners setObject:listener forKey:[replicatorId stringValue]];
-    });
-}
-
--(NSDictionary *)generateReplicationJson:(CBLDocumentReplication *)replication {
-    NSMutableArray* docs = [[NSMutableArray alloc] init];
-    
-    for (CBLReplicatedDocument* document in replication.documents) {
-        NSMutableArray* flags = [[NSMutableArray alloc] init];
-        if ((document.flags & kCBLDocumentFlagsDeleted) != 0) {
-            [flags addObject:@"DELETED"];
-        }
-        if ((document.flags & kCBLDocumentFlagsAccessRemoved) != 0) {
-            [flags addObject:@"ACCESS_REMOVED"];
-        }
-        NSMutableDictionary* documentDictionary = [[NSMutableDictionary alloc] initWithDictionary:@{@"id":document.id, @"flags": flags}];
-        
-        NSError *error = document.error;
-        if (error != nil) {
-            [documentDictionary setValue:@{@"code": @(error.code), @"domain": error.domain, @"message": error.localizedDescription} forKey:@"error"];
-        }
-        
-        [docs addObject:documentDictionary];
-    }
-    
-    return @{
-        @"direction": (replication.isPush) ? @"PUSH" : @"PULL",
-        @"documents": docs
-    };
-}
-
--(void)Replicator_AddDocumentListener:(CAPPluginCall*)call {
-    NSNumber *replicatorId = [call getNumber:@"replicatorId" defaultValue:NULL];
-    if (replicatorId == NULL) {
-        [call reject:@"No replicatorId supplied" :NULL :NULL :@{}];
-        return;
-    }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CBLReplicator *replicator = [self->replicators objectForKey:[replicatorId stringValue]];
-        if (replicator == NULL) {
-            return [call reject:@"No such replicator" :NULL :NULL :@{}];
-        }
-        
-        [call setKeepAlive:YES];
-        
-        id listener = [replicator addDocumentReplicationListener:^(CBLDocumentReplication *replication) {
-            NSDictionary *eventJson = [self generateReplicationJson:replication];
-            [call resolve:eventJson];
-        }];
-        
-        [self->replicatorDocumentListeners setObject:listener forKey:[replicatorId stringValue]];
     });
 }
 
@@ -1216,5 +1052,197 @@
         [call resolve];
     });
 }
+
+// MARK:  Change Listener Methods
+
+-(void)Replicator_AddChangeListener:(CAPPluginCall*)call {
+    NSNumber *replicatorId = [call getNumber:@"replicatorId" defaultValue:NULL];
+    if (replicatorId == NULL) {
+        [call reject:@"No replicatorId supplied" :NULL :NULL :@{}];
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CBLReplicator *replicator = [self->replicators objectForKey:[replicatorId stringValue]];
+        if (replicator == NULL) {
+            return [call reject:@"No such replicator" :NULL :NULL :@{}];
+        }
+        
+        [call setKeepAlive:YES];
+        
+        id listener = [replicator addChangeListener:^(CBLReplicatorChange *change) {
+            NSDictionary *statusJson = [self generateStatusJson:change.status];
+            [call resolve:statusJson];
+        }];
+        
+        [self->replicatorChangeListeners setObject:listener forKey:[replicatorId stringValue]];
+    });
+}
+
+-(void)Replicator_AddDocumentListener:(CAPPluginCall*)call {
+    NSNumber *replicatorId = [call getNumber:@"replicatorId" defaultValue:NULL];
+    if (replicatorId == NULL) {
+        [call reject:@"No replicatorId supplied" :NULL :NULL :@{}];
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CBLReplicator *replicator = [self->replicators objectForKey:[replicatorId stringValue]];
+        if (replicator == NULL) {
+            return [call reject:@"No such replicator" :NULL :NULL :@{}];
+        }
+        
+        [call setKeepAlive:YES];
+        
+        id listener = [replicator addDocumentReplicationListener:^(CBLDocumentReplication *replication) {
+            NSDictionary *eventJson = [self generateReplicationJson:replication];
+            [call resolve:eventJson];
+        }];
+        
+        [self->replicatorDocumentListeners setObject:listener forKey:[replicatorId stringValue]];
+    });
+}
+
+-(void)Database_AddChangeListener:(CAPPluginCall*)call {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        //get values from arguments for listener
+        NSString *name = [call getString:@"name" defaultValue:NULL];
+        NSString *changeListenerToken = [call getString:@"changeListenerToken" defaultValue:NULL];
+        
+        CBLDatabase *db = [self getDatabase:name];
+        
+        if (db == NULL) {
+            [call reject:@"No such open database" :NULL :NULL :@{}];
+            return;
+        }
+        if (changeListenerToken == NULL) {
+            [call reject:@"No token provided" :NULL :NULL :@{}];
+            return;
+        }
+        
+        [call setKeepAlive:YES];
+        
+        id listener = [db addChangeListener:^(CBLDatabaseChange *change) {
+            NSArray<NSString *> *docIds = [change documentIDs];
+            NSDictionary *data = @{
+                @"documentIDs": docIds
+            };
+            [call resolve:data];
+        }];
+        [self->databaseChangeListeners setObject:listener forKey:changeListenerToken];
+    });
+}
+
+-(void)Database_RemoveChangeListener:(CAPPluginCall*)call {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        //get values from arguments for listener
+        NSString *name = [call getString:@"name" defaultValue:NULL];
+        NSString *changeListenerToken = [call getString:@"changeListenerToken" defaultValue:NULL];
+        
+        CBLDatabase *db = [self getDatabase:name];
+        
+        if (db == NULL) {
+            [call reject:@"No such open database" :NULL :NULL :@{}];
+            return;
+        }
+        if (changeListenerToken == NULL) {
+            [call reject:@"No token provided" :NULL :NULL :@{}];
+            return;
+        }
+        id listener = [self->databaseChangeListeners objectForKey:changeListenerToken];
+        [listener remove];
+        [call resolve];
+    });
+}
+
+// MARK: Logging Methods
+
+-(void)Database_SetLogLevel:(CAPPluginCall*)call {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *domainValue = [call getString:@"domain" defaultValue:nil];
+        NSNumber *logLevelValue = [call getNumber:@"logLevel" defaultValue:nil];
+        
+        if (logLevelValue == nil) {
+            [call reject:@"No log level supplied" :NULL :NULL :@{}];
+            return;
+        }
+        
+        if (domainValue == nil) {
+            [call reject:@"No domain supplied" :NULL :NULL :@{}];
+            return;
+        }
+        
+        CBLLogDomain domain = kCBLLogDomainAll;
+        
+        if ([domainValue isEqualToString:@"ALL"]) domain = kCBLLogDomainAll;
+        else if ([domainValue isEqualToString:@"DATABASE"]) domain = kCBLLogDomainDatabase;
+        else if ([domainValue isEqualToString:@"NETWORK"]) domain = kCBLLogDomainNetwork;
+        else if ([domainValue isEqualToString:@"QUERY"]) domain = kCBLLogDomainQuery;
+        else if ([domainValue isEqualToString:@"REPLICATOR"]) domain = kCBLLogDomainReplicator;
+        
+        /* fix logging by using this syntax https://docs.couchbase.com/couchbase-lite/current/objc/troubleshooting-logs.html */
+        CBLLogLevel logValue = (CBLLogLevel)[logLevelValue integerValue];
+        CBLDatabase.log.console.domains = domain;
+        CBLDatabase.log.console.level = logValue;
+        
+        return [call resolve];
+    });
+}
+
+-(void)Database_SetFileLoggingConfig:(CAPPluginCall*)call {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *name = [call getString:@"name" defaultValue:NULL];
+        CBLDatabase *db = [self getDatabase:name];
+        if (db == NULL) {
+            [call reject:@"No such open database" :NULL :NULL :@{}];
+            return;
+        }
+        @try{
+            NSDictionary *configObject = [call getObject:@"config" defaultValue:NULL];
+            id logLevelValue = [configObject objectForKey:@"level"];
+            NSString *directory = [configObject objectForKey:@"directory"];
+            if (directory.length <= 0) {
+                [call reject:@"config directory is not valid" :NULL :NULL :@{}];
+                return;
+            }
+            NSString *rawDir = [directory stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+            CBLLogFileConfiguration* config = [[CBLLogFileConfiguration alloc] initWithDirectory:rawDir];
+            
+            id maxRotateCount = [configObject objectForKey:@"maxRotateCount"];
+            id maxSize = [configObject objectForKey:@"maxSize"];
+            id usePlaintext = [configObject objectForKey:@"usePlaintext"];
+            
+            if (maxRotateCount != NULL) {
+                [config setMaxRotateCount:(NSInteger) maxRotateCount];
+            } else {
+                [call reject:@"config rotate count is not valid" :NULL :NULL :@{}];
+            }
+            if (maxSize != NULL && maxSize > 0) {
+                [config setMaxSize:(uint64_t) maxSize];
+            } else {
+                [call reject:@"config max size is not valid" :NULL :NULL :@{}];
+            }
+            if (usePlaintext != NULL) {
+                [config setUsePlainText:(BOOL) usePlaintext];
+            } else {
+                [call reject:@"config use plain text not valid" :NULL :NULL :@{}];
+            }
+            
+            [CBLDatabase.log.file setConfig:config];
+            if (logLevelValue != NULL) {
+                [CBLDatabase.log.file setLevel:(NSInteger) logLevelValue];
+            } else {
+                [call reject:@"config log level not valid" :NULL :NULL :@{}];
+            }
+            return [call resolve];
+        } @catch (NSException *ex){
+            [call reject:ex.reason :NULL :NULL :@{}];
+            return;
+        }
+    });
+    
+}
+
+
 
 @end
