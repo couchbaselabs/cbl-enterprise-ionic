@@ -29,6 +29,7 @@ import {
 import { IonicCouchbaseLite } from '../ionic-couchbase-lite';
 
 import { 
+  DatabaseChangeListenerArgs,
   IonicCouchbaseLitePlugin, 
   QueryExecuteArgs, 
 } from '../definitions';
@@ -216,12 +217,22 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
     return IonicCouchbaseLite.Replicator_Cleanup(args);
   }
 
+  async Database_RemoveChangeListener(
+    args: DatabaseChangeListenerArgs)
+    : Promise<void>{
+      return IonicCouchbaseLite.Database_RemoveChangeListener(args);
+  }
+
   Database_AddChangeListener(
-    args: DatabaseArgs,
+    args: DatabaseChangeListenerArgs,
     cb: (data: any, err: any) => void,
     ): Promise<PluginListenerHandle> {
-    return IonicCouchbaseLite.Database_AddChangeListener({
-      name: args.name}, cb);
+    return IonicCouchbaseLite.Database_AddChangeListener(
+      {
+        name: args.name, 
+        changeListenerToken: args.changeListenerToken
+      }, 
+      cb);
   }
 
   Replicator_AddChangeListener(

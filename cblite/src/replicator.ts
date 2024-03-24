@@ -4,7 +4,6 @@ import { CouchbaseLiteException } from './couchbase-lite-exception';
 import {
   ReplicatedDocument,
   ReplicatedDocumentFlag,
-  ReplicatedDocumentRepresentation,
 } from './replicated-document';
 import {
   DocumentReplication,
@@ -13,7 +12,7 @@ import {
   isDocumentReplicationRepresentation,
 } from './document-replication';
 
-import v4 from './util/uuid';
+import { uuid as v4 } from './util/uuid';
 
 export enum ReplicatorActivityLevel {
   STOPPED = 0,

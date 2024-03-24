@@ -55,6 +55,13 @@ export class NotificationTests extends TestCase {
       // Verify that the listener was called
       expect(results).contain(docId1);
       expect(results).contain(docId2);
+
+      //validate the change listner is removed and the token changes so we don't get any more notifications and conflicts by adding the same listener
+      let token = cl.getDatabaseChangeListenerToken();
+      await cl.removeChangeListener();
+      let newToken = cl.getDatabaseChangeListenerToken();
+      expect(token).not.equal(newToken);
+
     } catch (error) {
       return {
         testName: 'testDatabaseChange',

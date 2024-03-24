@@ -7,7 +7,6 @@ import {
   Query,
   Result,
   ResultSet,
-  Database,
   ReplicatorConfiguration,
 } from './src';
 

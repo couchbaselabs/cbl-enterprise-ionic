@@ -19,6 +19,9 @@ export type DatabaseChangeListener = (change: DatabaseChange) => void;
 export interface DatabaseChange {
   documentIDs: string[];
 }
+export interface DatabaseChangeListenerArgs extends DatabaseArgs {
+  changeListenerToken: string; 
+}
 
 export interface QueryExecuteArgs extends DatabaseArgs {
   query: any;
@@ -30,10 +33,16 @@ export interface IonicCouchbaseLitePlugin extends ICoreEngine {
   Plugin_Configure(args: PluginConfigureArgs)
     : Promise<void>;
 
+  //database functions
   Database_AddChangeListener(
-    args: DatabaseArgs, 
+    args: DatabaseChangeListenerArgs, 
     cb: PluginCallback)
     : Promise<PluginListenerHandle>;
+
+  Database_RemoveChangeListener(
+    args: DatabaseChangeListenerArgs)
+    : Promise<void>;
+  
 
   //Query Builder
   Query_Execute(args: QueryExecuteArgs)
