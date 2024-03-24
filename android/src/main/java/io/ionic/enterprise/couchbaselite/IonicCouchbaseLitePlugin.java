@@ -758,35 +758,40 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
     @PluginMethod
     public void Database_SetFileLoggingConfig(PluginCall call) throws JSONException, CouchbaseLiteException {
-        String name = call.getString("name");
-        Database db = this.openDatabases.get(name);
+        try {
+            String name = call.getString("name");
+            Database db = this.openDatabases.get(name);
 
-        JSObject config = call.getObject("config");
+            JSObject config = call.getObject("config");
 
-        Object levelValue = config.opt("level");
+            Object levelValue = config.opt("level");
 
-        String directory = config.getString("directory");
-        Integer maxRotateCount = config.optInt("maxRotateCount", -1);
-        Integer maxSize = config.optInt("maxSize", -1);
-        Object usePlaintext = config.opt("usePlaintext");
+            String directory = config.getString("directory");
+            Integer maxRotateCount = config.optInt("maxRotateCount", -1);
+            Integer maxSize = config.optInt("maxSize", -1);
+            Object usePlaintext = config.opt("usePlaintext");
 
-        LogFileConfiguration fileConfig = new LogFileConfiguration(directory);
-        if (maxRotateCount >= 0) {
-            fileConfig.setMaxRotateCount(maxRotateCount);
+            LogFileConfiguration fileConfig = new LogFileConfiguration(directory);
+            if (maxRotateCount >= 0) {
+                fileConfig.setMaxRotateCount(maxRotateCount);
+            }
+            if (maxSize >= 0) {
+                fileConfig.setMaxSize(maxSize);
+            }
+            if (usePlaintext != null) {
+                fileConfig.setUsePlaintext((Boolean) usePlaintext);
+            }
+
+            db.log.getFile().setConfig(fileConfig);
+
+            if (levelValue != null) {
+                LogLevel logLevel = getLogLevel((int) levelValue);
+                db.log.getFile().setLevel(logLevel);
+            }
+        } catch (Exception ex) {
+            call.reject("Unable to set file logging config", ex);
         }
-        if (maxSize >= 0) {
-            fileConfig.setMaxSize(maxSize);
-        }
-        if (usePlaintext != null) {
-            fileConfig.setUsePlaintext((Boolean) usePlaintext);
-        }
-
-        db.log.getFile().setConfig(fileConfig);
-
-        if (levelValue != null) {
-            LogLevel logLevel = getLogLevel((int) levelValue);
-            db.log.getFile().setLevel(logLevel);
-        }
+        call.resolve(null);
     }
 
     @PluginMethod
