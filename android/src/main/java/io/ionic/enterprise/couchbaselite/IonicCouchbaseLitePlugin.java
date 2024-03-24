@@ -93,6 +93,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     private Map<Number, Replicator> replicators = new HashMap<>();
     private Map<Number, ListenerToken> replicatorListeners = new HashMap<>();
     private Map<Number, ListenerToken> documentListeners = new HashMap<>();
+    private Map<String, ListenerToken> databaseChangeListeners = new HashMap<>();
 
     private int queryCount = 0;
     private int replicatorCount = 0;
@@ -543,6 +544,13 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void Database_AddChangeListener(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
+        String token = call.getString("changeListenerToken");
+
+        if (name == null || token == null) {
+            call.reject("error: arguments missing");
+            return;
+        }
+
         Database d = getDatabase(name);
         if (d == null) {
             call.reject("No such database");
@@ -552,7 +560,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         call.setKeepAlive(true);
 
         try {
-            d.addChangeListener(
+        ListenerToken listenerToken = d.addChangeListener(
                     new DatabaseChangeListener() {
                         @Override
                         public void changed(DatabaseChange change) {
@@ -562,12 +570,39 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                         }
                     }
             );
+        //keep track of listener so we can remove it in the remove method
+        this.databaseChangeListeners.put(token, listenerToken);
         } catch (Exception ex) {
             call.reject("Unable to add listener", ex);
         }
     }
 
-    @SuppressWarnings("unused")
+    @PluginMethod
+    public void Database_RemoveChangeListener(PluginCall call) {
+        String name = call.getString("name");
+        String token = call.getString("changeListenerToken");
+
+        if (name == null || token == null) {
+            call.reject("error: arguments missing");
+            return;
+        }
+
+        Database database = getDatabase(name);
+        if (database == null) {
+            call.reject("No such database");
+            return;
+        }
+        try {
+            ListenerToken listenerToken = this.databaseChangeListeners.get(token);
+            if (listenerToken != null) {
+                database.removeChangeListener(listenerToken);
+            }
+        }catch (Exception ex){
+            call.reject("Unable to remove listener", ex);
+        }
+       call.resolve();
+    }
+
     @PluginMethod
     public void Database_Close(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
