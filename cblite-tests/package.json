@@ -1,7 +1,7 @@
 {
   "name": "cblite-tests",
   "version": "1.0.0",
-  "description": "A testing library for cblite-core-ts",
+  "description": "A testing library for cblite",
   "main": "index.ts",
   "scripts": {
     "build": "tsc",

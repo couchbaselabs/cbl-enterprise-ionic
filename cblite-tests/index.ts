@@ -8,7 +8,6 @@ export * from './e2e/document-test';
 export * from './e2e/file-logging-test';
 export * from './e2e/fragment-test';
 export * from './e2e/indexing-test';
-export * from '../example/src/tests/e2e/notification-test';
 export * from './e2e/predicate-query-test';
 export * from './e2e/query-builder-test';
 export * from './e2e/query-test';

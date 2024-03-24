@@ -40,7 +40,7 @@
     "swiftlint": "node-swiftlint",
     "docgen": "docgen --api IonicCouchbaseLitePlugin --output-readme README.md --output-json dist/docs.json",
     "build": "npm run clean && tsc && rollup -c rollup.config.js",
-    "buildAll": "cd cblite && npm run clean && npm run build && cd .. && npm run clean && tsc && rollup -c rollup.config.js",
+    "buildAll": "cd cblite && npm run clean && npm install && npm run build && cd .. && npm run clean && tsc && rollup -c rollup.config.js",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"

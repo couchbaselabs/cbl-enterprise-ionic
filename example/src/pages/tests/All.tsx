@@ -11,12 +11,15 @@ import {
 	FileLoggingTests,
 	FragmentTests,
 	IndexingTests,
-	NotificationTests,
 	PredicateQueryTests,
 	QueryBuilderTests,
 	QueryTests,
 	ReplicatorTests
 } from 'cblite-tests';
+
+import {
+	NotificationTests,
+} from '../../tests/e2e/notification-tests';
 
 const AllTestsPage: React.FC = () => {
   return (
