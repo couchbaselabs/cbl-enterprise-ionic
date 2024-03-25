@@ -1,5 +1,10 @@
 // Replicator.tsx
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { 
+  useState, 
+  useContext, 
+  useRef, 
+  useEffect 
+} from 'react';
 
 import DatabaseContext from '../../providers/DatabaseContext';
 import DetailPageContainerRun from '../../components/DetailPageContainerRun/DetailPageContainerRun';
@@ -8,8 +13,6 @@ import { ReplicatorType } from 'cblite';
 import {
   IonButtons,
   IonButton,
-  IonCard,
-  IonCardContent,
   IonContent,
   IonHeader,
   IonInput,
@@ -173,14 +176,8 @@ const ReplicatorConfigPage: React.FC = () => {
                     setSelectedAuthenticationType(e.detail.value)
                   }
                 >
-                  <IonSelectOption key={'selectoption-basic'} value="basic">
-                    {' '}
-                    Basic{' '}
-                  </IonSelectOption>
-                  <IonSelectOption key={'selectoption-session'} value="session">
-                    {' '}
-                    Session{' '}
-                  </IonSelectOption>
+                  <IonSelectOption key={'selectoption-basic'} value="basic">Basic</IonSelectOption>
+                  <IonSelectOption key={'selectoption-session'} value="session">Session</IonSelectOption>
                 </IonSelect>
               </IonItem>
               <IonItem>
