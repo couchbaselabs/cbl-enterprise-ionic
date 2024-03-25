@@ -20,7 +20,7 @@ import {
   DatabaseLogging,
   DatabaseFileLoggingConfiguration,
   LogLevel,
-  PlatformDirectory,
+  FileSystem,
 } from 'cblite';
 
 const FileLogPage: React.FC = () => {
@@ -34,7 +34,7 @@ const FileLogPage: React.FC = () => {
   const [resultsMessage, setResultsMessage] = useState<string[]>([]);
 
   function platformPath() {
-    const pd = new PlatformDirectory();
+    const pd = new FileSystem();
     pd.getDefaultPath().then((result: string) => {
       setPath(result);
     });

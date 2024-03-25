@@ -10,7 +10,8 @@ CAP_PLUGIN(IonicCouchbaseLite, "IonicCouchbaseLite",
            
            //file system helper functions
            CAP_PLUGIN_METHOD(File_GetDefaultPath, CAPPluginReturnPromise);
-           
+           CAP_PLUGIN_METHOD(File_GetFileNamesInDirectory, CAPPluginReturnPromise);
+
            //database functions
            CAP_PLUGIN_METHOD(Database_Open, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(Database_Exists, CAPPluginReturnPromise);

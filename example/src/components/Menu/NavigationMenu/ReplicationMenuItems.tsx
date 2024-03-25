@@ -22,6 +22,13 @@ const ReplicationMenuItems: React.FC = () => {
       >
         <IonLabel>Replicator</IonLabel>
       </IonItem>
+      <IonItem
+        style={{ marginLeft: 20 }}
+        routerLink="/replication/replicatorConfig"
+        routerDirection="none"
+      >
+        <IonLabel>Replicator Config</IonLabel>
+      </IonItem>
     </>
   );
 };

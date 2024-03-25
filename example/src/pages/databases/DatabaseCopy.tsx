@@ -12,7 +12,7 @@ import {
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
 
 //import the database in order to create/open a database
-import { DatabaseConfiguration, PlatformDirectory } from 'cblite';
+import { DatabaseConfiguration, FileSystem } from 'cblite';
 
 const DatabaseCopyPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;
@@ -31,7 +31,7 @@ const DatabaseCopyPage: React.FC = () => {
   }
 
   function platformPath() {
-    const pd = new PlatformDirectory();
+    const pd = new FileSystem();
     pd.getDefaultPath().then((result: string) => {
       setPath(result);
     }); 

@@ -60,6 +60,11 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
     return IonicCouchbaseLite.File_GetDefaultPath();
   }
 
+  File_GetFileNamesInDirectory(args: { path: string })
+  : Promise<{ files: string[] }>{
+    return IonicCouchbaseLite.File_GetFileNamesInDirectory(args);
+  }
+
   async Database_Open(args: DatabaseOpenArgs): Promise<void> {
     return IonicCouchbaseLite.Database_Open(args);
   }

@@ -72,20 +72,6 @@ export class FileLoggingTests extends TestCase {
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
-  async fileLoggingMaxSize(): Promise<ITestResult> {
-    return {
-      testName: 'testFileLoggingMaxSize',
-      success: false,
-      message: 'Not implemented',
-      data: undefined,
-    };
-  }
-
-  /**
-   *
-   *
-   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
-   */
   async fileLoggingDisableLogging(): Promise<ITestResult> {
     return {
       testName: 'testFileLoggingDisableLogging',
@@ -108,18 +94,4 @@ export class FileLoggingTests extends TestCase {
       data: undefined,
     };
   }
-
-    /**
-   *
-   *
-   * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
-   */
-    async fileLoggingHeader(): Promise<ITestResult> {
-      return {
-        testName: 'testFileLoggingHeader',
-        success: false,
-        message: 'Not implemented',
-        data: undefined,
-      };
-    }
 }

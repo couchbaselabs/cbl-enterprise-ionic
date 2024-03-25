@@ -1,6 +1,6 @@
 import {
   Database,
-  PlatformDirectory,
+  FileSystem,
   MutableDocument,
   DatabaseConfiguration,
   Dictionary,
@@ -123,7 +123,7 @@ export class TestCase {
   }
 
   async getPlatformPath(): Promise<ITestResult> {
-    const pd = new PlatformDirectory();
+    const pd = new FileSystem();
     try {
       const result: string = await pd.getDefaultPath();
       return {

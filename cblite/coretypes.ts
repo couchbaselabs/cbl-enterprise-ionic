@@ -142,6 +142,9 @@ export interface ICoreEngine {
   File_GetDefaultPath()
     : Promise<{ path: string }>;
 
+  File_GetFileNamesInDirectory(args: { path: string })
+    : Promise<{ files: string[] }>;
+
   //Database top level functions
   Database_Open(args: DatabaseOpenArgs)
     : Promise<void>;

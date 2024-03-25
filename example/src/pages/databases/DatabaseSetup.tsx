@@ -15,7 +15,7 @@ import DetailPageContainer from '../../components/DetailPageContainer/DetailPage
 import { 
   Database, 
   DatabaseConfiguration, 
-  PlatformDirectory 
+  FileSystem 
 } from 'cblite';
 
 const DatabaseSetupPage: React.FC = () => {
@@ -33,7 +33,7 @@ const DatabaseSetupPage: React.FC = () => {
   }
 
   function platformPath() {
-    const pd = new PlatformDirectory();
+    const pd = new FileSystem();
     pd.getDefaultPath().then((result: string) => {
       setPath(result);
     });

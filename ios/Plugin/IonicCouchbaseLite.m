@@ -311,6 +311,22 @@
     [call resolve:@{ @"path": defaultDirectory }];
 }
 
+-(void)File_GetFileNamesInDirectory:(CAPPluginCall*)call{
+    NSString *directoryPath = [call getString:@"path" defaultValue:NULL];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    NSArray *files = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
+    
+    if (files == nil) {
+        [call reject:@"No files found in the path" :NULL :NULL :@{}];
+        return;
+    } else {
+        NSDictionary *result = @{@"files": files};
+        [call resolve: result];
+        return;
+    }
+}
+
 // MARK: Database Methods
 
 -(void)Database_Open:(CAPPluginCall*)call {
@@ -1214,18 +1230,12 @@
             
             if (maxRotateCount != NULL) {
                 [config setMaxRotateCount:(NSInteger) maxRotateCount];
-            } else {
-                [call reject:@"config rotate count is not valid" :NULL :NULL :@{}];
             }
             if (maxSize != NULL && maxSize > 0) {
                 [config setMaxSize:(uint64_t) maxSize];
-            } else {
-                [call reject:@"config max size is not valid" :NULL :NULL :@{}];
             }
             if (usePlaintext != NULL) {
                 [config setUsePlainText:(BOOL) usePlaintext];
-            } else {
-                [call reject:@"config use plain text not valid" :NULL :NULL :@{}];
             }
             
             [CBLDatabase.log.file setConfig:config];
