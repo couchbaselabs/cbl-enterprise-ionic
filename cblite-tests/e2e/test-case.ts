@@ -9,6 +9,7 @@ import {
   DataSource,
   Expression,
   Function,
+  uuid,
 } from 'cblite';
 
 import { assert, expect } from 'chai';
@@ -21,13 +22,14 @@ export class TestCase {
   //setup shared properties
   database: Database | undefined = undefined;
   otherDatabase: Database | undefined = undefined;
-  databaseName: string = 'testDb';
+  databaseName: string = '';
   otherDatabaseName: string = 'otherDb';
   directory: string | undefined = undefined;
 
   async init(): Promise<ITestResult> {
     try {
       //try to get the platform local directory - can't run tests if we can't save a database to a directory
+      this.databaseName = uuid().toString();
       const filePathResult = await this.getPlatformPath();
       if (filePathResult.success) {
         this.directory = filePathResult.data;
@@ -40,33 +42,18 @@ export class TestCase {
         };
       }
 
-      //delete databases if they exist
-      if (this.database !== undefined) {
-        const deleteDbResult = await this.deleteDatabase(this.database);
-        if (!deleteDbResult.success) {
-          return deleteDbResult;
-        }
-      }
-
-      if (this.otherDatabase !== undefined) {
-        const deleteDbResult = await this.deleteDatabase(this.otherDatabase);
-        if (!deleteDbResult.success) {
-          return deleteDbResult;
-        }
-      }
-
       //create a database and then open it
-      const dbResult = await this.getDatabase(
+      const databaseResult = await this.getDatabase(
         this.databaseName,
         this.directory,
         '',
       );
-      if (dbResult instanceof Database) {
-        this.database = dbResult;
+      if (databaseResult instanceof Database) {
+        this.database = databaseResult;
         await this.database?.open();
       } else {
-        if (typeof dbResult === 'string') {
-          const message = dbResult as string;
+        if (typeof databaseResult === 'string') {
+          const message = databaseResult as string;
           return {
             testName: 'init',
             success: false,
@@ -88,6 +75,17 @@ export class TestCase {
         message: JSON.stringify(error),
         data: undefined,
       };
+    }
+  }
+
+  async tearDown(){
+    if (this.database !== undefined){
+      await this.deleteDatabase(this.database);
+      this.database = undefined;
+    }
+    if (this.otherDatabase !== undefined){
+      await this.deleteDatabase(this.otherDatabase);
+      this.otherDatabase = undefined;
     }
   }
 

@@ -37,16 +37,16 @@ export class TestRunner {
 
         //run the actual test
         const result: ITestResult = await instance[method]();
-        //sleep for 1 second to try and fix android issues with deleting databases
-        await new Promise(resolve => setTimeout(resolve, 300));
-        await instance.init();
+
+        //yield the result of the test
         yield result;
+
+        //clean up the test case remove database
+        await instance.tearDown();
       } else {
         //we failed to initailize the test case, return the failure
         yield initResult;
       }
-      //clean up the test case remove database
-      //instance.tearDown();
     }
   }
 }

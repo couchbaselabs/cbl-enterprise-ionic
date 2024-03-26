@@ -19,6 +19,11 @@ import {
   IonSegmentButton 
 } from '@ionic/react';
 
+import { 
+  ReplicatorConfiguration, 
+  URLEndpoint 
+} from 'cblite';
+
 const ReplicatorConfigPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
@@ -48,7 +53,17 @@ const ReplicatorConfigPage: React.FC = () => {
   const [resultsMessage, setResultsMessage] = useState<string[]>([]);
 
   function update() {
+    setResultsMessage([]);
+    if (databaseName in databases) {
+      let db = databases[databaseName];
+      if (db != null) {
+        let config = new ReplicatorConfiguration(db, new URLEndpoint(connectionString));
+        
 
+      }
+    } else {
+     setResultsMessage(['Error: Database is not setup (defined)']);
+   }
   }
 
   function reset() {

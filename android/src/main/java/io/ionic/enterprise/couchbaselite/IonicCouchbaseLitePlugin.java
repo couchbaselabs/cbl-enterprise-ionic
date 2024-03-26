@@ -7,54 +7,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.couchbase.lite.AbstractReplicator;
-import com.couchbase.lite.Authenticator;
-import com.couchbase.lite.BasicAuthenticator;
-import com.couchbase.lite.Blob;
-import com.couchbase.lite.ConcurrencyControl;
-import com.couchbase.lite.CouchbaseLite;
-import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.DataSource;
-import com.couchbase.lite.Database;
-import com.couchbase.lite.DatabaseChange;
-import com.couchbase.lite.DatabaseChangeListener;
-import com.couchbase.lite.DatabaseConfiguration;
-import com.couchbase.lite.Document;
-import com.couchbase.lite.DocumentFlag;
-import com.couchbase.lite.DocumentReplication;
-import com.couchbase.lite.DocumentReplicationListener;
-import com.couchbase.lite.EncryptionKey;
-import com.couchbase.lite.Endpoint;
-import com.couchbase.lite.Expression;
-import com.couchbase.lite.FullTextIndexItem;
-import com.couchbase.lite.Index;
-import com.couchbase.lite.IndexBuilder;
-import com.couchbase.lite.Join;
-import com.couchbase.lite.ListenerToken;
-import com.couchbase.lite.LogDomain;
-import com.couchbase.lite.LogFileConfiguration;
-import com.couchbase.lite.LogLevel;
-import com.couchbase.lite.MaintenanceType;
-import com.couchbase.lite.Meta;
-import com.couchbase.lite.MutableArray;
-import com.couchbase.lite.MutableDictionary;
-import com.couchbase.lite.MutableDocument;
-import com.couchbase.lite.Query;
-import com.couchbase.lite.QueryBuilder;
-import com.couchbase.lite.ReplicatedDocument;
-import com.couchbase.lite.Replicator;
-import com.couchbase.lite.ReplicatorActivityLevel;
-import com.couchbase.lite.ReplicatorChange;
-import com.couchbase.lite.ReplicatorChangeListener;
-import com.couchbase.lite.ReplicatorConfiguration;
-import com.couchbase.lite.ReplicatorProgress;
-import com.couchbase.lite.ReplicatorStatus;
-import com.couchbase.lite.Result;
-import com.couchbase.lite.ResultSet;
-import com.couchbase.lite.SelectResult;
-import com.couchbase.lite.SessionAuthenticator;
-import com.couchbase.lite.URLEndpoint;
-import com.couchbase.lite.ValueIndexItem;
+import com.couchbase.lite.*;
 import com.couchbase.lite.internal.core.C4ReplicatorStatus;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -271,6 +224,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         JSONObject config = call.getObject("config");
         Log.d(TAG, "Opening database: " + name);
 
+        boolean didOpenDatabase = false;
+        String errorMessage;
         DatabaseConfiguration c = new DatabaseConfiguration();
 
         if (config != null) {
@@ -287,15 +242,28 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 c.setEncryptionKey(new EncryptionKey(encKey));
             }
         }
+        try {
+            Database d = new Database(name, c);
+            this.openDatabases.put(name, d);
+            didOpenDatabase = true;
+            errorMessage = "";
+        } catch (Exception ex) {
+            didOpenDatabase = false;
+            errorMessage = ex.getMessage();
+            Log.w("IonicCouchbaseLite", "Error deleting database", ex);
+        }
+
+        boolean finalDidOpenDatabase = didOpenDatabase;
+        String finalErrorMessage = errorMessage;
         new Handler(Looper.getMainLooper())
                 .post(
                         () -> {
-                            try {
-                                Database d = new Database(name, c);
-                                this.openDatabases.put(name, d);
+                            if(finalDidOpenDatabase) {
                                 call.resolve();
-                            } catch (Exception ex) {
-                                call.reject("Unable to open database", ex);
+                            } else if (finalErrorMessage != null){
+                                call.reject(finalErrorMessage);
+                            } else{
+                               call.reject("Unable to open database");
                             }
                         }
                 );
@@ -625,20 +593,35 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     public void Database_Delete(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
         Database d = getDatabase(name);
+        boolean didDeleteDatabase = false;
+        String errorMessage = null;
+
         if (d == null) {
             call.reject("No such database");
             return;
         }
+        try {
+            Log.w("IonicCouchbaseLite-Log", String.format("Deleting database %s", d.getName()));
+            d.delete();
+            this.openDatabases.remove(d);
+            didDeleteDatabase = true;
+        }catch(Exception ex){
+            didDeleteDatabase = false;
+            errorMessage = ex.getMessage();
+            Log.w("IonicCouchbaseLite", "Error deleting database", ex);
+        }
 
+        boolean finalDidDeleteDatabase = didDeleteDatabase;
+        String finalErrorMessage = errorMessage;
         new Handler(Looper.getMainLooper())
                 .post(
                         () -> {
-                            try {
-                                d.delete();
-                                this.openDatabases.remove(d);
+                            if(finalDidDeleteDatabase) {
                                 call.resolve();
-                            } catch (Exception ex) {
-                                call.reject("Unable to delete database", ex);
+                            } else if (finalErrorMessage != null){
+                                call.reject(finalErrorMessage);
+                            } else {
+                                call.reject("unable to delete database");
                             }
                         }
                 );

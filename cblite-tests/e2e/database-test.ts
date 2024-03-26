@@ -73,11 +73,13 @@ export class DatabaseTests extends TestCase {
     }
     let path = pathResults.data;
     try {
-      //TODO fix this
       let dbPath = await this.database?.getPath();
-      let dbName = await this.database?.getName();
+      let dbName = this.databaseName;
+      let name = this.database?.getName();
+
       expect(dbPath).to.include(path);
-      expect(dbName).to.include('testDb');
+      expect(name).to.equal(dbName);
+
       return {
         testName: 'testDatabaseProperties',
         success: true,
@@ -259,6 +261,7 @@ export class DatabaseTests extends TestCase {
     if (!result1.success) return result1;
 
     //reset the database
+    await this.tearDown();
     await this.init();
     let result2 = await this.saveDocWithConflict(
       'testSaveDocWithConflict',
@@ -274,6 +277,7 @@ export class DatabaseTests extends TestCase {
     }
 
     //reset the database
+    await this.tearDown();
     await this.init();
     let result3 = await this.saveDocWithConflict(
       'testSaveDocWithConflict',
@@ -554,6 +558,7 @@ export class DatabaseTests extends TestCase {
       await this.verifyDocs('testSaveManyDocs', 5000);
 
       //cleanup
+      await this.tearDown();
       await this.init();
 
       //try again to validate that we can create new documents after cleanup
