@@ -574,14 +574,18 @@ video {
   visibility: collapse;
 }
 
+.static {
+  position: static;
+}
+
 .block {
   display: block;
 }
 
-.w-1\/2 {
-  width: 50%;
+.flex {
+  display: flex;
 }
 
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+.pt-10 {
+  padding-top: 2.5rem;
 }

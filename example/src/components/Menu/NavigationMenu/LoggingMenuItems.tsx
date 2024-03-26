@@ -1,9 +1,7 @@
 // QueryMenuItems.tsx
-import { IonIcon, IonItem, IonLabel, IonItemDivider } from '@ionic/react';
+import { IonItem, IonLabel, IonItemDivider } from '@ionic/react';
 
 import React from 'react';
-
-import { informationCircle, informationCircleOutline } from 'ionicons/icons';
 
 import '../Menu.css';
 

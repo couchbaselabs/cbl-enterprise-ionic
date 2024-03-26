@@ -5,20 +5,16 @@ import {
 	IonButtons,
 	IonButton,
 	IonMenuButton, 
-	IonIcon,
 	IonPage, 
 	IonHeader, 
 	IonToolbar, 
 	IonTitle, 
 	IonList,
 	IonLabel,
-	IonItem,
 	IonItemGroup,
 	IonItemDivider,
 	IonContent } 
 from '@ionic/react';
-
-import { refreshCircle } from 'ionicons/icons';
 
 interface ContainerProps {
 	navigationTitle: string;
@@ -38,31 +34,32 @@ const DetailPageContainer: React.FC<ContainerProps> = ({  navigationTitle,
 	children,
 	resultsChildren}) => {
 	return (
-		<IonPage>
-		<IonHeader>
-		  <IonToolbar>
-		  <IonButtons slot="start">
+		<IonPage key="page-key">
+		<IonHeader key="page-header-key">
+		  <IonToolbar key="page-header-toolbar-key">
+		  <IonButtons slot="start" key="page-header-left-toolbar-buttons-key">
 			  <IonMenuButton />
 			</IonButtons>
-			<IonTitle>{collapseTitle}</IonTitle>
-			<IonButtons slot="end">
-				<IonButton onClick={onReset}>
-  					<IonIcon icon={refreshCircle} />
+			<IonTitle key="page-header-title-key">{collapseTitle}</IonTitle>
+			<IonButtons slot="end" key="page-header-right-toolbar-buttons-key">
+				<IonButton onClick={onReset} key="page-header-reset-button-key">
+				<i className="fa-duotone fa-arrows-rotate"></i>
 			</IonButton>
 			</IonButtons>
 		  </IonToolbar>
 		</IonHeader>
-		<IonContent fullscreen>
-		<IonHeader collapse="condense">
-			<IonToolbar>
-			  <IonTitle size="large">{navigationTitle}</IonTitle>
+		<IonContent fullscreen key="main-content-key">
+		<IonHeader collapse="condense" key="main-content-header-key">
+			<IonToolbar key="main-content-header-toolbar-key">
+			  <IonTitle key="main-content-header-title-key" size="large">{navigationTitle}</IonTitle>
 			</IonToolbar>
 		  </IonHeader>
-		  <IonList>
+		  <IonList key="main-content-list-key">
      		{children} 
 			{ actionLabel !== "" ? ( 
 			<>
 			 <IonButton
+			    key="main-content-action-button-key"
           		onClick={onAction}
           		style={{
             		display: 'block',
@@ -73,9 +70,9 @@ const DetailPageContainer: React.FC<ContainerProps> = ({  navigationTitle,
         		>
 				{actionLabel}
         	</IonButton>
-			 <IonItemGroup>
-          		<IonItemDivider>
-            		<IonLabel>Results</IonLabel>
+			 <IonItemGroup key="main-content-results-item-group-key">
+          		<IonItemDivider key="main-content-results-divider-key">
+            		<IonLabel key="main-content-results-label-key">Results</IonLabel>
           		</IonItemDivider>
 				{resultsChildren}
         	</IonItemGroup>

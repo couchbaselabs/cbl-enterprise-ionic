@@ -6,7 +6,6 @@ import {
 	IonButtons,
 	IonButton,
 	IonMenuButton, 
-	IonIcon,
 	IonPage, 
 	IonHeader, 
 	IonToolbar, 
@@ -17,8 +16,6 @@ import {
 	IonItemDivider,
 	IonLabel } 
 from '@ionic/react';
-
-import { refreshCircle } from 'ionicons/icons';
 
 interface ContainerProps {
 	navigationTitle: string;
@@ -37,33 +34,31 @@ const DetailPageContainerItemResults: React.FC<ContainerProps> = ({  navigationT
 	resultsChildren}) => {
 
 	return (
-		<IonPage>
-		<IonHeader>
-		  <IonToolbar>
-		  <IonButtons slot="start">
+		<IonPage key="page-key">
+		<IonHeader key="page-header-key">
+		  <IonToolbar key="page-header-toolbar-key">
+		  <IonButtons slot="start" key="page-header-toolbar-left-buttons-key">
 			  <IonMenuButton />
 			</IonButtons>
-			<IonTitle>{collapseTitle}</IonTitle>
-			<IonButtons slot="end">
-				<IonButton onClick={onReset}>
-  					<IonIcon icon={refreshCircle} />
+			<IonTitle key="page-header-title-key">{collapseTitle}</IonTitle>
+			<IonButtons slot="end" key="page-header-toolbar-right-buttons-key">
+				<IonButton onClick={onReset} key="page-header-toolbar-reset-button-key">
+				<i className="fa-duotone fa-arrows-rotate"></i>
 			</IonButton>
 			</IonButtons>
 		  </IonToolbar>
 		</IonHeader>
-		<IonContent fullscreen>
-		<IonHeader collapse="condense">
-			<IonToolbar>
-			  <IonTitle size="large">{navigationTitle}</IonTitle>
+		<IonContent fullscreen key="main-content-key">
+		<IonHeader collapse="condense" key="main-content-header-key">
+			<IonToolbar key="main-content-header-toolbar-key">
+			  <IonTitle size="large" key="main-content-header-title-key">{navigationTitle}</IonTitle>
 			</IonToolbar>
 		  </IonHeader>
-		  <IonList>
-
+		  <IonList key="main-content-list-key">
      		{children} 
-
-			<IonItemGroup style={{ paddingTop: '20px'}}>
-        		<IonItemDivider>
-          			<IonLabel>Results {resultsCount}</IonLabel>
+			<IonItemGroup class="mt-4" key="main-content-results-item-group-key">
+        		<IonItemDivider key="main-content-results-divider-key">
+          			<IonLabel key="main-content-results-label-count-key">Results {resultsCount}</IonLabel>
         		</IonItemDivider>
 				{resultsChildren}
 			</IonItemGroup>

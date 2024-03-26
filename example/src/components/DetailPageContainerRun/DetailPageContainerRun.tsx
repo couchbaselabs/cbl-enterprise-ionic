@@ -42,37 +42,37 @@ const DetailPageContainerRun: React.FC<ContainerProps> = ({
   resultsChildren,
 }) => {
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
+    <IonPage key="page-key">
+      <IonHeader key="header-key">
+        <IonToolbar key="toolbar-key">
+          <IonButtons slot="start" key="menu-buttons-key">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>{collapseTitle}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={onReset}>
+          <IonTitle key="title-key">{collapseTitle}</IonTitle>
+          <IonButtons slot="end" key="right-side-buttons-key">
+            <IonButton onClick={onReset} key="button-reset-key">
               <i className="fa-duotone fa-arrows-rotate"></i>
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">{navigationTitle}</IonTitle>
+      <IonContent fullscreen key="main-content-key">
+        <IonHeader collapse="condense" key="main-content-header-key">
+          <IonToolbar key="main-content-toolbar-key">
+            <IonTitle size="large" key="title-key">{navigationTitle}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonList>
+        <IonList key="main-list-key">
           <DatabaseNameForm
             setDatabaseName={setDatabaseName}
             databaseName={databaseName}
           />
-          <IonItemDivider>
-            <IonLabel>{sectionTitle}</IonLabel>
-            <IonButtons slot="end">
-			  {titleButtons ? titleButtons : null}
+          <IonItemDivider key="section-divider-key">
+            <IonLabel key="section-divider-label-key">{sectionTitle}</IonLabel>
+            <IonButtons slot="end" key="section-divider-buttons-key">
+			        {titleButtons}
               <IonButton
-                key="btnUpdate"
+                key="button-action"
                 onClick={onAction}
                 style={{
                   display: 'block',
@@ -86,9 +86,9 @@ const DetailPageContainerRun: React.FC<ContainerProps> = ({
             </IonButtons>
           </IonItemDivider>
           {children}
-          <IonItemGroup>
-            <IonItemDivider>
-              <IonLabel>Results</IonLabel>
+          <IonItemGroup class="mt-4" key="item-group-results-key">
+            <IonItemDivider key="item-results-divider-key">
+              <IonLabel key="item-results-label-key">Results</IonLabel>
             </IonItemDivider>
             {resultsChildren}
           </IonItemGroup>

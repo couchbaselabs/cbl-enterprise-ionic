@@ -1,5 +1,5 @@
 // IndexMenuItems.tsx
-import { IonIcon, IonItem, IonLabel, IonItemDivider } from '@ionic/react';
+import { IonItem, IonLabel, IonItemDivider } from '@ionic/react';
 
 import React from 'react';
 

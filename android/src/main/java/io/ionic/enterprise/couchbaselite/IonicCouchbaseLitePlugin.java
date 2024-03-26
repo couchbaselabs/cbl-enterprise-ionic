@@ -635,6 +635,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                         () -> {
                             try {
                                 d.delete();
+                                this.openDatabases.remove(d);
                                 call.resolve();
                             } catch (Exception ex) {
                                 call.reject("Unable to delete database", ex);

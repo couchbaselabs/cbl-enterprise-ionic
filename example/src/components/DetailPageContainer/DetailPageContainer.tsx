@@ -36,8 +36,8 @@ const DetailPageContainer: React.FC<ContainerProps> = ({
       actionLabel={actionLabel}
       children={children}
       resultsChildren={
-        <IonItem>
-          <IonLabel>{resultsMessage} </IonLabel>
+        <IonItem key="results-item-key">
+          <IonLabel key="results-label-key">{resultsMessage} </IonLabel>
         </IonItem>
       }
     ></DetailPageContainerBase>

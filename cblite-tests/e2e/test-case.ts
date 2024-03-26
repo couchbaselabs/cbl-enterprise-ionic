@@ -25,8 +25,6 @@ export class TestCase {
   otherDatabaseName: string = 'otherDb';
   directory: string | undefined = undefined;
 
-  constructor() {}
-
   async init(): Promise<ITestResult> {
     try {
       //try to get the platform local directory - can't run tests if we can't save a database to a directory
@@ -77,7 +75,6 @@ export class TestCase {
           };
         }
       }
-
       return {
         testName: 'init',
         success: true,

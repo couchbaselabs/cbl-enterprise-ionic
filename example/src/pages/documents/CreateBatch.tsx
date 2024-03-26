@@ -13,11 +13,8 @@ import {
   IonLabel,
   IonButton,
   IonButtons,
-  IonIcon,
   IonItem,
 } from '@ionic/react';
-
-import { trashOutline, checkmarkCircleOutline, playOutline } from 'ionicons/icons';
 
 import {
   MutableDocument,
@@ -220,10 +217,11 @@ const CreateBatchPage: React.FC = () => {
             setDatabaseName={setDatabaseName}
             databaseName={databaseName}
           />
-          <IonItemDivider>
-            <IonLabel>Document Batch</IonLabel>
-            <IonButtons slot="end">
+          <IonItemDivider key="document-batch-divider-key">
+            <IonLabel key="document-batch-divider-label-key">Document Batch</IonLabel>
+            <IonButtons slot="end" key="document-batch-divider-right-buttons-key">
             <IonButton
+                key="document-batch-divider-right-buttons-action-button-key"
                 onClick={update}
                 style={{
                   display: 'block',
@@ -232,9 +230,10 @@ const CreateBatchPage: React.FC = () => {
                   padding: '0px 5px',
                 }}
               >
-                <IonIcon icon={playOutline} />
+                <i className="fa-duotone fa-play"></i>
               </IonButton>
               <IonButton
+                key="document-batch-divider-right-buttons-validate-button-key"
                 onClick={validateDocuments}
                 style={{
                   display: 'block',
@@ -243,9 +242,10 @@ const CreateBatchPage: React.FC = () => {
                   padding: '0px 5px',
                 }}
               >
-                <IonIcon icon={checkmarkCircleOutline} />
+               <i className="fa-solid fa-circle-check"></i>
               </IonButton>
               <IonButton
+                key="document-batch-divider-right-buttons-delete-button-key"
                 onClick={deleteProductDocuments}
                 style={{
                   display: 'block',
@@ -254,7 +254,7 @@ const CreateBatchPage: React.FC = () => {
                   padding: '0px 5px',
                 }}
               >
-                <IonIcon icon={trashOutline} />
+                 <i className="fa-solid fa-trash"></i>
               </IonButton>
             </IonButtons>
           </IonItemDivider>
@@ -263,8 +263,8 @@ const CreateBatchPage: React.FC = () => {
       resultsChildren={
         <>
           {resultsMessage.map((message, index) => (
-            <IonItem key={index} className="wrap-text">
-              <IonLabel className="wrap-text">{message}</IonLabel>
+            <IonItem key={"results-message-item-key"+index} className="wrap-text">
+              <IonLabel key={"results-message-item-label-key"+index} className="wrap-text">{message}</IonLabel>
             </IonItem>
           ))}
         </>
