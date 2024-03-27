@@ -16,11 +16,12 @@ const DatabaseNameForm: React.FC<DatabaseNameFormType> = ({
   databaseName }) => {
 	return (
       <>
-        <IonItemDivider>
-          <IonLabel>Database</IonLabel>
+        <IonItemDivider key="database-divider-key">
+          <IonLabel key="database-label-key">Database</IonLabel>
         </IonItemDivider>
-        <IonItem key={0}>
+        <IonItem key="database-item-key">
           <IonInput
+            key="database-input-key"
             onInput={(e: any) => setDatabaseName(e.target.value)}
             placeholder="Database Name"
             value={databaseName}

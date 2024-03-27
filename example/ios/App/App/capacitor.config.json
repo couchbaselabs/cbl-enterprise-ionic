@@ -6,6 +6,6 @@
 		"androidScheme": "https"
 	},
 	"plugins": {
-		"couchbase-lite-ee-ionic": {}
+		"cblite-ionic": {}
 	}
 }

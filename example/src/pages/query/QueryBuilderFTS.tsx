@@ -24,7 +24,7 @@ import {
   DataSource,
   ResultSet,
   Result,
-} from 'cblite-core';
+} from 'cblite';
 
 const QueryBuilderPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;

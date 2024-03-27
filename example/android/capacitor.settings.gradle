@@ -14,5 +14,5 @@ project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
-include ':couchbase-lite-ee-ionic'
-project(':couchbase-lite-ee-ionic').projectDir = new File('../../android')
+include ':cblite-ionic'
+project(':cblite-ionic').projectDir = new File('../../android')

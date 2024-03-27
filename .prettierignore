@@ -1,2 +1,7 @@
 build
 dist
+node_modules
+ios
+android
+cblite
+cblite-tests

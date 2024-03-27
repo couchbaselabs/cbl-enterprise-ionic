@@ -1,38 +1,74 @@
 // Replicator.tsx
-import React, { useState, useContext } from 'react';
-import DatabaseContext from '../../providers/DatabaseContext';
-import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
-import DatabaseNameForm from '../../components/DatabaseNameForm/DatabaseNameForm';
+import React, { 
+  useState, 
+  useContext 
+} from 'react';
 
-import { IonItemDivider, IonLabel } from '@ionic/react';
+import DatabaseContext from '../../providers/DatabaseContext';
+import DetailPageContainerRun from '../../components/DetailPageContainerRun/DetailPageContainerRun';
+
+import {
+  IonButton,
+  IonItem,
+  IonLabel,
+} from '@ionic/react';
 
 const ReplicatorPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;
   const [databaseName, setDatabaseName] = useState<string>('');
-  const [resultsMessage, setResultsMessage] = useState<string>('');
+  const [resultsMessage, setResultsMessage] = useState<string[]>([]);
+
+  function stop () {
+
+  }
+
+  function start() {
+
+  }
 
   function update() {
 
   }
 
   function reset() {
-
+    setDatabaseName('');
+    setResultsMessage([]);
   }
 
   return (
-    <DetailPageContainer 
-    navigationTitle="Replicator" collapseTitle="Replicator"
+    <DetailPageContainerRun
+    navigationTitle="Replicator"
+    collapseTitle="Replicator"
     onReset={reset}
-    onAction={update}
-    resultsMessage={resultsMessage}
-    actionLabel="Update">
-      <DatabaseNameForm
-        setDatabaseName={setDatabaseName}
-        databaseName={databaseName} />
-      <IonItemDivider>
-        <IonLabel>Replicator</IonLabel>
-      </IonItemDivider>
-    </DetailPageContainer>
+    onAction={start}
+    databaseName={databaseName}
+    setDatabaseName={setDatabaseName}
+    sectionTitle="Replicator"
+    titleButtons={
+      <IonButton
+        key="button-stop-key"
+        onClick={stop}
+        style={{
+          display: 'block',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          padding: '0px 2px 0px 25px',
+        }}
+      >
+        <i className="fa-solid fa-stop"></i>
+      </IonButton>
+    }
+    children={
+      <>
+
+      </>
+    }
+    resultsChildren={resultsMessage.map((message, index) => (
+      <IonItem key={'message-' + index}>
+        <IonLabel>{message}</IonLabel>
+      </IonItem>
+    ))}
+  ></DetailPageContainerRun>
   );
 };
 

@@ -8,7 +8,7 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   "plugins": {
-    "couchbase-lite-ee-ionic": {}
+    "cblite-ionic": {}
   }
 };
 

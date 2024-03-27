@@ -74,7 +74,8 @@ import {
 } from './pages/logging/';
 
 import {
-    ReplicatorPage
+    ReplicatorPage,
+    ReplicatorConfigPage
 } from './pages/replication/';
 
 /* Core CSS required for Ionic components to work properly */
@@ -151,6 +152,7 @@ const App: React.FC = () => {
                         <Route path="/query/sqlPlusPlus" component={SqlPlusPlusPage} exact />
 
                         <Route path="/replication/replicator" component={ReplicatorPage} exact />
+                        <Route path="/replication/replicatorConfig" component={ReplicatorConfigPage} exact />
 
                         <Route path="/home" component={Page} exact/>
                         <Redirect from="/" to="/home" exact/>

@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { FileLoggingTests } from 'cblite-core-tests';
+import { FileLoggingTests } from 'cblite-tests';
 
 const FileLoggingTestsPage: React.FC = () => {
 
@@ -11,7 +11,9 @@ const FileLoggingTestsPage: React.FC = () => {
       navigationTitle="File Logging Tests"
       collapseTitle="File Loggin Tests"
       testCases={[FileLoggingTests]}
-    ></DetailPageTestContainerRunner>
+    >
+
+    </DetailPageTestContainerRunner>
   );
 };
 export default FileLoggingTestsPage;

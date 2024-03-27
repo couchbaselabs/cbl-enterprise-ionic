@@ -11,7 +11,7 @@ import {
 import DetailPageContainer from '../../components/DetailPageContainer/DetailPageContainer';
 
 //import the database which has a list of log levels and domains
-import { LogLevel, LogDomain, Database } from 'cblite-core';
+import { LogLevel, LogDomain, Database } from 'cblite';
 
 const ConsoleLogPage: React.FC = () => {
   //load load levels and domains from couchbase lite plugin
@@ -58,24 +58,25 @@ const ConsoleLogPage: React.FC = () => {
       actionLabel="Update">
       <IonList>
         <IonItem key={0}>
-          <IonLabel>Select a Log Domain</IonLabel>
-          <IonSelect
+          <IonLabel key={1}>Select a Log Domain</IonLabel>
+          <IonSelect key={2}
             value={selectedLogDomain}
             onIonChange={e => setSelectedLogDomain(e.detail.value)}
           >
             {logDomains.map(domain => (
-              <IonSelectOption value={domain}>{domain}</IonSelectOption>
+              <IonSelectOption key={domain} value={domain}>{domain}</IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>
-        <IonItem key={1}>
-          <IonLabel>Select a Log Level</IonLabel>
-          <IonSelect
+        <IonItem key={3}>
+          <IonLabel key={4}>Select a Log Level</IonLabel>
+          <IonSelect 
+            key={5}
             value={selectedLogLevel}
             onIonChange={e => setSelectedLogLevel(e.detail.value)}
           >
             {Object.entries(LogLevel).map(([key, value]) => (
-              <IonSelectOption value={key}>{value}</IonSelectOption>
+              <IonSelectOption key={value} value={key}>{value}</IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>

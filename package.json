@@ -1,7 +1,7 @@
 {
-  "name": "couchbase-lite-ee-ionic",
+  "name": "cblite-ionic",
   "version": "3.1.0",
-  "description": "Plugin for Couchbase Lite Enterprise Edition for Ionic capacitor apps",
+  "description": "Plugin for Couchbase Lite Enterprise Edition for Ionic Capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -13,7 +13,7 @@
     "ios/Plugin/",
     "CouchbaseLiteEeIonic.podspec"
   ],
-  "author": "Developer Advocates @ Couchbase",
+  "author": "Deveveloper Integrations  @ Couchbase",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -40,21 +40,22 @@
     "swiftlint": "node-swiftlint",
     "docgen": "docgen --api IonicCouchbaseLitePlugin --output-readme README.md --output-json dist/docs.json",
     "build": "npm run clean && tsc && rollup -c rollup.config.js",
-    "buildAll": "cd cblite-core && npm run clean && npm run build && cd .. && npm run clean && tsc && rollup -c rollup.config.js",
+    "buildAll": "cd cblite && npm run clean && npm install && npm run build && cd .. && npm run clean && tsc && rollup -c rollup.config.js",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^5.7.0",
-    "@capacitor/core": "^5.7.0",
+    "cblite": "file:cblite",
+    "@capacitor/android": "^5.7.4",
+    "@capacitor/core": "^5.7.4",
     "@capacitor/docgen": "^0.0.18",
-    "@capacitor/ios": "^5.7.0",
-    "@ionic/eslint-config": "^0.3.0",
+    "@capacitor/ios": "^5.7.4",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
-    "cblite-core": "file:cblite-core",
-    "eslint": "^7.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "eslint": "^8.35.0",
     "prettier": "~2.3.0",
     "prettier-plugin-java": "~1.0.2",
     "rimraf": "^3.0.2",
@@ -64,13 +65,10 @@
     "typescript": "5.4.2"
   },
   "peerDependencies": {
-    "@capacitor/core": "^5.7.0"
+    "@capacitor/core": "^5.7.4"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
-  "eslintConfig": {
-    "extends": "@ionic/eslint-config/recommended"
-  },
   "capacitor": {
     "ios": {
       "src": "ios"

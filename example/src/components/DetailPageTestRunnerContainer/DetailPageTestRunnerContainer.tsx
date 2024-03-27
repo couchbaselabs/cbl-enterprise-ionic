@@ -2,7 +2,7 @@
 import './DetailPageTestRunnerContainer.css';
 import React from 'react';
 import useState from 'react-usestateref';
-import { TestRunner, ITestResult, TestCase } from 'cblite-core-tests';
+import { TestRunner, ITestResult, TestCase } from 'cblite-tests';
 
 import {
   IonButtons,
@@ -54,12 +54,12 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
     setSuccessCount(0);
     setFailedCount(0);
 
-    //todo fix cancellation token
-    for (let counter = 0; counter < testCases.length; counter++) {
+    //TODO fix cancellation token
+    for (const element of testCases) {
       setCurrentMessage(null);
       const testRunner = new TestRunner();
       const testGenerator = testRunner.runTests(
-        testCases[counter],
+        element,
         shouldTestCaseCancel,
       );
         for await (const result of testGenerator) {
@@ -77,38 +77,40 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
         setCurrentMessage(null); 
       }
     }
+    
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
+    <IonPage key="page-key">
+      <IonHeader key="page-header-key">
+        <IonToolbar key="page-header-toolbar-key">
+          <IonButtons slot="start" key="page-header-left-buttons-key">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>{collapseTitle}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={reset}>
+          <IonTitle key="page-header-title-key">{collapseTitle}</IonTitle>
+          <IonButtons slot="end" key="page-header-right-buttons-key">
+            <IonButton onClick={reset} key="reset-button-key">
               <i className="fa-duotone fa-arrows-rotate"></i>
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">{navigationTitle}</IonTitle>
+      <IonContent fullscreen key="main-content-key">
+        <IonHeader collapse="condense" key="main-content-header-key">
+          <IonToolbar key="main-content-header-toolbar-key">
+            <IonTitle key="main-content-header-title-key" size="large">{navigationTitle}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonList>
-          <IonItemDivider>
-            <IonLabel>Run Tests</IonLabel>
-            <IonButtons slot="end">
-              <IonToggle
+        <IonList key="main-content-list-key">
+          <IonItemDivider class="mb-4" key="main-content-list-run-tests-divider-key">
+            <IonLabel key="main-content-list-run-tests-label-key">Run Tests</IonLabel>
+            <IonButtons slot="end" key="main-content-lists-run-tests-buttons-key">
+              <IonToggle key="main-content-lists-run-tests-toggle-key"
                 onIonChange={(e: any) => setShowDetails(e.detail.checked)}
                 checked={showDetails}
               >
                 Show Details
               </IonToggle>
-              <IonButton
+              <IonButton 
+                key="main-content-lists-run-tests-cancel-button-key"
                 onClick={() => setShouldCancel(true)}
                 style={{
                   display: 'block',
@@ -120,6 +122,7 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
                 <i className="fa-solid fa-stop"></i>
               </IonButton>
               <IonButton
+                key="main-content-lists-run-tests-action-button-key"
                 onClick={update}
                 style={{
                   display: 'block',
@@ -132,13 +135,10 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
               </IonButton>
             </IonButtons>
           </IonItemDivider>
-          <hr style={{ padding: '5px' }} />
           {currentMessage !== null ? (
-            <IonItem key="999">
-              <IonLabel>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
+            <IonItem key="main-content-lists-current-running-item-key">
+              <IonLabel key="main-content-lists-current-running-label-key">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }} >
                   <h2>{currentMessage.testName}</h2>
                   <i className="fa-duotone fa-spinner-third fa-spin"></i>
                 </div>
@@ -148,7 +148,7 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
           ) : (
             <></>
           )}
-          <IonItemDivider>
+          <IonItemDivider key="main-content-lists-status-divider-key">
             <div
               style={{
                 display: 'flex',
@@ -156,18 +156,15 @@ const DetailPageTestRunnerContainer: React.FC<ContainerProps<new () => TestCase>
                 width: '100%',
               }}
             >
-              <IonLabel>Success: {successCount}</IonLabel>
-              <IonLabel>Failed: {failedCount}</IonLabel>
+              <IonLabel key="main-content-lists-status-label-success-key">Success: {successCount}</IonLabel>
+              <IonLabel key="main-content-lists-status-label-failed-key">Failed: {failedCount}</IonLabel>
             </div>
           </IonItemDivider>
           {
-            //resultMessages.map((result, index) => (
             Array.from(resultMessages.values()).map((result, index) => (
-              <IonItem key={index}>
-                <IonLabel>
-                  <div
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
+              <IonItem key={'main-content-lists-status-item-' + index}>
+                <IonLabel key={'main-content-lists-status-label-' + index}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }} >
                     <h2>{result.testName}</h2>
                     {result.message === 'running' ? (
                       <i className="fa-duotone fa-spinner-third fa-spin"></i>

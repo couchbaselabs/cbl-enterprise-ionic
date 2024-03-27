@@ -1,5 +1,6 @@
 package io.ionic.enterprise.couchbaselite;
 
+import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.DataSource;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.LiteCoreException;
@@ -28,11 +29,8 @@ public class JsonQueryBuilder {
         try {
             DataSource source = DataSource.database(db);
             query = QueryBuilder.select().from(source);
-            //TODO fixed for 3.x due to createJsonQuery vs createSQLQuery
-            C4Database c4database = getC4Database(db);
-            setC4Query(query, c4database.createJsonQuery(json));
-            setColumnNames(query, generateColumnNames(db, json));
-        } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | LiteCoreException ex) {
+            setC4Query(query, db, json);
+        } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
             ex.printStackTrace();
         }
 
@@ -69,25 +67,23 @@ public class JsonQueryBuilder {
         return columns;
     }
 
-    private static C4Database getC4Database(Database db) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class cls = db.getClass().getSuperclass(); // AbstractDatabase
-        Method m = cls.getDeclaredMethod("getC4Database", null);
-        m.setAccessible(true);
+    private static void setC4Query(Query query, Database db, String json) throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
+        //get the C4Query object
+        Class clsDbSuper = db.getClass().getSuperclass(); // AbstractDatabase
+        Method methodCreateJsonQuery = clsDbSuper.getDeclaredMethod("createJsonQuery", String.class);
+        methodCreateJsonQuery.setAccessible(true);
+        C4Query c4query = (C4Query) methodCreateJsonQuery.invoke(db, json);
 
-        return (C4Database) m.invoke(db, null);
-    }
+        //set the query to the c4query object
+        Class queryClass = query.getClass().getSuperclass().getSuperclass(); // AbstractQuery
+        Field fieldC4Query = queryClass.getDeclaredField("c4query");
+        fieldC4Query.setAccessible(true);
+        fieldC4Query.set(query, c4query);
 
-    private static void setC4Query(Query query, C4Query c4query) throws IllegalAccessException, NoSuchFieldException {
-        Class queryClass = query.getClass().getSuperclass(); // AbstractQuery
-        Field f = queryClass.getDeclaredField("c4query");
-        f.setAccessible(true);
-        f.set(query, c4query);
-    }
-
-    private static void setColumnNames(Query query, Map<String, Integer> columnNames) throws NoSuchFieldException, IllegalAccessException {
-        Class queryClass = query.getClass().getSuperclass(); // AbstractQuery
-        Field f = queryClass.getDeclaredField("columnNames");
-        f.setAccessible(true);
-        f.set(query, columnNames);
+        //set the columns to the query
+        Map<String, Integer> columns = generateColumnNames(db, json);
+        Field fieldColumns = queryClass.getDeclaredField("columnNames");
+        fieldColumns.setAccessible(true);
+        fieldColumns.set(query, columns);
     }
 }

@@ -1,10 +1,7 @@
 // ReplicationMenuItems.tsx
 import React from 'react';
 
-import { IonIcon, IonItem, IonLabel, IonItemDivider } from '@ionic/react';
-
-import { infinite,
-	infiniteOutline } from 'ionicons/icons';
+import { IonItem, IonLabel, IonItemDivider } from '@ionic/react';
 
 import '../Menu.css';
 
@@ -18,9 +15,14 @@ const ReplicationMenuItems: React.FC = () => {
       <IonItem
         style={{ marginLeft: 20 }}
         routerLink="/replication/replicator"
-        routerDirection="none"
-      >
+        routerDirection="none">
         <IonLabel>Replicator</IonLabel>
+      </IonItem>
+      <IonItem
+        style={{ marginLeft: 20 }}
+        routerLink="/replication/replicatorConfig"
+        routerDirection="none">
+        <IonLabel>Replicator Config</IonLabel>
       </IonItem>
     </>
   );

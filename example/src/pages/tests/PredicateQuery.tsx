@@ -2,7 +2,7 @@
 import React from 'react';
 import DetailPageTestContainerRunner from '../../components/DetailPageTestRunnerContainer/DetailPageTestRunnerContainer';
 
-import { PredicateQueryTests } from 'cblite-core-tests';
+import { PredicateQueryTests } from 'cblite-tests';
 
 const PredicateQueryTestPage: React.FC = () => {
 

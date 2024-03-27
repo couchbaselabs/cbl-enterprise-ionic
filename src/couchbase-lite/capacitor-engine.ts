@@ -1,12 +1,10 @@
 import {
   ResultSet,
   Result,
-  Database,
   DocumentResult,
   EngineLocator,
   DatabaseOpenArgs,
   DatabaseSaveArgs,
-  DatabaseAddChangeListenerArgs,
   DatabaseArgs,
   DatabaseCopyArgs,
   DatabaseCreateIndexArgs,
@@ -26,10 +24,15 @@ import {
   ReplicatorCreateArgs,
   ReplicatorArgs,
   ReplicatorChangeListenerArgs,
-} from 'cblite-core';
+} from 'cblite';
 
 import { IonicCouchbaseLite } from '../ionic-couchbase-lite';
-import { IonicCouchbaseLitePlugin, QueryExecuteArgs } from '../definitions';
+
+import { 
+  DatabaseChangeListenerArgs,
+  IonicCouchbaseLitePlugin, 
+  QueryExecuteArgs, 
+} from '../definitions';
 
 import { PluginListenerHandle } from '@capacitor/core';
 
@@ -55,6 +58,11 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
 
   File_GetDefaultPath(): Promise<{ path: string }> {
     return IonicCouchbaseLite.File_GetDefaultPath();
+  }
+
+  File_GetFileNamesInDirectory(args: { path: string })
+  : Promise<{ files: string[] }>{
+    return IonicCouchbaseLite.File_GetFileNamesInDirectory(args);
   }
 
   async Database_Open(args: DatabaseOpenArgs): Promise<void> {
@@ -146,7 +154,7 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
 
   async Engine_Query_Execute(args: EngineQueryExecuteArgs): Promise<ResultSet> {
     args.query.check();
-    let queryArgs = {
+    const queryArgs = {
       name: args.name,
       query: args.query.toJson(),
       columnNames: args.query.getColumnNames(),
@@ -214,10 +222,22 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
     return IonicCouchbaseLite.Replicator_Cleanup(args);
   }
 
+  async Database_RemoveChangeListener(
+    args: DatabaseChangeListenerArgs)
+    : Promise<void>{
+      return IonicCouchbaseLite.Database_RemoveChangeListener(args);
+  }
+
   Database_AddChangeListener(
-    args: DatabaseAddChangeListenerArgs,
-  ): Promise<PluginListenerHandle> {
-    return IonicCouchbaseLite.Database_AddChangeListener(args);
+    args: DatabaseChangeListenerArgs,
+    cb: (data: any, err: any) => void,
+    ): Promise<PluginListenerHandle> {
+    return IonicCouchbaseLite.Database_AddChangeListener(
+      {
+        name: args.name, 
+        changeListenerToken: args.changeListenerToken
+      }, 
+      cb);
   }
 
   Replicator_AddChangeListener(

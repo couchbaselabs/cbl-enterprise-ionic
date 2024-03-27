@@ -7,54 +7,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.couchbase.lite.AbstractReplicator;
-import com.couchbase.lite.Authenticator;
-import com.couchbase.lite.BasicAuthenticator;
-import com.couchbase.lite.Blob;
-import com.couchbase.lite.ConcurrencyControl;
-import com.couchbase.lite.CouchbaseLite;
-import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.DataSource;
-import com.couchbase.lite.Database;
-import com.couchbase.lite.DatabaseChange;
-import com.couchbase.lite.DatabaseChangeListener;
-import com.couchbase.lite.DatabaseConfiguration;
-import com.couchbase.lite.Document;
-import com.couchbase.lite.DocumentFlag;
-import com.couchbase.lite.DocumentReplication;
-import com.couchbase.lite.DocumentReplicationListener;
-import com.couchbase.lite.EncryptionKey;
-import com.couchbase.lite.Endpoint;
-import com.couchbase.lite.Expression;
-import com.couchbase.lite.FullTextIndexItem;
-import com.couchbase.lite.Index;
-import com.couchbase.lite.IndexBuilder;
-import com.couchbase.lite.Join;
-import com.couchbase.lite.ListenerToken;
-import com.couchbase.lite.LogDomain;
-import com.couchbase.lite.LogFileConfiguration;
-import com.couchbase.lite.LogLevel;
-import com.couchbase.lite.MaintenanceType;
-import com.couchbase.lite.Meta;
-import com.couchbase.lite.MutableArray;
-import com.couchbase.lite.MutableDictionary;
-import com.couchbase.lite.MutableDocument;
-import com.couchbase.lite.Query;
-import com.couchbase.lite.QueryBuilder;
-import com.couchbase.lite.ReplicatedDocument;
-import com.couchbase.lite.Replicator;
-import com.couchbase.lite.ReplicatorActivityLevel;
-import com.couchbase.lite.ReplicatorChange;
-import com.couchbase.lite.ReplicatorChangeListener;
-import com.couchbase.lite.ReplicatorConfiguration;
-import com.couchbase.lite.ReplicatorProgress;
-import com.couchbase.lite.ReplicatorStatus;
-import com.couchbase.lite.Result;
-import com.couchbase.lite.ResultSet;
-import com.couchbase.lite.SelectResult;
-import com.couchbase.lite.SessionAuthenticator;
-import com.couchbase.lite.URLEndpoint;
-import com.couchbase.lite.ValueIndexItem;
+import com.couchbase.lite.*;
 import com.couchbase.lite.internal.core.C4ReplicatorStatus;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -66,6 +19,7 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import io.ionic.enterprise.couchbaselite.JsonQueryBuilder;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
@@ -92,6 +46,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     private Map<Number, Replicator> replicators = new HashMap<>();
     private Map<Number, ListenerToken> replicatorListeners = new HashMap<>();
     private Map<Number, ListenerToken> documentListeners = new HashMap<>();
+    private Map<String, ListenerToken> databaseChangeListeners = new HashMap<>();
 
     private int queryCount = 0;
     private int replicatorCount = 0;
@@ -248,11 +203,11 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 .post(() -> {
                             try {
                                 Context context = bridge.getContext();
-                                File defaultDirectory = context.getFilesDir();
+                                String defaultDirectory = context.getFilesDir().getCanonicalPath();
                                 call.resolve(
                                         new JSObject() {
                                             {
-                                                put("path", defaultDirectory.getPath());
+                                                put("path", defaultDirectory);
                                             }
                                         }
                                 );
@@ -264,11 +219,13 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void Database_Open(PluginCall call) throws JSONException, CouchbaseLiteException {
+    public void Database_Open(PluginCall call) throws JSONException, CouchbaseLiteException, IOException {
         String name = call.getString("name");
         JSONObject config = call.getObject("config");
         Log.d(TAG, "Opening database: " + name);
 
+        boolean didOpenDatabase = false;
+        String errorMessage;
         DatabaseConfiguration c = new DatabaseConfiguration();
 
         if (config != null) {
@@ -276,24 +233,37 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             String encKey = config.optString("encryptionKey", null);
             if (directory == null) {
                 Context context = bridge.getContext();
-                File defaultDirectory = context.getFilesDir();
-                c.setDirectory(defaultDirectory.getPath());
+                String defaultDirectory = context.getFilesDir().getCanonicalPath();
+                c.setDirectory(defaultDirectory);
             } else {
                 c.setDirectory(directory);
             }
-            if (encKey != null) {
+            if (encKey != null && !encKey.isBlank() && !encKey.isBlank()) {
                 c.setEncryptionKey(new EncryptionKey(encKey));
             }
         }
+        try {
+            Database d = new Database(name, c);
+            this.openDatabases.put(name, d);
+            didOpenDatabase = true;
+            errorMessage = "";
+        } catch (Exception ex) {
+            didOpenDatabase = false;
+            errorMessage = ex.getMessage();
+            Log.d("IonicCouchbaseLite", "Error deleting database", ex);
+        }
+
+        boolean finalDidOpenDatabase = didOpenDatabase;
+        String finalErrorMessage = errorMessage;
         new Handler(Looper.getMainLooper())
                 .post(
                         () -> {
-                            try {
-                                Database d = new Database(name, c);
-                                this.openDatabases.put(name, d);
+                            if(finalDidOpenDatabase) {
                                 call.resolve();
-                            } catch (Exception ex) {
-                                call.reject("Unable to open database", ex);
+                            } else if (finalErrorMessage != null){
+                                call.reject(finalErrorMessage);
+                            } else{
+                               call.reject("Unable to open database");
                             }
                         }
                 );
@@ -454,23 +424,22 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             call.reject("No such database");
             return;
         }
-        String indexName = call.getString("indexName");
-        JSONObject indexData = call.getObject("index");
-
-        String type = indexData.getString("type");
-        JSONArray items = indexData.getJSONArray("items");
-
-        Index index = null;
-
-        if (type.equals("value")) {
-            index = IndexBuilder.valueIndex(makeValueIndexItems(items));
-        } else if (type.equals("full-text")) {
-            index = IndexBuilder.fullTextIndex(makeFullTextIndexItems(items));
-        }
 
         try {
-            d.createIndex(indexName, index);
+            String indexName = call.getString("indexName");
+            JSONObject indexData = call.getObject("index");
 
+            String type = indexData.getString("type");
+            JSONArray items = indexData.getJSONArray("items");
+
+            Index index = null;
+
+            if (type.equals("value")) {
+                index = IndexBuilder.valueIndex(makeValueIndexItems(items));
+            } else if (type.equals("full-text")) {
+                index = IndexBuilder.fullTextIndex(makeFullTextIndexItems(items));
+            }
+            d.createIndex(indexName, index);
             call.resolve();
         } catch (Exception ex) {
             call.reject("Error creating index", ex);
@@ -543,6 +512,13 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void Database_AddChangeListener(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
+        String token = call.getString("changeListenerToken");
+
+        if (name == null || token == null) {
+            call.reject("error: arguments missing");
+            return;
+        }
+
         Database d = getDatabase(name);
         if (d == null) {
             call.reject("No such database");
@@ -552,7 +528,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         call.setKeepAlive(true);
 
         try {
-            d.addChangeListener(
+        ListenerToken listenerToken = d.addChangeListener(
                     new DatabaseChangeListener() {
                         @Override
                         public void changed(DatabaseChange change) {
@@ -562,12 +538,39 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                         }
                     }
             );
+        //keep track of listener so we can remove it in the remove method
+        this.databaseChangeListeners.put(token, listenerToken);
         } catch (Exception ex) {
             call.reject("Unable to add listener", ex);
         }
     }
 
-    @SuppressWarnings("unused")
+    @PluginMethod
+    public void Database_RemoveChangeListener(PluginCall call) {
+        String name = call.getString("name");
+        String token = call.getString("changeListenerToken");
+
+        if (name == null || token == null) {
+            call.reject("error: arguments missing");
+            return;
+        }
+
+        Database database = getDatabase(name);
+        if (database == null) {
+            call.reject("No such database");
+            return;
+        }
+        try {
+            ListenerToken listenerToken = this.databaseChangeListeners.get(token);
+            if (listenerToken != null) {
+                database.removeChangeListener(listenerToken);
+            }
+        }catch (Exception ex){
+            call.reject("Unable to remove listener", ex);
+        }
+       call.resolve();
+    }
+
     @PluginMethod
     public void Database_Close(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
@@ -590,19 +593,35 @@ public class IonicCouchbaseLitePlugin extends Plugin {
     public void Database_Delete(PluginCall call) throws JSONException, CouchbaseLiteException {
         String name = call.getString("name");
         Database d = getDatabase(name);
+        boolean didDeleteDatabase = false;
+        String errorMessage = null;
+
         if (d == null) {
             call.reject("No such database");
             return;
         }
+        try {
+            Log.d("IonicCouchbaseLite-Log", String.format("Deleting database %s", d.getName()));
+            d.delete();
+            this.openDatabases.remove(d);
+            didDeleteDatabase = true;
+        }catch(Exception ex){
+            didDeleteDatabase = false;
+            errorMessage = ex.getMessage();
+            Log.d("IonicCouchbaseLite", "Error deleting database", ex);
+        }
 
+        boolean finalDidDeleteDatabase = didDeleteDatabase;
+        String finalErrorMessage = errorMessage;
         new Handler(Looper.getMainLooper())
                 .post(
                         () -> {
-                            try {
-                                d.delete();
+                            if(finalDidDeleteDatabase) {
                                 call.resolve();
-                            } catch (Exception ex) {
-                                call.reject("Unable to delete database", ex);
+                            } else if (finalErrorMessage != null){
+                                call.reject(finalErrorMessage);
+                            } else {
+                                call.reject("unable to delete database");
                             }
                         }
                 );
@@ -723,35 +742,40 @@ public class IonicCouchbaseLitePlugin extends Plugin {
 
     @PluginMethod
     public void Database_SetFileLoggingConfig(PluginCall call) throws JSONException, CouchbaseLiteException {
-        String name = call.getString("name");
-        Database db = this.openDatabases.get(name);
+        try {
+            String name = call.getString("name");
+            Database db = this.openDatabases.get(name);
 
-        JSObject config = call.getObject("config");
+            JSObject config = call.getObject("config");
 
-        Object levelValue = config.opt("level");
+            Object levelValue = config.opt("level");
 
-        String directory = config.getString("directory");
-        Integer maxRotateCount = config.optInt("maxRotateCount", -1);
-        Integer maxSize = config.optInt("maxSize", -1);
-        Object usePlaintext = config.opt("usePlaintext");
+            String directory = config.getString("directory");
+            Integer maxRotateCount = config.optInt("maxRotateCount", -1);
+            Integer maxSize = config.optInt("maxSize", -1);
+            Object usePlaintext = config.opt("usePlaintext");
 
-        LogFileConfiguration fileConfig = new LogFileConfiguration(directory);
-        if (maxRotateCount >= 0) {
-            fileConfig.setMaxRotateCount(maxRotateCount);
+            LogFileConfiguration fileConfig = new LogFileConfiguration(directory);
+            if (maxRotateCount >= 0) {
+                fileConfig.setMaxRotateCount(maxRotateCount);
+            }
+            if (maxSize >= 0) {
+                fileConfig.setMaxSize(maxSize);
+            }
+            if (usePlaintext != null) {
+                fileConfig.setUsePlaintext((Boolean) usePlaintext);
+            }
+
+            db.log.getFile().setConfig(fileConfig);
+
+            if (levelValue != null) {
+                LogLevel logLevel = getLogLevel((int) levelValue);
+                db.log.getFile().setLevel(logLevel);
+            }
+        } catch (Exception ex) {
+            call.reject("Unable to set file logging config", ex);
         }
-        if (maxSize >= 0) {
-            fileConfig.setMaxSize(maxSize);
-        }
-        if (usePlaintext != null) {
-            fileConfig.setUsePlaintext((Boolean) usePlaintext);
-        }
-
-        db.log.getFile().setConfig(fileConfig);
-
-        if (levelValue != null) {
-            LogLevel logLevel = getLogLevel((int) levelValue);
-            db.log.getFile().setLevel(logLevel);
-        }
+        call.resolve(null);
     }
 
     @PluginMethod
@@ -832,8 +856,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                 call.resolve(null);
                 return;
             }
-
-            Map<String, Object> data = processResultMap(result.toMap());
+            Map<String, Object> resultsMap = result.toMap();
+            Map<String, Object> data = processResultMap(resultsMap);
             if (data.containsKey("_id")) {
                 data.put("id", data.get("_id"));
                 data.remove("_id");
@@ -893,7 +917,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             Result result;
             int i = 0;
             while (i++ < chunkSize && ((result = r.next()) != null)) {
-                Map<String, Object> data = processResultMap(result.toMap());
+                Map<String, Object> resultMap = result.toMap();
+                Map<String, Object> data = processResultMap(resultMap);
                 if (data.containsKey("_id")) {
                     data.put("id", data.get("_id"));
                     data.remove("_id");
@@ -959,8 +984,8 @@ public class IonicCouchbaseLitePlugin extends Plugin {
                     resultsChunk = new ArrayList<>(chunkSize);
                 }
             }
-
-            Map<String, Object> data = processResultMap(queryResult.toMap());
+            Map<String, Object> queryResultMap = queryResult.toMap();
+            Map<String, Object> data = processResultMap(queryResultMap);
             if (data.containsKey("_id")) {
                 data.put("id", data.get("_id"));
                 data.remove("_id");
