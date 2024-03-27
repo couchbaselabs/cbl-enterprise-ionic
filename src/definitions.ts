@@ -42,7 +42,6 @@ export interface IonicCouchbaseLitePlugin extends ICoreEngine {
   Database_RemoveChangeListener(
     args: DatabaseChangeListenerArgs)
     : Promise<void>;
-  
 
   //Query Builder
   Query_Execute(args: QueryExecuteArgs)

@@ -6,6 +6,7 @@ import React,
 } from 'react';
 
 import DatabaseContext from '../../providers/DatabaseContext';
+import ReplicatorContext from '../../providers/ReplicatorContext';
 
 import DetailPageContainerRun from '../../components/DetailPageContainerRun/DetailPageContainerRun';
 import ReplicatorConfigGeneralForm from '../../components/ReplicatorConfigGeneralForm/ReplicatorConfigGeneralForm';
@@ -26,6 +27,8 @@ import {
 
 const ReplicatorConfigPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;
+  const { replicatorIds } = useContext(ReplicatorContext)!;
+
   const [databaseName, setDatabaseName] = useState<string>('');
 
   //used to track the state of the configuration section to show
@@ -33,10 +36,16 @@ const ReplicatorConfigPage: React.FC = () => {
 
   //used for general configuration fields
   const [connectionString, setConnectionString] = useState<string>('');
+  const [headers , setHeaders] = useState<string>('');
   const [selectedReplicatorType, setSelectedReplicatorType] =
     useState<string>('');
   const [heartbeat, setHeartbeat] = useState<number>(60);
-  const [continous, setContinous] = useState<boolean>(true);
+  const [maxAttempts, setMaxAttempts] = useState<number>(0);
+  const [maxAttemptWaitTime, setMaxAttemptWaitTime] = useState<number>(300);
+
+  const [continuous, setContinuous] = useState<boolean>(true);
+  const [autoPurgeEnabled, setAutoPurgeEnabled] = useState<boolean>(true);
+  const [acceptParentDomainCookies, setAcceptParentDomainCookies] = useState<boolean>(false);
   const [selfSignedCerts, setSelfSignedCerts] = useState<boolean>(true);
 
   //used for authentication type and authentication fields
@@ -55,11 +64,36 @@ const ReplicatorConfigPage: React.FC = () => {
   function update() {
     setResultsMessage([]);
     if (databaseName in databases) {
-      let db = databases[databaseName];
+      const db = databases[databaseName];
       if (db != null) {
-        let config = new ReplicatorConfiguration(db, new URLEndpoint(connectionString));
-        
+        const config = new ReplicatorConfiguration(db, new URLEndpoint(connectionString));
 
+        //general section
+        config.setHeaders(JSON.parse(headers));
+        config.setHeartbeat(heartbeat);
+        config.setMaxAttemptWaitTime(maxAttemptWaitTime);
+        config.setMaxAttempts(maxAttempts);
+        switch(selectedReplicatorType) {
+          case 'push':
+            config.setReplicatorType(ReplicatorConfiguration.ReplicatorType.PUSH);
+            break;
+          case 'pull':
+           config.setReplicatorType(ReplicatorConfiguration.ReplicatorType.PULL);
+           break;
+          default:
+            config.setReplicatorType(ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL);
+            break;
+        }
+        config.setContinuous(continuous);
+        config.setSelfSignedCerts(selfSignedCerts);
+        config.setAutoPurgeEnabled(autoPurgeEnabled);
+        config.setAcceptParentDomainCookies(acceptParentDomainCookies);
+
+        //auth section
+
+        //channel section
+        const channelArray = channels.split(',').map(channel => channel.trim());
+        config.setChannels(channelArray);
       }
     } else {
      setResultsMessage(['Error: Database is not setup (defined)']);
@@ -68,17 +102,31 @@ const ReplicatorConfigPage: React.FC = () => {
 
   function reset() {
     setDatabaseName('');
+
+    setConnectionString('');
+    setHeaders('');
+    setHeartbeat(60);
+    setMaxAttempts(0); //resets to default values
+    setMaxAttemptWaitTime(300);  //in seconds
+    setSelectedReplicatorType('');
+    setContinuous(true);
+    setSelfSignedCerts(true);
+    setAutoPurgeEnabled(true);
+    setAcceptParentDomainCookies(false);
+
+    //authentication section
     setSelectedAuthenticationType('');
     setSelectedSegment('general');
     setUsername('');
     setPassword('');
-    setConnectionString('');
-    setHeartbeat(60);
-    setSelectedReplicatorType('');
-    setContinous(true);
-    setSelfSignedCerts(true);
-    setResultsMessage([]);
+    setSessionId('');
+    setCookieName('');
+
+    //channels section
     setChannels('');
+
+    //results section
+    setResultsMessage([]);
   }
 
   return (
@@ -112,14 +160,24 @@ const ReplicatorConfigPage: React.FC = () => {
         <ReplicatorConfigGeneralForm
           connectionString={connectionString}
           setConnectionString={setConnectionString}
+          headers={headers}
+          setHeaders={setHeaders}
           heartbeat={heartbeat}
           setHeartbeat={setHeartbeat}
+          maxAttempts={maxAttempts}
+          setMaxAttempts={setMaxAttempts}
+          maxAttemptWaitTime={maxAttemptWaitTime}
+          setMaxAttemptWaitTime={setMaxAttemptWaitTime}
           selectedReplicatorType={selectedReplicatorType}
           setSelectedReplicatorType={setSelectedReplicatorType}
-          continous={continous}
-          setContinous={setContinous}
+          continuous={continuous}
+          setContinuous={setContinuous}
           selfSignCerts={selfSignedCerts}
           setSelfSignedCerts={setSelfSignedCerts}
+          autoPurgeEnabled={autoPurgeEnabled}
+          setAutoPurgeEnabled={setAutoPurgeEnabled}
+          acceptParentDomainCookies={acceptParentDomainCookies}
+          setAcceptParentDomainCookies={setAcceptParentDomainCookies}
         />
       );
     case 'authentication':

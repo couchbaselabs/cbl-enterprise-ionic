@@ -86,7 +86,7 @@ const DetailPageContainerRun: React.FC<ContainerProps> = ({
             </IonButtons>
           </IonItemDivider>
           {children}
-          <IonItemGroup class="mt-4" key="item-group-results-key">
+          <IonItemGroup class="mt-4 mb-60" key="item-group-results-key">
             <IonItemDivider key="item-results-divider-key">
               <IonLabel key="item-results-label-key">Results</IonLabel>
             </IonItemDivider>

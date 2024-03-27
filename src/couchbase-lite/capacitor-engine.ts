@@ -154,7 +154,7 @@ export class CapacitorEngine implements IonicCouchbaseLitePlugin {
 
   async Engine_Query_Execute(args: EngineQueryExecuteArgs): Promise<ResultSet> {
     args.query.check();
-    let queryArgs = {
+    const queryArgs = {
       name: args.name,
       query: args.query.toJson(),
       columnNames: args.query.getColumnNames(),

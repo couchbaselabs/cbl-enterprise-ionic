@@ -17,6 +17,7 @@ import {
 } from '@ionic/react';
 
 import {
+  Document,
   MutableDocument,
   QueryBuilder,
   SelectResult,
@@ -34,22 +35,22 @@ const CreateBatchPage: React.FC = () => {
   async function update() {
     setResultsMessage([]);
     if (databaseName in databases) {
-      let db = databases[databaseName];
+      const db = databases[databaseName];
       if (db != null) {
-        let generator = new DataGeneratorService();
-        let products = generator.productDocs;
+        const generator = new DataGeneratorService();
+        const products = generator.productDocs;
 
         //
-        // removed inBatch for now until new queue system verison is implemented
+        // removed inBatch for now until new queue system version is implemented
         //
         //await db.inBatch(() => {
         let counter = 0;
-        for (let key in products) {
+        for (const key in products) {
           counter++;
-          let docKey = Number(key);
-          let product = products[docKey];
+          const docKey = Number(key);
+          const product = products[docKey];
 
-          let document = getDocumentFromProduct(product);
+          const document = getDocumentFromProduct(product);
           if (document != null) {
             try {
               db.save(document)
@@ -85,7 +86,7 @@ const CreateBatchPage: React.FC = () => {
             ]);
           }
         }
-        //}); --removed inBatch for now until new queue system verison is implemented
+        //}); --removed inBatch for now until new queue system version is implemented
         setResultsMessage(prev => [...prev, 'Batch Create Complete']);
         setResultsCount(counter.toString());
 
@@ -100,7 +101,7 @@ const CreateBatchPage: React.FC = () => {
   }
 
   function getDocumentFromProduct(product: ProductType) {
-    let document = new MutableDocument(product.id);
+    const document = new MutableDocument(product.id);
     document.setString('category', product.doc.category);
     document.setString('name', product.doc.name);
     document.setString('id', product.id);
@@ -116,11 +117,11 @@ const CreateBatchPage: React.FC = () => {
   //validate documents saved only if there wasn't errors
   async function validateDocuments() {
     if (databaseName in databases) {
-      let db = databases[databaseName];
+      const db = databases[databaseName];
       if (db != null) {
         setResultsMessage([]);
         setResultsCount('');
-        let query = QueryBuilder.select(SelectResult.all())
+        const query = QueryBuilder.select(SelectResult.all())
           .from(DataSource.database(db))
           .where(
             Expression.property('documentType').equalTo(
@@ -131,10 +132,10 @@ const CreateBatchPage: React.FC = () => {
         try {
           const resultSet = await (await query.execute()).allResults();
           setResultsCount(resultSet.length.toString());
-          for (let result of resultSet) {
-            let doc = result[databaseName];
-            let id = doc.id;
-            let name = doc.name;
+          for (const result of resultSet) {
+            const doc = result[databaseName];
+            const id = doc.id;
+            const name = doc.name;
             setResultsMessage(prev => [
               ...prev,
               'Document Validated: ' + id + ' : ' + name,
@@ -149,11 +150,11 @@ const CreateBatchPage: React.FC = () => {
 
   async function deleteProductDocuments() {
     if (databaseName in databases) {
-      let db = databases[databaseName];
+      const db = databases[databaseName];
       if (db != null) {
         setResultsMessage([]);
         setResultsCount('');
-        let query = QueryBuilder.select(SelectResult.expression(Meta.id))
+        const query = QueryBuilder.select(SelectResult.expression(Meta.id))
           .from(DataSource.database(db))
           .where(
             Expression.property('documentType').equalTo(
@@ -164,10 +165,10 @@ const CreateBatchPage: React.FC = () => {
         try {
           const resultSet = await (await query.execute()).allResults();
           setResultsCount(resultSet.length.toString());
-          for (let result of resultSet) {
-            let id = result.id;
+          for (const result of resultSet) {
+            const id = result.id;
             db.getDocument(id)
-              .then((doc: any) =>{
+              .then((doc: Document) =>{
                 db.deleteDocument(doc)
                 .then(() => {
                   setResultsMessage(prev => [
@@ -207,19 +208,19 @@ const CreateBatchPage: React.FC = () => {
 
   return (
     <DetailPageContainerItemResults
-      navigationTitle="Create Batch"
-      collapseTitle="Create Batch"
-      onReset={reset}
-      resultsCount={resultsCount}
-      children={
-        <>
-          <DatabaseNameForm
+    navigationTitle="Create Batch"
+    collapseTitle="Create Batch"
+    onReset={reset}
+    resultsCount={resultsCount}
+    children={
+      <>
+        <DatabaseNameForm
             setDatabaseName={setDatabaseName}
             databaseName={databaseName}
-          />
-          <IonItemDivider key="document-batch-divider-key">
-            <IonLabel key="document-batch-divider-label-key">Document Batch</IonLabel>
-            <IonButtons slot="end" key="document-batch-divider-right-buttons-key">
+        />
+        <IonItemDivider key="document-batch-divider-key">
+          <IonLabel key="document-batch-divider-label-key">Document Batch</IonLabel>
+          <IonButtons slot="end" key="document-batch-divider-right-buttons-key">
             <IonButton
                 key="document-batch-divider-right-buttons-action-button-key"
                 onClick={update}
@@ -229,10 +230,10 @@ const CreateBatchPage: React.FC = () => {
                   marginRight: 'auto',
                   padding: '0px 5px',
                 }}
-              >
-                <i className="fa-duotone fa-play"></i>
-              </IonButton>
-              <IonButton
+            >
+              <i className="fa-duotone fa-play"></i>
+            </IonButton>
+            <IonButton
                 key="document-batch-divider-right-buttons-validate-button-key"
                 onClick={validateDocuments}
                 style={{
@@ -241,10 +242,10 @@ const CreateBatchPage: React.FC = () => {
                   marginRight: 'auto',
                   padding: '0px 5px',
                 }}
-              >
-               <i className="fa-solid fa-circle-check"></i>
-              </IonButton>
-              <IonButton
+            >
+              <i className="fa-solid fa-circle-check"></i>
+            </IonButton>
+            <IonButton
                 key="document-batch-divider-right-buttons-delete-button-key"
                 onClick={deleteProductDocuments}
                 style={{
@@ -253,23 +254,22 @@ const CreateBatchPage: React.FC = () => {
                   marginRight: 'auto',
                   padding: '0px 5px',
                 }}
-              >
-                 <i className="fa-solid fa-trash"></i>
-              </IonButton>
-            </IonButtons>
-          </IonItemDivider>
-        </>
-      }
-      resultsChildren={
-        <>
-          {resultsMessage.map((message, index) => (
-            <IonItem key={"results-message-item-key"+index} className="wrap-text">
-              <IonLabel key={"results-message-item-label-key"+index} className="wrap-text">{message}</IonLabel>
+            >
+              <i className="fa-solid fa-trash"></i>
+            </IonButton>
+          </IonButtons>
+        </IonItemDivider>
+      </>
+    }
+    resultsChildren={
+      <>
+        {resultsMessage.map((message, index) => (
+            <IonItem key={"results-message-item-key" + index} className="wrap-text">
+              <IonLabel key={"results-message-item-label-key" + index} className="wrap-text">{message}</IonLabel>
             </IonItem>
-          ))}
-        </>
-      }
-    ></DetailPageContainerItemResults>
+        ))}
+      </>
+    }></DetailPageContainerItemResults>
   );
 };
 

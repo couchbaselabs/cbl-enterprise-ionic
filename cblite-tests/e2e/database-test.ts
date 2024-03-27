@@ -4,7 +4,7 @@ import { assert, expect } from 'chai';
 import { MutableDocument, ConcurrencyControl, Blob } from 'cblite';
 
 /**
- * DatabaseTests - reminder all test cases must start with 'test' in the name of the method or they will not run
+ * DatabaseTests - reminder all test cases must start with 'test' in the name of the method, or they will not run
  * */
 export class DatabaseTests extends TestCase {
   constructor() {
@@ -22,7 +22,7 @@ export class DatabaseTests extends TestCase {
     const doc = new MutableDocument();
     doc.setId(id);
     doc.setString('name', 'Scott');
-    let dic = doc.toDictionary;
+    const dic = doc.toDictionary;
 
     await this.database?.save(doc);
     return this.verifyDoc('testCreateDocument', id, JSON.stringify(dic));
@@ -40,7 +40,7 @@ export class DatabaseTests extends TestCase {
     doc.setId(id);
     doc.setString('name', 'Scott');
     await this.database?.save(doc);
-    let deleteResult = await this.database
+    const deleteResult = await this.database
       .deleteDocument(doc)
       .then(() => {
         return {
@@ -67,15 +67,15 @@ export class DatabaseTests extends TestCase {
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
   async testDatabaseProperties(): Promise<ITestResult> {
-    let pathResults = await this.getPlatformPath();
+    const pathResults = await this.getPlatformPath();
     if (!pathResults.success) {
       return pathResults;
     }
-    let path = pathResults.data;
+    const path = pathResults.data;
     try {
-      let dbPath = await this.database?.getPath();
-      let dbName = this.databaseName;
-      let name = this.database?.getName();
+      const dbPath = await this.database?.getPath();
+      const dbName = this.databaseName;
+      const name = this.database?.getName();
 
       expect(dbPath).to.include(path);
       expect(name).to.equal(dbName);
@@ -104,8 +104,8 @@ export class DatabaseTests extends TestCase {
    */
   async testSaveDocWithId(): Promise<ITestResult> {
     try {
-      let docId = await this.createDocumentWithId('doc1');
-      let count = await this.getDocumentCount();
+      const docId = await this.createDocumentWithId('doc1');
+      const count = await this.getDocumentCount();
       assert.equal(1, count);
       await this.verifyDoc(
         'testSaveDocWithId',
@@ -137,10 +137,10 @@ export class DatabaseTests extends TestCase {
    */
   async testSaveDocWithSpecialCharactersDocID(): Promise<ITestResult> {
     try {
-      let docId = await this.createDocumentWithId(
+      const docId = await this.createDocumentWithId(
         '~@#$%^&*()_+{}|\\][=-/.,<>?":;',
       );
-      let count = await this.getDocumentCount();
+      const count = await this.getDocumentCount();
       assert.equal(1, count);
       await this.verifyDoc(
         'testSaveDocWithSpecialCharactersDocID',
@@ -172,12 +172,12 @@ export class DatabaseTests extends TestCase {
   async testSaveSameDocTwice(): Promise<ITestResult> {
     try {
       //create document first time
-      let docId = await this.createDocumentWithId('doc1');
+      const docId = await this.createDocumentWithId('doc1');
       let count = await this.getDocumentCount();
       assert.equal(1, count);
-      //save the same document again to check sequance number
+      //save the same document again to check sequence number
       await this.database?.save(docId);
-      let docSeq2 = await this.database?.getDocument('doc1');
+      const docSeq2 = await this.database?.getDocument('doc1');
       count = await this.getDocumentCount();
       assert.equal(1, count);
       assert.equal(2, docSeq2?.getSequence());
@@ -205,26 +205,26 @@ export class DatabaseTests extends TestCase {
    */
   async testAndUpdateMutableDoc(): Promise<ITestResult> {
     try {
-      let doc = await this.createDocumentWithId('doc1');
+      const doc = await this.createDocumentWithId('doc1');
       //update
       doc.setString('firstName', 'Steve');
-      this.database?.save(doc);
+      await this.database?.save(doc);
       let count = await this.getDocumentCount();
       assert.equal(1, count);
 
       //update
       doc.setString('lastName', 'Jobs');
-      this.database?.save(doc);
+      await this.database?.save(doc);
       count = await this.getDocumentCount();
       assert.equal(1, count);
 
       doc.setInt('age', 56);
-      this.database?.save(doc);
+      await this.database?.save(doc);
       count = await this.getDocumentCount();
       assert.equal(1, count);
 
       //validate saves worked
-      let updatedDoc = await this.database?.getDocument('doc1');
+      const updatedDoc = await this.database?.getDocument('doc1');
       assert.equal(4, updatedDoc?.getSequence());
       assert.equal('Steve', updatedDoc?.getString('firstName'));
       assert.equal('Jobs', updatedDoc?.getString('lastName'));
@@ -254,7 +254,7 @@ export class DatabaseTests extends TestCase {
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
    */
   async testSaveDocWithConflict(): Promise<ITestResult> {
-    let result1 = await this.saveDocWithConflict(
+    const result1 = await this.saveDocWithConflict(
       'testSaveDocWithConflict',
       undefined,
     );
@@ -263,7 +263,7 @@ export class DatabaseTests extends TestCase {
     //reset the database
     await this.tearDown();
     await this.init();
-    let result2 = await this.saveDocWithConflict(
+    const result2 = await this.saveDocWithConflict(
       'testSaveDocWithConflict',
       ConcurrencyControl.FAIL_ON_CONFLICT,
     );
@@ -279,7 +279,7 @@ export class DatabaseTests extends TestCase {
     //reset the database
     await this.tearDown();
     await this.init();
-    let result3 = await this.saveDocWithConflict(
+    const result3 = await this.saveDocWithConflict(
       'testSaveDocWithConflict',
       ConcurrencyControl.LAST_WRITE_WINS,
     );
@@ -483,10 +483,10 @@ export class DatabaseTests extends TestCase {
   async testPerformMaintenanceCompact(): Promise<ITestResult> {
     try {
       //get 20 docs to test with
-      let docs = await this.createDocs('testPerformMaintenanceCompact', 20);
+      const docs = await this.createDocs('testPerformMaintenanceCompact', 20);
 
       //update the docs 25 times
-      for (let doc of docs) {
+      for (const doc of docs) {
         for (let counter = 0; counter < 25; counter++) {
           doc.setValue('number', counter.toString());
           await this.database?.save(doc);
@@ -494,18 +494,18 @@ export class DatabaseTests extends TestCase {
       }
 
       //create blobs for each of the docs
-      for (let doc of docs) {
-        let dbDoc = await this.database?.getDocument(doc.getId());
-        let mutableDoc = MutableDocument.fromDocument(dbDoc);
-        let encoder = new TextEncoder();
-        let arrayBuffer = encoder.encode('hello blob');
-        let blob = new Blob('text/plain', arrayBuffer);
+      for (const doc of docs) {
+        const dbDoc = await this.database?.getDocument(doc.getId());
+        const mutableDoc = MutableDocument.fromDocument(dbDoc);
+        const encoder = new TextEncoder();
+        const arrayBuffer = encoder.encode('hello blob');
+        const blob = new Blob('text/plain', arrayBuffer);
         mutableDoc.setBlob('blob', blob);
         await this.database?.save(mutableDoc);
       }
 
       //validate document and attachment count
-      let originalDocCount = await this.getDocumentCount();
+      const originalDocCount = await this.getDocumentCount();
       assert.equal(originalDocCount, 20);
 
       //TODO validate amount of attachments
@@ -514,26 +514,25 @@ export class DatabaseTests extends TestCase {
       await this.database?.compact();
 
       //delete all the docs
-      for (let doc of docs) {
+      for (const doc of docs) {
         await this.database?.deleteDocument(doc);
       }
 
       //validate the document and attachment count
-      let postDeleteDocCount = await this.getDocumentCount();
+      const postDeleteDocCount = await this.getDocumentCount();
       assert.equal(postDeleteDocCount, 0);
 
       //compact again
       await this.database?.compact();
 
       //TODO validate the attachment count
-
       return {
         testName: 'testPerformMaintenanceCompact',
         success: true,
         message: 'success',
         data: undefined,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         testName: 'testPerformMaintenanceCompact',
         success: false,
@@ -544,8 +543,8 @@ export class DatabaseTests extends TestCase {
   }
 
     /**
-   * This method tests adding many documents to a database, then cleaing
-   * up and trying again to validte that the init process works and the
+   * This method tests adding many documents to a database, then cleaning
+   * up and trying again to validate that the init process works and the
    * database isn't the same database file.
    *
    * @returns {Promise<ITestResult>} A promise that resolves to an ITestResult object which contains the result of the verification.
@@ -594,33 +593,32 @@ export class DatabaseTests extends TestCase {
     control: ConcurrencyControl | undefined,
   ): Promise<ITestResult> {
     try {
-        let doc  = await this.createDocumentWithId('doc1');
+        const doc  = await this.createDocumentWithId('doc1');
         doc.setString('firstName', 'Steve');
         doc.setString('lastName', 'Jobs');
         await this.database.save(doc);
 
         //get two of the same document
-        let doc1a = await this.database.getDocument('doc1');
-        let doc1b = await this.database.getDocument('doc1');
-        let mutableDoc1a = MutableDocument.fromDocument(doc1a);
-        let mutableDoc1b = MutableDocument.fromDocument(doc1b);
+        const doc1a = await this.database.getDocument('doc1');
+        const doc1b = await this.database.getDocument('doc1');
+        const mutableDoc1a = MutableDocument.fromDocument(doc1a);
+        const mutableDoc1b = MutableDocument.fromDocument(doc1b);
 
-        //modify doc1a
         mutableDoc1a.setString('lastName', 'Wozniak');
         await this.database.save(mutableDoc1a);
         mutableDoc1a.setString('nickName', 'The Woz');
         await this.database.save(mutableDoc1a);
-        let updatedDoc1a = await this.database.getDocument('doc1');
+        const updatedDoc1a = await this.database.getDocument('doc1');
         assert.equal('Wozniak', updatedDoc1a?.getString('lastName'));
         assert.equal('The Woz', updatedDoc1a?.getString('nickName'));
         assert.equal('Steve', updatedDoc1a?.getString('firstName'));
         assert.equal(4, updatedDoc1a?.getSequence());
         if(control === undefined){
-          let result = await this.database.save(mutableDoc1b);
+          await this.database.save(mutableDoc1b);
         } else {
-          let result = await this.database.save(mutableDoc1b, control);
+          await this.database.save(mutableDoc1b, control);
         }
-        let updatedDoc1b = await this.database.getDocument('doc1');
+        const updatedDoc1b = await this.database.getDocument('doc1');
         assert.equal(mutableDoc1b.getString('lastName'), updatedDoc1b.getString('lastName'));
         assert.equal(5, updatedDoc1b.getSequence());
       return {

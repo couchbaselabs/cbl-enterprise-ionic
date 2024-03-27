@@ -47,12 +47,19 @@ export class ReplicatorConfiguration {
   private channels: string[];
   private documentIds: string[];
   private headers: { [name:string]: string };
+  private heartbeat: number;
+  private maxAttempts: number;
+  private maxAttemptWaitTime: number;
+  private selfSignedCerts: boolean;
+  private autoPurgeEnabled: boolean;
+  private acceptParentDomainCookies: boolean;
 
   constructor(private database: Database, private target: Endpoint) {
     this.readonly = false;
     this.replicatorType = ReplicatorType.PUSH_AND_PULL;
     this.database = database;
     this.target = target;
+    this.heartbeat = 60;
   }
 
   getDatabase() {
@@ -86,6 +93,30 @@ export class ReplicatorConfiguration {
   setDocumentIDs(documentIds: string[]) {
     this.documentIds = documentIds;
   }
+
+  setHeartbeat(heartbeat: number) {
+    this.heartbeat = heartbeat;
+  }
+
+  setMaxAttempts(maxAttempts: number) {
+    this.maxAttempts = maxAttempts;
+  }
+
+  setMaxAttemptWaitTime(maxAttemptWaitTime: number) {
+    this.maxAttemptWaitTime = maxAttemptWaitTime;
+  }
+
+  setSelfSignedCerts(selfSignedCerts: boolean) {
+    this.selfSignedCerts = selfSignedCerts;
+  }
+
+  setAutoPurgeEnabled(autoPurgeEnabled: boolean) {
+    this.autoPurgeEnabled = autoPurgeEnabled;
+  }
+
+  setAcceptParentDomainCookies(acceptParentDomainCookies: boolean) {
+    this.acceptParentDomainCookies = acceptParentDomainCookies;
+  }
   
   toJson() {
     return {
@@ -94,9 +125,15 @@ export class ReplicatorConfiguration {
       authenticator: { type: this.authenticator.getType(), data: this.authenticator.toJson() },
       target: this.target.toJson(),
       headers: this.headers,
+      heartbeat: this.heartbeat,
+      maxAttempts: this.maxAttempts,
+      maxAttemptWaitTime: this.maxAttemptWaitTime,
       pinnedServerCertificate: this.pinnedServerCertificate,
       channels: this.channels,
-      documentIds: this.documentIds
+      documentIds: this.documentIds,
+      autoPurgeEnabled: this.autoPurgeEnabled,
+      acceptParentDomainCookies: this.acceptParentDomainCookies,
+      selfSignedCerts: this.selfSignedCerts
     }
   }
 }

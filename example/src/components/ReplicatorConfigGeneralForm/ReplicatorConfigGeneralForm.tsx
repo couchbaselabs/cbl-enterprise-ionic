@@ -16,28 +16,48 @@ import { ReplicatorType } from 'cblite';
 export type ReplicatorConfigGeneralFormType = {
   connectionString: string;
   setConnectionString: (arg: string) => void;
+  headers: string;
+  setHeaders: (arg: string) => void;
   heartbeat: number;
   setHeartbeat: (arg: number) => void;
+  maxAttempts: number;
+  setMaxAttempts: (arg: number) => void;
+  maxAttemptWaitTime: number;
+  setMaxAttemptWaitTime: (arg: number) => void;
   selectedReplicatorType: string;
   setSelectedReplicatorType: (arg: string) => void;
-  continous: boolean;
-  setContinous: (arg: boolean) => void;
+  continuous: boolean;
+  setContinuous: (arg: boolean) => void;
   selfSignCerts: boolean;
   setSelfSignedCerts: (arg: boolean) => void;
+  autoPurgeEnabled: boolean;
+  setAutoPurgeEnabled: (arg: boolean) => void;
+  acceptParentDomainCookies: boolean;
+  setAcceptParentDomainCookies: (arg: boolean) => void;
 };
 
 const ReplicatorConfigGeneralForm: React.FC<ReplicatorConfigGeneralFormType> =
   ({
     connectionString,
     setConnectionString,
+    headers,
+    setHeaders,
     heartbeat,
     setHeartbeat,
+    maxAttempts,
+    setMaxAttempts,
+    maxAttemptWaitTime,
+    setMaxAttemptWaitTime,
     selectedReplicatorType,
     setSelectedReplicatorType,
-    continous,
-    setContinous,
+    continuous,
+    setContinuous,
     selfSignCerts,
     setSelfSignedCerts,
+    autoPurgeEnabled,
+    setAutoPurgeEnabled,
+    acceptParentDomainCookies,
+    setAcceptParentDomainCookies
   }) => {
     return (
       <>
@@ -50,6 +70,15 @@ const ReplicatorConfigGeneralForm: React.FC<ReplicatorConfigGeneralFormType> =
             value={connectionString}
           ></IonTextarea>
         </IonItem>
+          <IonItem key={'headers-string-item-key'}>
+              <IonTextarea
+                  key={'headers-string-textarea-key'}
+                  rows={3}
+                  placeholder="Extra HTTP headers to send in all requests (JSON)"
+                  onInput={(e: any) => setHeaders(e.target.value)}
+                  value={headers}
+              ></IonTextarea>
+          </IonItem>
         <IonItem key={'heartbeat-item-key'}>
           <IonLabel position="stacked" key={'heartbeat-label-key'}>
             Heartbeat (in seconds)
@@ -61,6 +90,28 @@ const ReplicatorConfigGeneralForm: React.FC<ReplicatorConfigGeneralFormType> =
             value={heartbeat}
           ></IonInput>
         </IonItem>
+          <IonItem key={'max-attempts-item-key'}>
+              <IonLabel position="stacked" key={'max-attempts-label-key'}>
+                  Max Attempts (0 restores default behavior)
+              </IonLabel>
+              <IonInput
+                  key={'max-attempts-input-key'}
+                  type="number"
+                  onInput={(e: any) => setMaxAttempts(e.target.value)}
+                  value={maxAttempts}
+              ></IonInput>
+          </IonItem>
+          <IonItem key={'max-attempt-wait-time-item-key'}>
+              <IonLabel position="stacked" key={'max-attempt-wait-time-label-key'}>
+                  Max Attempt Wait Time (in seconds)
+              </IonLabel>
+              <IonInput
+                  key={'max-attempt-wait-time-input-key'}
+                  type="number"
+                  onInput={(e: any) => setMaxAttemptWaitTime(e.target.value)}
+                  value={maxAttemptWaitTime}
+              ></IonInput>
+          </IonItem>
         <IonItem key={'replicatortype-item-key'}>
           <IonLabel key={'replicator-type-label-key'}>Replicator Type</IonLabel>
           <IonSelect
@@ -69,29 +120,47 @@ const ReplicatorConfigGeneralForm: React.FC<ReplicatorConfigGeneralFormType> =
             onIonChange={e => setSelectedReplicatorType(e.detail.value)}
           >
             {Object.entries(ReplicatorType).map(([key, value]) => (
-              <IonSelectOption key={'selectoption' + value} value={key}>
+              <IonSelectOption key={'select-option' + value} value={key}>
                 {value}
               </IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>
-        <IonItem key={'continous-item-key'}>
+        <IonItem key={'continuous-item-key'}>
           <IonToggle
             key={'continuous-toggle-key'}
-            onIonChange={(e: any) => setContinous(e.detail.checked)}
-            checked={continous}
+            onIonChange={(e: any) => setContinuous(e.detail.checked)}
+            checked={continuous}
           >
             Continuous
           </IonToggle>
         </IonItem>
-        <IonItem key={'selfcert-item-key'}>
+        <IonItem key={'self-cert-item-key'}>
           <IonToggle
-            key={'selfcert-toggle-key'}
+            key={'self-cert-toggle-key'}
             onIonChange={(e: any) => setSelfSignedCerts(e.detail.checked)}
             checked={selfSignCerts}
           >
             Accept Only Self-Signed Certs
           </IonToggle>
+        </IonItem>
+        <IonItem key={'auto-purge-item-key'}>
+              <IonToggle
+                  key={'auto-purge-toggle-key'}
+                  onIonChange={(e: any) => setAutoPurgeEnabled(e.detail.checked)}
+                  checked={autoPurgeEnabled}
+              >
+                  Auto Purge Enabled
+              </IonToggle>
+        </IonItem>
+        <IonItem key={'accept-parent-domain-cookies-item-key'}>
+              <IonToggle
+                  key={'accept-parent-domain-cookies-toggle-key'}
+                  onIonChange={(e: any) => setAcceptParentDomainCookies(e.detail.checked)}
+                  checked={acceptParentDomainCookies}
+              >
+                  Accept Parent Domain Cookies
+              </IonToggle>
         </IonItem>
       </>
     );

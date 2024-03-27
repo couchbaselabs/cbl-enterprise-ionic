@@ -250,7 +250,7 @@ public class IonicCouchbaseLitePlugin extends Plugin {
         } catch (Exception ex) {
             didOpenDatabase = false;
             errorMessage = ex.getMessage();
-            Log.w("IonicCouchbaseLite", "Error deleting database", ex);
+            Log.d("IonicCouchbaseLite", "Error deleting database", ex);
         }
 
         boolean finalDidOpenDatabase = didOpenDatabase;
@@ -601,14 +601,14 @@ public class IonicCouchbaseLitePlugin extends Plugin {
             return;
         }
         try {
-            Log.w("IonicCouchbaseLite-Log", String.format("Deleting database %s", d.getName()));
+            Log.d("IonicCouchbaseLite-Log", String.format("Deleting database %s", d.getName()));
             d.delete();
             this.openDatabases.remove(d);
             didDeleteDatabase = true;
         }catch(Exception ex){
             didDeleteDatabase = false;
             errorMessage = ex.getMessage();
-            Log.w("IonicCouchbaseLite", "Error deleting database", ex);
+            Log.d("IonicCouchbaseLite", "Error deleting database", ex);
         }
 
         boolean finalDidDeleteDatabase = didDeleteDatabase;
