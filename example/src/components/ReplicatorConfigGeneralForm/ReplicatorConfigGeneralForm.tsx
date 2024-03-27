@@ -28,8 +28,6 @@ export type ReplicatorConfigGeneralFormType = {
   setSelectedReplicatorType: (arg: string) => void;
   continuous: boolean;
   setContinuous: (arg: boolean) => void;
-  selfSignCerts: boolean;
-  setSelfSignedCerts: (arg: boolean) => void;
   autoPurgeEnabled: boolean;
   setAutoPurgeEnabled: (arg: boolean) => void;
   acceptParentDomainCookies: boolean;
@@ -52,8 +50,6 @@ const ReplicatorConfigGeneralForm: React.FC<ReplicatorConfigGeneralFormType> =
     setSelectedReplicatorType,
     continuous,
     setContinuous,
-    selfSignCerts,
-    setSelfSignedCerts,
     autoPurgeEnabled,
     setAutoPurgeEnabled,
     acceptParentDomainCookies,
@@ -133,15 +129,6 @@ const ReplicatorConfigGeneralForm: React.FC<ReplicatorConfigGeneralFormType> =
             checked={continuous}
           >
             Continuous
-          </IonToggle>
-        </IonItem>
-        <IonItem key={'self-cert-item-key'}>
-          <IonToggle
-            key={'self-cert-toggle-key'}
-            onIonChange={(e: any) => setSelfSignedCerts(e.detail.checked)}
-            checked={selfSignCerts}
-          >
-            Accept Only Self-Signed Certs
           </IonToggle>
         </IonItem>
         <IonItem key={'auto-purge-item-key'}>

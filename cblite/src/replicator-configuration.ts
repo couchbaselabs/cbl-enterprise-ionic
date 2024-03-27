@@ -43,7 +43,7 @@ export class ReplicatorConfiguration {
   private continuous = false;
   private replicatorType: ReplicatorType;
   private authenticator: Authenticator;
-  private pinnedServerCertificate: Int8Array;
+  private pinnedServerCertificate: string;
   private channels: string[];
   private documentIds: string[];
   private headers: { [name:string]: string };
@@ -78,7 +78,7 @@ export class ReplicatorConfiguration {
     this.authenticator = authenticator;
   }
 
-  setPinnedServerCertificate(pinnedServerCertificate: Int8Array) {
+  setPinnedServerCertificate(pinnedServerCertificate: string) {
     this.pinnedServerCertificate = pinnedServerCertificate;
   }
 

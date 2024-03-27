@@ -8,10 +8,14 @@ import React,
 import DatabaseContext from '../../providers/DatabaseContext';
 import ReplicatorContext from '../../providers/ReplicatorContext';
 
+//import container form for the page
 import DetailPageContainerRun from '../../components/DetailPageContainerRun/DetailPageContainerRun';
+
+//import forms used for rendering UI on the page
 import ReplicatorConfigGeneralForm from '../../components/ReplicatorConfigGeneralForm/ReplicatorConfigGeneralForm';
 import AuthenticationTwoFieldForm from '../../components/AuthenticationTwoFieldForm/AuthenticationTwoFieldForm';
 import ReplicatorChannelsEditorForm from '../../components/ReplicatorChannelsEditor/ReplicatorChannelsEditor';
+import ReplicatorCertificationForm from '../../components/ReplicatorCertificationForm/ReplicatorCertificationForm';
 
 import { 
   IonItem, 
@@ -20,10 +24,13 @@ import {
   IonSegmentButton 
 } from '@ionic/react';
 
-import { 
+import {
+  BasicAuthenticator,
+  SessionAuthenticator,
   ReplicatorConfiguration, 
   URLEndpoint 
 } from 'cblite';
+
 
 const ReplicatorConfigPage: React.FC = () => {
   const { databases } = useContext(DatabaseContext)!;
@@ -42,11 +49,10 @@ const ReplicatorConfigPage: React.FC = () => {
   const [heartbeat, setHeartbeat] = useState<number>(60);
   const [maxAttempts, setMaxAttempts] = useState<number>(0);
   const [maxAttemptWaitTime, setMaxAttemptWaitTime] = useState<number>(300);
-
   const [continuous, setContinuous] = useState<boolean>(true);
   const [autoPurgeEnabled, setAutoPurgeEnabled] = useState<boolean>(true);
   const [acceptParentDomainCookies, setAcceptParentDomainCookies] = useState<boolean>(false);
-  const [selfSignedCerts, setSelfSignedCerts] = useState<boolean>(true);
+
 
   //used for authentication type and authentication fields
   const [selectedAuthenticationType, setSelectedAuthenticationType] =
@@ -55,6 +61,10 @@ const ReplicatorConfigPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [sessionId, setSessionId] = useState<string>('');
   const [cookieName, setCookieName] = useState<string>('');
+
+  //used for certification section
+  const [selfSignedCerts, setSelfSignedCerts] = useState<boolean>(true);
+  const [pinnedServerCertBase64, setPinnedServerCertBase64] = useState<string>('');
 
   //used for channels configuration
   const [channels, setChannels] = useState<string>('');
@@ -85,15 +95,30 @@ const ReplicatorConfigPage: React.FC = () => {
             break;
         }
         config.setContinuous(continuous);
-        config.setSelfSignedCerts(selfSignedCerts);
         config.setAutoPurgeEnabled(autoPurgeEnabled);
         config.setAcceptParentDomainCookies(acceptParentDomainCookies);
 
         //auth section
+        switch(selectedAuthenticationType) {
+          case 'basic':
+            config.setAuthenticator(new BasicAuthenticator(username, password));
+            break;
+          case 'session':
+            config.setAuthenticator(new SessionAuthenticator(sessionId, cookieName));
+            break;
+          default:
+            setResultsMessage(['Error: Authentication is not setup (defined)']);
+            break;
+        }
+        //cert section
+        config.setSelfSignedCerts(selfSignedCerts);
+        config.setPinnedServerCertificate(pinnedServerCertBase64);
 
         //channel section
         const channelArray = channels.split(',').map(channel => channel.trim());
         config.setChannels(channelArray);
+
+
       }
     } else {
      setResultsMessage(['Error: Database is not setup (defined)']);
@@ -110,7 +135,6 @@ const ReplicatorConfigPage: React.FC = () => {
     setMaxAttemptWaitTime(300);  //in seconds
     setSelectedReplicatorType('');
     setContinuous(true);
-    setSelfSignedCerts(true);
     setAutoPurgeEnabled(true);
     setAcceptParentDomainCookies(false);
 
@@ -121,6 +145,10 @@ const ReplicatorConfigPage: React.FC = () => {
     setPassword('');
     setSessionId('');
     setCookieName('');
+
+    //cert section
+    setSelfSignedCerts(true);
+    setPinnedServerCertBase64('');
 
     //channels section
     setChannels('');
@@ -149,6 +177,9 @@ const ReplicatorConfigPage: React.FC = () => {
             <IonSegmentButton value="authentication">
               <IonLabel>Authentication</IonLabel>
             </IonSegmentButton>
+            <IonSegmentButton value="certificate">
+              <IonLabel>Certification</IonLabel>
+            </IonSegmentButton>
             <IonSegmentButton value="channels">
               <IonLabel>Channels</IonLabel>
             </IonSegmentButton>
@@ -172,8 +203,6 @@ const ReplicatorConfigPage: React.FC = () => {
           setSelectedReplicatorType={setSelectedReplicatorType}
           continuous={continuous}
           setContinuous={setContinuous}
-          selfSignCerts={selfSignedCerts}
-          setSelfSignedCerts={setSelfSignedCerts}
           autoPurgeEnabled={autoPurgeEnabled}
           setAutoPurgeEnabled={setAutoPurgeEnabled}
           acceptParentDomainCookies={acceptParentDomainCookies}
@@ -193,6 +222,13 @@ const ReplicatorConfigPage: React.FC = () => {
       cookieName={cookieName}
       setCookieName={setCookieName}>
       </AuthenticationTwoFieldForm>
+    case 'certificate':
+      return <ReplicatorCertificationForm
+        acceptSelfSignedCertOnly={selfSignedCerts}
+        setAcceptSelfSignedCertOnly={setSelfSignedCerts}
+        pinnedServerCertBase64={pinnedServerCertBase64}
+        setPinnedServerCertBase64={setPinnedServerCertBase64}>
+      </ReplicatorCertificationForm>
     case 'channels':
       return <ReplicatorChannelsEditorForm
         channels={channels}

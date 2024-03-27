@@ -3,8 +3,7 @@
 	"appName": "example",
 	"webDir": "dist",
 	"server": {
-		"androidScheme": "https",
-		"url": "http://192.168.0.55:8100"
+		"androidScheme": "https"
 	},
 	"plugins": {
 		"cblite-ionic": {}
